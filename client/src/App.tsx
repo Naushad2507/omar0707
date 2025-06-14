@@ -22,6 +22,7 @@ import CustomerWishlist from "@/pages/customer/wishlist";
 import MembershipCard from "@/pages/customer/membership-card";
 
 // Vendor pages
+import VendorBenefits from "@/pages/vendor/benefits";
 import VendorRegister from "@/pages/vendor/register-enhanced";
 import VendorDashboard from "@/pages/vendor/dashboard";
 import VendorDeals from "@/pages/vendor/deals-enhanced";
@@ -79,6 +80,9 @@ function Router() {
       </Route>
       
       {/* Vendor routes */}
+      <Route path="/vendor/benefits">
+        <VendorBenefits />
+      </Route>
       <Route path="/vendor/register">
         <ProtectedRoute allowedRoles={['vendor']}>
           <VendorRegister />

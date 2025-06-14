@@ -40,7 +40,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
       return [
         { label: "Home", href: "/", icon: Home },
         { label: "Pricing", href: "/pricing", icon: CreditCard },
-        { label: "For Vendors", href: "/vendor/register", icon: Store },
+        { label: "For Vendors", href: "/vendor/benefits", icon: Store },
       ];
     }
 

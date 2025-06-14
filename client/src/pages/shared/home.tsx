@@ -154,7 +154,7 @@ export default function Home() {
                   Explore Deals
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <Link href="/vendor/register">Join as Vendor</Link>
+                  <Link href="/vendor/benefits">Join as Vendor</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center space-x-8 text-sm text-gray-600">

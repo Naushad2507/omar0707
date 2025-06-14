@@ -60,7 +60,7 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">For Businesses</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/vendor/register" className="hover:text-white transition-colors">
+                <Link href="/vendor/benefits" className="hover:text-white transition-colors">
                   Become a Vendor
                 </Link>
               </li>
