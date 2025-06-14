@@ -20,9 +20,9 @@ import CustomerDeals from "@/pages/customer/deals";
 import ClaimHistory from "@/pages/customer/claim-history";
 
 // Vendor pages
-import VendorRegister from "@/pages/vendor/register";
+import VendorRegister from "@/pages/vendor/register-enhanced";
 import VendorDashboard from "@/pages/vendor/dashboard";
-import VendorDeals from "@/pages/vendor/deals";
+import VendorDeals from "@/pages/vendor/deals-enhanced";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/dashboard";

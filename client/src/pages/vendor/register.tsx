@@ -69,14 +69,20 @@ export default function VendorRegister() {
     resolver: zodResolver(vendorRegistrationSchema),
     defaultValues: {
       businessName: "",
-      description: "",
+      ownerName: "",
+      contactNumber: "",
       address: "",
+      email: "",
+      category: "",
       state: "",
       city: "",
       hasGst: "no",
       gstNumber: "",
       panNumber: "",
+      username: "",
+      password: "",
       logoUrl: "",
+      agreeToTerms: false,
     },
   });
 
