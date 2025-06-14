@@ -18,6 +18,7 @@ import Privacy from "@/pages/shared/privacy";
 import CustomerDashboard from "@/pages/customer/dashboard";
 import CustomerDeals from "@/pages/customer/deals";
 import ClaimHistory from "@/pages/customer/claim-history";
+import MembershipCard from "@/pages/customer/membership-card";
 
 // Vendor pages
 import VendorRegister from "@/pages/vendor/register-enhanced";
@@ -63,6 +64,11 @@ function Router() {
       <Route path="/customer/claims">
         <ProtectedRoute allowedRoles={['customer']}>
           <ClaimHistory />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/membership-card">
+        <ProtectedRoute allowedRoles={['customer']}>
+          <MembershipCard />
         </ProtectedRoute>
       </Route>
       
