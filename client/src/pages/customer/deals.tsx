@@ -76,6 +76,51 @@ export default function CustomerDeals() {
     queryKey: ["/api/deals", selectedCity, selectedCategory],
   });
 
+  const { data: wishlist } = useQuery({
+    queryKey: ["/api/wishlist"],
+    enabled: !!user,
+  });
+
+  const addToWishlistMutation = useMutation({
+    mutationFn: async (dealId: number) => {
+      return apiRequest('POST', '/api/wishlist', { dealId });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Added to favorites!",
+        description: "You can view your favorites in your dashboard.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to add to favorites",
+        description: error.message || "Please try again later.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const removeFromWishlistMutation = useMutation({
+    mutationFn: async (dealId: number) => {
+      return apiRequest('DELETE', `/api/wishlist/${dealId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Removed from favorites",
+        description: "Deal removed from your favorites.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to remove from favorites",
+        description: error.message || "Please try again later.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const claimDealMutation = useMutation({
     mutationFn: async (dealId: number) => {
       return apiRequest('POST', `/api/deals/${dealId}/claim`);
@@ -123,6 +168,25 @@ export default function CustomerDeals() {
     }
 
     claimDealMutation.mutate(deal.id);
+  };
+
+  const handleToggleFavorite = (dealId: number) => {
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "Please login to add favorites.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const isInWishlist = wishlist?.some((item: any) => item.dealId === dealId);
+    
+    if (isInWishlist) {
+      removeFromWishlistMutation.mutate(dealId);
+    } else {
+      addToWishlistMutation.mutate(dealId);
+    }
   };
 
   // Filter and sort deals
@@ -242,17 +306,22 @@ export default function CustomerDeals() {
           </div>
         ) : sortedDeals.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedDeals.map((deal: any) => (
-              <div key={deal.id} id={`deal-${deal.id}`}>
-                <DealCard
-                  {...deal}
-                  onClaim={() => handleClaimDeal(deal)}
-                  onView={() => {
-                    // Increment view count would be handled by API
-                  }}
-                />
-              </div>
-            ))}
+            {sortedDeals.map((deal: any) => {
+              const isInWishlist = wishlist?.some((item: any) => item.dealId === deal.id);
+              return (
+                <div key={deal.id} id={`deal-${deal.id}`}>
+                  <DealCard
+                    {...deal}
+                    isFavorite={isInWishlist}
+                    onClaim={() => handleClaimDeal(deal)}
+                    onToggleFavorite={() => handleToggleFavorite(deal.id)}
+                    onView={() => {
+                      // Increment view count would be handled by API
+                    }}
+                  />
+                </div>
+              );
+            })}
           </div>
         ) : (
           <Card>

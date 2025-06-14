@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Search, 
   Filter, 
@@ -19,16 +22,42 @@ import {
   MapPin,
   Mail,
   Phone,
-  MoreHorizontal
+  MoreHorizontal,
+  UserCheck,
+  Loader2
 } from "lucide-react";
 
 export default function AdminUsers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [membershipFilter, setMembershipFilter] = useState("all");
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: users, isLoading } = useQuery({
     queryKey: ["/api/admin/users"],
+  });
+
+  const upgradeUserMutation = useMutation({
+    mutationFn: async ({ userId, membershipPlan }: { userId: number; membershipPlan: string }) => {
+      return apiRequest('PUT', `/api/admin/users/${userId}/upgrade`, { membershipPlan });
+    },
+    onSuccess: () => {
+      toast({
+        title: "User upgraded successfully!",
+        description: "The user's membership plan has been updated.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setSelectedUser(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to upgrade user",
+        description: error.message || "Please try again later.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Filter users based on search and filters
