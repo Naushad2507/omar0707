@@ -1,7 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { MapPin, Clock, Eye } from "lucide-react";
+import { MapPin, Clock, Eye, Heart } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface DealCardProps {
   id: number;
@@ -22,11 +23,14 @@ interface DealCardProps {
     state: string;
   };
   requiredMembership: string;
+  isFavorite?: boolean;
   onClaim?: () => void;
   onView?: () => void;
+  onToggleFavorite?: () => void;
 }
 
 export default function DealCard({
+  id,
   title,
   description,
   category,
@@ -40,9 +44,22 @@ export default function DealCard({
   viewCount,
   vendor,
   requiredMembership,
+  isFavorite = false,
   onClaim,
   onView,
+  onToggleFavorite,
 }: DealCardProps) {
+  const [isFlashing, setIsFlashing] = useState(false);
+
+  useEffect(() => {
+    // Flash effect for high discount percentages
+    if (discountPercentage >= 40) {
+      const interval = setInterval(() => {
+        setIsFlashing(prev => !prev);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [discountPercentage]);
   const categoryColors = {
     fashion: "bg-saffron/10 text-saffron",
     electronics: "bg-primary/10 text-primary",
@@ -80,14 +97,33 @@ export default function DealCard({
             alt={title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-2 left-2">
+          <div className="absolute top-12 left-2">
             <Badge className={`${categoryColors[category as keyof typeof categoryColors]} border-0`}>
               {category}
             </Badge>
           </div>
-          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-semibold text-gray-900">
+          <div className={`absolute top-2 right-2 rounded-full px-2 py-1 text-xs font-semibold transition-all duration-300 ${
+            isFlashing 
+              ? 'bg-red-500 text-white shadow-lg scale-110' 
+              : 'bg-white/90 backdrop-blur-sm text-gray-900'
+          }`}>
             {discountPercentage}% OFF
           </div>
+          
+          {/* Favorite Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite?.();
+            }}
+            className="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200"
+          >
+            <Heart 
+              className={`h-4 w-4 transition-colors duration-200 ${
+                isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'
+              }`} 
+            />
+          </button>
           {viewCount > 0 && (
             <div className="absolute bottom-2 right-2 bg-black/70 text-white rounded px-2 py-1 text-xs flex items-center space-x-1">
               <Eye className="h-3 w-3" />

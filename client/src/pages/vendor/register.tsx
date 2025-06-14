@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -31,15 +32,29 @@ import {
 } from "lucide-react";
 
 const vendorRegistrationSchema = z.object({
-  businessName: z.string().min(2, "Business name must be at least 2 characters"),
-  description: z.string().optional(),
-  address: z.string().min(5, "Address must be at least 5 characters"),
+  businessName: z.string().min(2, "Business/Store name must be at least 2 characters"),
+  ownerName: z.string().min(2, "Owner full name must be at least 2 characters"),
+  contactNumber: z.string().min(10, "Contact number must be at least 10 digits"),
+  address: z.string().min(5, "Business/Store address must be at least 5 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  category: z.string().min(1, "Please select a category"),
   state: z.string().min(1, "Please select a state"),
   city: z.string().min(1, "Please select a city"),
   hasGst: z.enum(["yes", "no"]),
   gstNumber: z.string().optional(),
   panNumber: z.string().min(10, "PAN number must be 10 characters").max(10, "PAN number must be 10 characters"),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
   logoUrl: z.string().optional(),
+  agreeToTerms: z.boolean().refine(val => val === true, "You must agree to the terms and conditions"),
+}).refine((data) => {
+  if (data.hasGst === "yes" && !data.gstNumber) {
+    return false;
+  }
+  return true;
+}, {
+  message: "GST number is required when GST registration is selected",
+  path: ["gstNumber"],
 });
 
 type VendorRegistrationForm = z.infer<typeof vendorRegistrationSchema>;
