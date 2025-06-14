@@ -90,6 +90,14 @@ export const helpTickets = pgTable("help_tickets", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Wishlist table for user favorites
+export const wishlists = pgTable("wishlists", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  dealId: integer("deal_id").references(() => deals.id).notNull(),
+  addedAt: timestamp("added_at").defaultNow(),
+});
+
 // System logs
 export const systemLogs = pgTable("system_logs", {
   id: serial("id").primaryKey(),
@@ -107,6 +115,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   dealClaims: many(dealClaims),
   helpTickets: many(helpTickets),
   systemLogs: many(systemLogs),
+  wishlists: many(wishlists),
 }));
 
 export const vendorsRelations = relations(vendors, ({ one, many }) => ({
@@ -118,11 +127,17 @@ export const dealsRelations = relations(deals, ({ one, many }) => ({
   vendor: one(vendors, { fields: [deals.vendorId], references: [vendors.id] }),
   approver: one(users, { fields: [deals.approvedBy], references: [users.id] }),
   claims: many(dealClaims),
+  wishlists: many(wishlists),
 }));
 
 export const dealClaimsRelations = relations(dealClaims, ({ one }) => ({
   user: one(users, { fields: [dealClaims.userId], references: [users.id] }),
   deal: one(deals, { fields: [dealClaims.dealId], references: [deals.id] }),
+}));
+
+export const wishlistsRelations = relations(wishlists, ({ one }) => ({
+  user: one(users, { fields: [wishlists.userId], references: [users.id] }),
+  deal: one(deals, { fields: [wishlists.dealId], references: [deals.id] }),
 }));
 
 // Insert schemas
@@ -159,6 +174,11 @@ export const insertSystemLogSchema = createInsertSchema(systemLogs).omit({
   createdAt: true,
 });
 
+export const insertWishlistSchema = createInsertSchema(wishlists).omit({
+  id: true,
+  addedAt: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -172,6 +192,8 @@ export type HelpTicket = typeof helpTickets.$inferSelect;
 export type InsertHelpTicket = z.infer<typeof insertHelpTicketSchema>;
 export type SystemLog = typeof systemLogs.$inferSelect;
 export type InsertSystemLog = z.infer<typeof insertSystemLogSchema>;
+export type Wishlist = typeof wishlists.$inferSelect;
+export type InsertWishlist = z.infer<typeof insertWishlistSchema>;
 
 // Auth schemas
 export const loginSchema = z.object({
