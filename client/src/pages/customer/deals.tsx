@@ -72,11 +72,11 @@ export default function CustomerDeals() {
     queryKey: ["/api/categories"],
   });
 
-  const { data: deals, isLoading } = useQuery({
+  const { data: deals = [], isLoading } = useQuery({
     queryKey: ["/api/deals", selectedCity, selectedCategory],
   });
 
-  const { data: wishlist } = useQuery({
+  const { data: wishlist = [] } = useQuery({
     queryKey: ["/api/wishlist"],
     enabled: !!user,
   });

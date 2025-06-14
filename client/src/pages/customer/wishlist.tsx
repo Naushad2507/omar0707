@@ -15,7 +15,7 @@ export default function CustomerWishlist() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: wishlist, isLoading } = useQuery({
+  const { data: wishlist = [], isLoading } = useQuery({
     queryKey: ["/api/wishlist"],
     enabled: !!user,
   });
