@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { loginSchema, signupSchema, insertVendorSchema, insertDealSchema, insertHelpTicketSchema } from "@shared/schema";
+import { loginSchema, signupSchema, insertVendorSchema, insertDealSchema, insertHelpTicketSchema, insertWishlistSchema } from "@shared/schema";
 import { z } from "zod";
 
 // Session interface
@@ -296,6 +296,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Wishlist routes
+  app.post('/api/wishlist', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { dealId } = insertWishlistSchema.parse({
+        ...req.body,
+        userId: req.user!.id,
+      });
+      
+      const wishlist = await storage.addToWishlist({
+        userId: req.user!.id,
+        dealId,
+      });
+      
+      res.status(201).json(wishlist);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to add to wishlist" });
+    }
+  });
+
+  app.delete('/api/wishlist/:dealId', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.dealId);
+      const removed = await storage.removeFromWishlist(req.user!.id, dealId);
+      
+      if (!removed) {
+        return res.status(404).json({ message: "Item not found in wishlist" });
+      }
+      
+      res.json({ message: "Removed from wishlist" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove from wishlist" });
+    }
+  });
+
+  app.get('/api/wishlist', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const wishlist = await storage.getUserWishlist(req.user!.id);
+      
+      // Include deal and vendor info
+      const deals = await storage.getActiveDeals();
+      const vendors = await storage.getAllVendors();
+      const dealMap = new Map(deals.map(d => [d.id, d]));
+      const vendorMap = new Map(vendors.map(v => [v.id, v]));
+      
+      const wishlistWithDetails = wishlist.map(item => {
+        const deal = dealMap.get(item.dealId);
+        const vendor = deal ? vendorMap.get(deal.vendorId) : null;
+        return {
+          ...item,
+          deal,
+          vendor,
+        };
+      });
+      
+      res.json(wishlistWithDetails);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch wishlist" });
+    }
+  });
+
+  app.get('/api/wishlist/check/:dealId', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.dealId);
+      const isInWishlist = await storage.isInWishlist(req.user!.id, dealId);
+      res.json({ isInWishlist });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check wishlist status" });
+    }
+  });
+
   // Vendor routes
   app.post('/api/vendors/register', requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
@@ -445,6 +518,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(safeUsers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.put('/api/admin/users/:id/upgrade', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { membershipPlan } = req.body;
+      
+      if (!['basic', 'premium', 'ultimate'].includes(membershipPlan)) {
+        return res.status(400).json({ message: "Invalid membership plan" });
+      }
+      
+      const updatedUser = await storage.updateUser(userId, {
+        membershipPlan,
+        membershipExpiry: membershipPlan !== 'basic' ? new Date('2025-12-31') : null,
+      });
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't send password
+      const { password, ...safeUser } = updatedUser;
+      res.json(safeUser);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upgrade user" });
     }
   });
 

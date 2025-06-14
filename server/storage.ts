@@ -1,8 +1,9 @@
 import { 
-  users, vendors, deals, dealClaims, helpTickets, systemLogs,
+  users, vendors, deals, dealClaims, helpTickets, systemLogs, wishlists,
   type User, type InsertUser, type Vendor, type InsertVendor,
   type Deal, type InsertDeal, type DealClaim, type InsertDealClaim,
-  type HelpTicket, type InsertHelpTicket, type SystemLog, type InsertSystemLog
+  type HelpTicket, type InsertHelpTicket, type SystemLog, type InsertSystemLog,
+  type Wishlist, type InsertWishlist
 } from "@shared/schema";
 
 export interface IStorage {
@@ -49,6 +50,12 @@ export interface IStorage {
   getUserHelpTickets(userId: number): Promise<HelpTicket[]>;
   updateHelpTicket(id: number, updates: Partial<HelpTicket>): Promise<HelpTicket | undefined>;
 
+  // Wishlist operations
+  addToWishlist(wishlist: InsertWishlist): Promise<Wishlist>;
+  removeFromWishlist(userId: number, dealId: number): Promise<boolean>;
+  getUserWishlist(userId: number): Promise<Wishlist[]>;
+  isInWishlist(userId: number, dealId: number): Promise<boolean>;
+
   // System log operations
   createSystemLog(log: InsertSystemLog): Promise<SystemLog>;
   getSystemLogs(limit?: number): Promise<SystemLog[]>;
@@ -72,6 +79,7 @@ export class MemStorage implements IStorage {
   private dealClaims: Map<number, DealClaim> = new Map();
   private helpTickets: Map<number, HelpTicket> = new Map();
   private systemLogs: Map<number, SystemLog> = new Map();
+  private wishlists: Map<number, Wishlist> = new Map();
   
   private currentUserId = 1;
   private currentVendorId = 1;
@@ -79,6 +87,7 @@ export class MemStorage implements IStorage {
   private currentDealClaimId = 1;
   private currentHelpTicketId = 1;
   private currentSystemLogId = 1;
+  private currentWishlistId = 1;
 
   constructor() {
     this.initializeWithSampleData();
@@ -878,6 +887,52 @@ export class MemStorage implements IStorage {
       cityStats,
       categoryStats,
     };
+  }
+
+  // Wishlist operations
+  async addToWishlist(insertWishlist: InsertWishlist): Promise<Wishlist> {
+    // Check if already in wishlist
+    const existing = Array.from(this.wishlists.values()).find(
+      w => w.userId === insertWishlist.userId && w.dealId === insertWishlist.dealId
+    );
+    
+    if (existing) {
+      return existing;
+    }
+
+    const id = this.currentWishlistId++;
+    const wishlist: Wishlist = {
+      ...insertWishlist,
+      id,
+      addedAt: new Date(),
+    };
+    this.wishlists.set(id, wishlist);
+    return wishlist;
+  }
+
+  async removeFromWishlist(userId: number, dealId: number): Promise<boolean> {
+    const wishlistItem = Array.from(this.wishlists.entries()).find(
+      ([, w]) => w.userId === userId && w.dealId === dealId
+    );
+    
+    if (!wishlistItem) {
+      return false;
+    }
+
+    this.wishlists.delete(wishlistItem[0]);
+    return true;
+  }
+
+  async getUserWishlist(userId: number): Promise<Wishlist[]> {
+    return Array.from(this.wishlists.values())
+      .filter(w => w.userId === userId)
+      .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
+  }
+
+  async isInWishlist(userId: number, dealId: number): Promise<boolean> {
+    return Array.from(this.wishlists.values()).some(
+      w => w.userId === userId && w.dealId === dealId
+    );
   }
 }
 
