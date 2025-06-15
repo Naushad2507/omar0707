@@ -19,7 +19,8 @@ import {
   Zap,
   Star,
   ShoppingBag,
-  ExternalLink
+  ExternalLink,
+  Navigation
 } from "lucide-react";
 
 interface Deal {
@@ -39,6 +40,9 @@ interface Deal {
     businessName: string;
     city: string;
     rating: number;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
   };
 }
 
@@ -147,6 +151,25 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
   const handleRevealCode = () => {
     setShowCode(true);
     setCodeRevealed(true);
+  };
+
+  // Handle get directions
+  const handleGetDirections = () => {
+    if (!deal.vendor) return;
+    
+    const { businessName, city, address, latitude, longitude } = deal.vendor;
+    
+    // If we have coordinates, use them for precise location
+    if (latitude && longitude) {
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+      window.open(mapsUrl, '_blank');
+    } else {
+      // Fallback to address or business name + city
+      const location = address ? `${address}, ${city}` : `${businessName}, ${city}`;
+      const encodedLocation = encodeURIComponent(location);
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+      window.open(mapsUrl, '_blank');
+    }
   };
 
   // Get membership tier styling
@@ -359,10 +382,24 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
           </Button>
         )}
         
-        <Button variant="outline" size="lg">
-          <ExternalLink className="w-4 h-4 mr-2" />
-          Visit Store
-        </Button>
+        <div className="flex gap-2 flex-1">
+          {deal.vendor && (
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={handleGetDirections}
+              className="flex-1"
+            >
+              <Navigation className="w-4 h-4 mr-2" />
+              Directions
+            </Button>
+          )}
+          
+          <Button variant="outline" size="lg" className="flex-1">
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Visit Store
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

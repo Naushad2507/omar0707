@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import NearbyDealsSection from "./nearby-deals";
-import { MapPin, Clock, Eye, Heart, ExternalLink, Shield, Star, Users, Calendar, Tag, Info } from "lucide-react";
+import { MapPin, Clock, Eye, Heart, ExternalLink, Shield, Star, Users, Calendar, Tag, Info, Navigation } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 
@@ -27,6 +27,9 @@ interface DealCardProps {
     state: string;
     rating?: number;
     description?: string;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
   };
   requiredMembership: string;
   discountCode?: string;
@@ -100,6 +103,25 @@ export default function DealCard({
   const redemptionPercentage = maxRedemptions 
     ? (currentRedemptions / maxRedemptions) * 100 
     : 0;
+
+  // Handle get directions
+  const handleGetDirections = () => {
+    if (!vendor) return;
+    
+    const { businessName, city, state, address, latitude, longitude } = vendor;
+    
+    // If we have coordinates, use them for precise location
+    if (latitude && longitude) {
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+      window.open(mapsUrl, '_blank');
+    } else {
+      // Fallback to address or business name + city
+      const location = address ? `${address}, ${city}, ${state}` : `${businessName}, ${city}, ${state}`;
+      const encodedLocation = encodeURIComponent(location);
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+      window.open(mapsUrl, '_blank');
+    }
+  };
 
   return (
     <Card className="deal-card h-full flex flex-col" onClick={onView}>
@@ -364,6 +386,18 @@ export default function DealCard({
                 >
                   Claim This Deal
                 </Button>
+                {vendor && (
+                  <Button 
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleGetDirections();
+                    }}
+                  >
+                    <Navigation className="h-4 w-4 mr-2" />
+                    Directions
+                  </Button>
+                )}
                 <Button 
                   variant="outline"
                   onClick={(e) => {

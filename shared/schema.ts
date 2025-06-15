@@ -35,6 +35,8 @@ export const vendors = pgTable("vendors", {
   address: text("address"),
   city: text("city").notNull(),
   state: text("state").notNull(),
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
   isApproved: boolean("is_approved").default(false),
   rating: decimal("rating", { precision: 3, scale: 2 }).default("0"),
   totalDeals: integer("total_deals").default(0),
