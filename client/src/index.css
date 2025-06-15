@@ -160,7 +160,8 @@
 
 /* Promotional banner styles */
 .promotional-banner {
-  background: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(var(--success) / 0.8) 100%);
+  background: linear-gradient(135deg, hsl(var(--peacock)) 0%, hsl(var(--peacock) / 0.8) 100%);
+  animation: flash-peacock 2s ease-in-out infinite;
 }
 
 /* Membership card gradient */
