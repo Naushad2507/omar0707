@@ -201,12 +201,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get vendor info
       const vendor = await storage.getVendor(deal.vendorId);
       
+      // Remove sensitive data like discount code from public endpoint
+      const { discountCode, ...dealData } = deal;
+      
       res.json({
-        ...deal,
+        ...dealData,
         vendor,
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch deal" });
+    }
+  });
+
+  // Secure endpoint to get discount code based on user's membership tier
+  app.get('/api/deals/:id/discount-code', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.id);
+      const userId = req.user!.id;
+      
+      const deal = await storage.getDeal(dealId);
+      if (!deal || !deal.isActive || !deal.isApproved) {
+        return res.status(404).json({ message: "Deal not found or not available" });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Define tier-based access rules
+      const membershipTier = user.membershipPlan || 'basic';
+      const dealCategory = deal.category.toLowerCase();
+      
+      // Business logic for discount code visibility
+      let canAccessCode = false;
+      let requiresClick = false;
+      let upgradeMessage = '';
+      
+      switch (membershipTier) {
+        case 'basic':
+          // Auto-reveal for: restaurants (food), fashion, travel
+          const basicAllowedCategories = ['restaurants', 'fashion', 'travel'];
+          if (basicAllowedCategories.includes(dealCategory)) {
+            canAccessCode = true;
+          } else {
+            upgradeMessage = 'Upgrade to Premium or Ultimate to access this deal';
+          }
+          break;
+          
+        case 'premium':
+          // Auto-reveal for all except health and education
+          const premiumRestrictedCategories = ['health', 'education'];
+          if (premiumRestrictedCategories.includes(dealCategory)) {
+            canAccessCode = true;
+            requiresClick = true;
+          } else {
+            canAccessCode = true;
+          }
+          break;
+          
+        case 'ultimate':
+          // Auto-reveal all discount codes
+          canAccessCode = true;
+          break;
+          
+        default:
+          upgradeMessage = 'Please upgrade your membership to access discount codes';
+      }
+      
+      if (!canAccessCode) {
+        return res.status(403).json({ 
+          message: upgradeMessage,
+          requiresUpgrade: true,
+          currentTier: membershipTier,
+          suggestedTier: 'premium'
+        });
+      }
+      
+      // Log access for security auditing
+      await storage.createSystemLog({
+        userId: userId,
+        action: "DISCOUNT_CODE_ACCESS",
+        details: { 
+          dealId: dealId, 
+          dealTitle: deal.title,
+          category: dealCategory,
+          membershipTier: membershipTier,
+          requiresClick: requiresClick
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+      
+      res.json({
+        discountCode: deal.discountCode,
+        requiresClick: requiresClick,
+        membershipTier: membershipTier,
+        category: dealCategory
+      });
+      
+    } catch (error) {
+      console.error("Error fetching discount code:", error);
+      res.status(500).json({ message: "Failed to fetch discount code" });
     }
   });
 
