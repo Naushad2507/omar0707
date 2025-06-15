@@ -678,12 +678,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Categories endpoint
   app.get('/api/categories', async (req, res) => {
     const categories = [
-      { id: 'fashion', name: 'Fashion', icon: 'fas fa-tshirt', color: 'saffron', dealCount: 120 },
-      { id: 'electronics', name: 'Electronics', icon: 'fas fa-laptop', color: 'primary', dealCount: 85 },
-      { id: 'travel', name: 'Travel', icon: 'fas fa-plane', color: 'success', dealCount: 45 },
-      { id: 'food', name: 'Food', icon: 'fas fa-utensils', color: 'warning', dealCount: 200 },
-      { id: 'home', name: 'Home', icon: 'fas fa-home', color: 'royal', dealCount: 75 },
-      { id: 'fitness', name: 'Fitness', icon: 'fas fa-dumbbell', color: 'secondary', dealCount: 30 },
+      { id: 'electronics', name: 'Electronics', icon: 'fas fa-laptop', color: 'primary', dealCount: 150 },
+      { id: 'fashion', name: 'Fashion and Clothing', icon: 'fas fa-tshirt', color: 'saffron', dealCount: 220 },
+      { id: 'beauty', name: 'Beauty and Fitness', icon: 'fas fa-heart', color: 'secondary', dealCount: 80 },
+      { id: 'luxury', name: 'Luxury Goods', icon: 'fas fa-gem', color: 'royal', dealCount: 45 },
+      { id: 'horoscope', name: 'Horoscope', icon: 'fas fa-star', color: 'warning', dealCount: 25 },
+      { id: 'health', name: 'Health', icon: 'fas fa-plus-circle', color: 'success', dealCount: 90 },
+      { id: 'restaurants', name: 'Restaurants', icon: 'fas fa-utensils', color: 'warning', dealCount: 180 },
+      { id: 'entertainment', name: 'Entertainment', icon: 'fas fa-music', color: 'primary', dealCount: 120 },
+      { id: 'home', name: 'Home and Furniture', icon: 'fas fa-home', color: 'royal', dealCount: 95 },
+      { id: 'events', name: 'Events', icon: 'fas fa-calendar', color: 'secondary', dealCount: 70 },
+      { id: 'realestate', name: 'Real Estate', icon: 'fas fa-building', color: 'primary', dealCount: 35 },
+      { id: 'education', name: 'Education', icon: 'fas fa-graduation-cap', color: 'success', dealCount: 60 },
+      { id: 'freelancers', name: 'Freelancers', icon: 'fas fa-user-tie', color: 'saffron', dealCount: 40 },
+      { id: 'consultants', name: 'Consultants', icon: 'fas fa-handshake', color: 'royal', dealCount: 30 },
+      { id: 'travel', name: 'Travel and Tourism', icon: 'fas fa-plane', color: 'success', dealCount: 110 },
+      { id: 'automotive', name: 'Automotive', icon: 'fas fa-car', color: 'primary', dealCount: 55 },
+      { id: 'services', name: 'Services', icon: 'fas fa-tools', color: 'secondary', dealCount: 85 },
+      { id: 'others', name: 'Others', icon: 'fas fa-ellipsis-h', color: 'warning', dealCount: 40 },
     ];
     res.json(categories);
   });

@@ -40,16 +40,24 @@ import {
 
 // Business categories
 const businessCategories = [
-  { id: "fashion", name: "Fashion & Clothing" },
-  { id: "electronics", name: "Electronics & Technology" },
-  { id: "food", name: "Food & Dining" },
-  { id: "home", name: "Home & Garden" },
-  { id: "beauty", name: "Health & Beauty" },
-  { id: "travel", name: "Travel & Tourism" },
+  { id: "electronics", name: "Electronics" },
+  { id: "fashion", name: "Fashion and Clothing" },
+  { id: "beauty", name: "Beauty and Fitness" },
+  { id: "luxury", name: "Luxury Goods" },
+  { id: "horoscope", name: "Horoscope" },
+  { id: "health", name: "Health" },
+  { id: "restaurants", name: "Restaurants" },
   { id: "entertainment", name: "Entertainment" },
-  { id: "sports", name: "Sports & Fitness" },
+  { id: "home", name: "Home and Furniture" },
+  { id: "events", name: "Events" },
+  { id: "realestate", name: "Real Estate" },
+  { id: "education", name: "Education" },
+  { id: "freelancers", name: "Freelancers" },
+  { id: "consultants", name: "Consultants" },
+  { id: "travel", name: "Travel and Tourism" },
   { id: "automotive", name: "Automotive" },
-  { id: "services", name: "Professional Services" },
+  { id: "services", name: "Services" },
+  { id: "others", name: "Others" },
 ];
 
 const vendorRegistrationSchema = z.object({

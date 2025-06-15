@@ -20,19 +20,43 @@ import {
   Users,
   Store,
   TrendingUp,
-  Star
+  Star,
+  Heart,
+  Gem,
+  Plus,
+  Music,
+  Calendar,
+  Building,
+  GraduationCap,
+  User,
+  Handshake,
+  Car,
+  Wrench,
+  MoreHorizontal
 } from "lucide-react";
 import { detectUserLocation } from "@/lib/cities";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 
 const categoryIcons = {
-  fashion: Shirt,
   electronics: Laptop,
-  travel: Plane,
-  food: Utensils,
+  fashion: Shirt,
+  beauty: Heart,
+  luxury: Gem,
+  horoscope: Star,
+  health: Plus,
+  restaurants: Utensils,
+  entertainment: Music,
   home: HomeIcon,
-  fitness: Dumbbell,
+  events: Calendar,
+  realestate: Building,
+  education: GraduationCap,
+  freelancers: User,
+  consultants: Handshake,
+  travel: Plane,
+  automotive: Car,
+  services: Wrench,
+  others: MoreHorizontal,
 };
 
 const carouselSlides = [
@@ -65,7 +89,13 @@ export default function Home() {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  const { data: categories } = useQuery({
+  const { data: categories } = useQuery<Array<{
+    id: string;
+    name: string;
+    icon: string;
+    color: string;
+    dealCount: number;
+  }>>({
     queryKey: ["/api/categories"],
   });
 
