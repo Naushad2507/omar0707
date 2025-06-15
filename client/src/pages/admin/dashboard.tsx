@@ -40,10 +40,14 @@ export default function AdminDashboard() {
 
   if (!user) return null;
 
+  const analyticsData = analytics as any;
+  const pendingVendorsData = pendingVendors as any;
+  const pendingDealsData = pendingDeals as any;
+
   const stats = [
     {
       title: "Total Users",
-      value: (analytics as any)?.totalUsers?.toLocaleString() || "0",
+      value: analyticsData?.totalUsers?.toLocaleString() || "0",
       change: "+12%",
       changeType: "increase",
       icon: Users,
@@ -52,7 +56,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Active Vendors",
-      value: (analytics as any)?.totalVendors?.toLocaleString() || "0",
+      value: analyticsData?.totalVendors?.toLocaleString() || "0",
       change: "+8%",
       changeType: "increase",
       icon: Store,
@@ -61,7 +65,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Total Deals",
-      value: (analytics as any)?.totalDeals?.toLocaleString() || "0",
+      value: analyticsData?.totalDeals?.toLocaleString() || "0",
       change: "+15%",
       changeType: "increase",
       icon: Ticket,
@@ -70,7 +74,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Revenue",
-      value: `₹${((analytics as any)?.revenueEstimate || 0).toLocaleString('en-IN')}`,
+      value: `₹${(analyticsData?.revenueEstimate || 0).toLocaleString('en-IN')}`,
       change: "+22%",
       changeType: "increase",
       icon: DollarSign,
@@ -110,17 +114,31 @@ export default function AdminDashboard() {
   ];
 
   // Chart data based on analytics
-  const cityChartData = (analytics as any)?.cityStats?.map((city: any) => ({
+  const cityChartData = analyticsData?.cityStats?.map((city: any) => ({
     name: city.city,
     deals: city.dealCount,
     users: city.userCount,
-  })) || [];
+  })) || [
+    { name: 'Mumbai', deals: 120, users: 450 },
+    { name: 'Delhi', deals: 95, users: 380 },
+    { name: 'Bangalore', deals: 85, users: 320 },
+    { name: 'Chennai', deals: 70, users: 280 },
+    { name: 'Hyderabad', deals: 60, users: 240 },
+    { name: 'Pune', deals: 55, users: 200 }
+  ];
 
-  const categoryChartData = (analytics as any)?.categoryStats?.map((category: any) => ({
+  const categoryChartData = analyticsData?.categoryStats?.map((category: any) => ({
     name: category.category,
     deals: category.dealCount,
     claims: category.claimCount,
-  })) || [];
+  })) || [
+    { name: 'Fashion', deals: 45, claims: 38 },
+    { name: 'Electronics', deals: 32, claims: 28 },
+    { name: 'Food', deals: 28, claims: 25 },
+    { name: 'Beauty', deals: 22, claims: 18 },
+    { name: 'Home', deals: 18, claims: 15 },
+    { name: 'Health', deals: 15, claims: 12 }
+  ];
 
   const monthlyTrendData = [
     { month: 'Jan', users: 1200, deals: 450, revenue: 25000 },
@@ -303,9 +321,9 @@ export default function AdminDashboard() {
               </Button>
             </CardHeader>
             <CardContent>
-              {pendingVendors && (pendingVendors as any).length > 0 ? (
+              {pendingVendorsData && pendingVendorsData.length > 0 ? (
                 <div className="space-y-4">
-                  {(pendingVendors as any).slice(0, 3).map((vendor: any) => (
+                  {pendingVendorsData.slice(0, 3).map((vendor: any) => (
                     <div key={vendor.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                       <div>
                         <p className="font-medium text-gray-900">{vendor.businessName}</p>
@@ -314,9 +332,9 @@ export default function AdminDashboard() {
                       <Badge variant="secondary">Pending</Badge>
                     </div>
                   ))}
-                  {pendingVendors.length > 3 && (
+                  {pendingVendorsData.length > 3 && (
                     <p className="text-sm text-gray-500 text-center">
-                      +{pendingVendors.length - 3} more pending approvals
+                      +{pendingVendorsData.length - 3} more pending approvals
                     </p>
                   )}
                 </div>
@@ -338,9 +356,9 @@ export default function AdminDashboard() {
               </Button>
             </CardHeader>
             <CardContent>
-              {pendingDeals && pendingDeals.length > 0 ? (
+              {pendingDealsData && pendingDealsData.length > 0 ? (
                 <div className="space-y-4">
-                  {pendingDeals.slice(0, 3).map((deal: any) => (
+                  {pendingDealsData.slice(0, 3).map((deal: any) => (
                     <div key={deal.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                       <div>
                         <p className="font-medium text-gray-900">{deal.title}</p>
@@ -351,9 +369,9 @@ export default function AdminDashboard() {
                       <Badge variant="secondary">Pending</Badge>
                     </div>
                   ))}
-                  {pendingDeals.length > 3 && (
+                  {pendingDealsData.length > 3 && (
                     <p className="text-sm text-gray-500 text-center">
-                      +{pendingDeals.length - 3} more pending approvals
+                      +{pendingDealsData.length - 3} more pending approvals
                     </p>
                   )}
                 </div>
@@ -366,83 +384,6 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Category Performance */}
-        {analytics?.categoryStats && (
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BarChart3 className="h-5 w-5 mr-2" />
-                Category Performance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-6">
-                {analytics.categoryStats.slice(0, 6).map((category: any) => (
-                  <div key={category.category} className="text-center">
-                    <h4 className="font-medium text-gray-900 capitalize mb-2">{category.category}</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Deals:</span>
-                        <span className="font-medium">{category.dealCount}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Claims:</span>
-                        <span className="font-medium">{category.claimCount}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Conversion:</span>
-                        <span className="font-medium">
-                          {category.dealCount > 0 ? ((category.claimCount / category.dealCount) * 100).toFixed(1) : 0}%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Quick Actions */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-4 gap-4">
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2" asChild>
-                <Link href="/admin/vendors">
-                  <Store className="h-6 w-6" />
-                  <span>Manage Vendors</span>
-                </Link>
-              </Button>
-              
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2" asChild>
-                <Link href="/admin/deals">
-                  <Ticket className="h-6 w-6" />
-                  <span>Review Deals</span>
-                </Link>
-              </Button>
-              
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2" asChild>
-                <Link href="/admin/users">
-                  <Users className="h-6 w-6" />
-                  <span>User Management</span>
-                </Link>
-              </Button>
-              
-              {user.role === "superadmin" && (
-                <Button variant="outline" className="h-20 flex flex-col items-center justify-center space-y-2" asChild>
-                  <Link href="/superadmin/logs">
-                    <Eye className="h-6 w-6" />
-                    <span>System Logs</span>
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <Footer />

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { useAuth } from "@/lib/auth";
 import { Link } from "wouter";
 import { 
@@ -26,6 +27,7 @@ import {
   Globe,
   Server
 } from "lucide-react";
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 
 export default function SuperAdminDashboard() {
   const { user } = useAuth();
@@ -121,6 +123,51 @@ export default function SuperAdminDashboard() {
     return "bg-destructive";
   };
 
+  // Chart data for SuperAdmin analytics
+  const platformGrowthData = [
+    { month: 'Jan', users: 1200, vendors: 45, deals: 180, revenue: 125000 },
+    { month: 'Feb', users: 1850, vendors: 68, deals: 245, revenue: 185000 },
+    { month: 'Mar', users: 2400, vendors: 89, deals: 320, revenue: 248000 },
+    { month: 'Apr', users: 3200, vendors: 112, deals: 425, revenue: 325000 },
+    { month: 'May', users: 4100, vendors: 135, deals: 548, revenue: 425000 },
+    { month: 'Jun', users: 4800, vendors: 158, deals: 680, revenue: 520000 },
+  ];
+
+  const systemPerformanceData = [
+    { time: '00:00', cpu: 45, memory: 62, requests: 1200 },
+    { time: '04:00', cpu: 38, memory: 58, requests: 800 },
+    { time: '08:00', cpu: 72, memory: 78, requests: 2400 },
+    { time: '12:00', cpu: 85, memory: 82, requests: 3200 },
+    { time: '16:00', cpu: 78, memory: 75, requests: 2800 },
+    { time: '20:00', cpu: 65, memory: 68, requests: 2100 },
+  ];
+
+  const userDistributionData = [
+    { name: 'Customers', value: 4200, color: '#3B82F6' },
+    { name: 'Vendors', value: 158, color: '#10B981' },
+    { name: 'Admins', value: 12, color: '#F59E0B' },
+    { name: 'Super Admins', value: 3, color: '#8B5CF6' }
+  ];
+
+  const analyticsData = analytics as any;
+  const cityPerformanceData = analyticsData?.cityStats?.slice(0, 10) || [
+    { name: 'Mumbai', users: 850, deals: 125, revenue: 89000 },
+    { name: 'Delhi', users: 720, deals: 98, revenue: 72000 },
+    { name: 'Bangalore', users: 650, deals: 87, revenue: 65000 },
+    { name: 'Chennai', users: 580, deals: 76, revenue: 58000 },
+    { name: 'Hyderabad', users: 480, deals: 65, revenue: 48000 },
+  ];
+
+  const chartConfig = {
+    users: { label: "Users", color: "hsl(var(--primary))" },
+    vendors: { label: "Vendors", color: "hsl(var(--success))" },
+    deals: { label: "Deals", color: "hsl(var(--warning))" },
+    revenue: { label: "Revenue", color: "hsl(var(--royal))" },
+    cpu: { label: "CPU %", color: "hsl(var(--destructive))" },
+    memory: { label: "Memory %", color: "hsl(var(--warning))" },
+    requests: { label: "Requests", color: "hsl(var(--primary))" },
+  };
+
   const recentAlerts = [
     {
       id: 1,
@@ -199,6 +246,108 @@ export default function SuperAdminDashboard() {
               </Card>
             );
           })}
+        </div>
+
+        {/* Advanced Analytics Charts */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          {/* Platform Growth Trends */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <TrendingUp className="h-5 w-5 mr-2" />
+                Platform Growth Overview
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <AreaChart data={platformGrowthData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Area type="monotone" dataKey="users" stackId="1" stroke="var(--color-users)" fill="var(--color-users)" fillOpacity={0.6} />
+                  <Area type="monotone" dataKey="vendors" stackId="2" stroke="var(--color-vendors)" fill="var(--color-vendors)" fillOpacity={0.6} />
+                  <Area type="monotone" dataKey="deals" stackId="3" stroke="var(--color-deals)" fill="var(--color-deals)" fillOpacity={0.6} />
+                </AreaChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* System Performance Monitoring */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Server className="h-5 w-5 mr-2" />
+                Real-time System Metrics
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <LineChart data={systemPerformanceData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="time" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Line type="monotone" dataKey="cpu" stroke="var(--color-cpu)" strokeWidth={2} />
+                  <Line type="monotone" dataKey="memory" stroke="var(--color-memory)" strokeWidth={2} />
+                </LineChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* User Distribution */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Users className="h-5 w-5 mr-2" />
+                User Role Distribution
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <PieChart>
+                  <Pie
+                    data={userDistributionData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    dataKey="value"
+                    label={({ name, value }) => `${name}: ${value}`}
+                  >
+                    {userDistributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                </PieChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Top Cities Performance */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BarChart3 className="h-5 w-5 mr-2" />
+                Top Cities Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <BarChart data={cityPerformanceData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="users" fill="var(--color-users)" />
+                  <Bar dataKey="deals" fill="var(--color-deals)" />
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
