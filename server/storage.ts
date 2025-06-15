@@ -267,11 +267,11 @@ export class MemStorage implements IStorage {
         requiredMembership: "basic",
       },
 
-      // Food & Dining Deals
+      // Food & Dining Deals (Restaurants category)
       {
         title: "Multi-Cuisine Buffet - 30% Off",
         description: "Enjoy delicious buffet with Indian, Chinese, and Continental dishes",
-        category: "food",
+        category: "restaurants",
         imageUrl: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=400&fit=crop",
         discountPercentage: 30,
         discountCode: "BUFFET30",
@@ -285,7 +285,7 @@ export class MemStorage implements IStorage {
       {
         title: "Pizza Combo Deal - 50% Off",
         description: "Large pizza with sides and beverage combo offer",
-        category: "food",
+        category: "restaurants",
         imageUrl: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&h=400&fit=crop",
         discountPercentage: 50,
         discountCode: "PIZZA50",
@@ -299,16 +299,450 @@ export class MemStorage implements IStorage {
       {
         title: "Fine Dining Experience - 25% Off",
         description: "Premium dining experience with chef's special menu",
-        category: "food",
+        category: "restaurants",
         imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop",
         discountPercentage: 25,
         discountCode: "FINE25",
         originalPrice: "3000",
         discountedPrice: "2250",
-        validUntil: new Date("2025-05-31"),
+        validUntil: new Date("2025-05-15"),
+        maxRedemptions: 150,
+        currentRedemptions: 67,
+        requiredMembership: "premium",
+      },
+
+      // Beauty and Fitness Deals
+      {
+        title: "Spa Package - 40% Off",
+        description: "Relaxing spa treatment with massage and facial",
+        category: "beauty",
+        imageUrl: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop",
+        discountPercentage: 40,
+        discountCode: "SPA40",
+        originalPrice: "3500",
+        discountedPrice: "2100",
+        validUntil: new Date("2025-06-30"),
         maxRedemptions: 100,
         currentRedemptions: 34,
         requiredMembership: "premium",
+      },
+      {
+        title: "Skincare Products - 35% Off",
+        description: "Premium skincare products for all skin types",
+        category: "beauty",
+        imageUrl: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=400&fit=crop",
+        discountPercentage: 35,
+        discountCode: "SKIN35",
+        originalPrice: "2000",
+        discountedPrice: "1300",
+        validUntil: new Date("2025-04-30"),
+        maxRedemptions: 250,
+        currentRedemptions: 112,
+        requiredMembership: "basic",
+      },
+      {
+        title: "Gym Membership - 50% Off",
+        description: "Annual gym membership with personal trainer sessions",
+        category: "beauty",
+        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
+        discountPercentage: 50,
+        discountCode: "GYM50",
+        originalPrice: "15000",
+        discountedPrice: "7500",
+        validUntil: new Date("2025-03-31"),
+        maxRedemptions: 80,
+        currentRedemptions: 45,
+        requiredMembership: "premium",
+      },
+
+      // Luxury Goods Deals
+      {
+        title: "Diamond Jewelry - 20% Off",
+        description: "Exquisite diamond jewelry collection with certified stones",
+        category: "luxury",
+        imageUrl: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&h=400&fit=crop",
+        discountPercentage: 20,
+        discountCode: "DIAMOND20",
+        originalPrice: "50000",
+        discountedPrice: "40000",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 25,
+        currentRedemptions: 8,
+        requiredMembership: "ultimate",
+      },
+      {
+        title: "Luxury Watch Collection - 15% Off",
+        description: "Premium Swiss watches with lifetime warranty",
+        category: "luxury",
+        imageUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=400&fit=crop",
+        discountPercentage: 15,
+        discountCode: "WATCH15",
+        originalPrice: "75000",
+        discountedPrice: "63750",
+        validUntil: new Date("2025-08-31"),
+        maxRedemptions: 15,
+        currentRedemptions: 3,
+        requiredMembership: "ultimate",
+      },
+
+      // Horoscope Deals
+      {
+        title: "Astrology Consultation - 40% Off",
+        description: "Personal astrology reading with experienced astrologer",
+        category: "horoscope",
+        imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop",
+        discountPercentage: 40,
+        discountCode: "ASTRO40",
+        originalPrice: "2000",
+        discountedPrice: "1200",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 100,
+        currentRedemptions: 23,
+        requiredMembership: "basic",
+      },
+      {
+        title: "Gemstone Collection - 25% Off",
+        description: "Authentic gemstones for astrological purposes",
+        category: "horoscope",
+        imageUrl: "https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?w=600&h=400&fit=crop",
+        discountPercentage: 25,
+        discountCode: "GEM25",
+        originalPrice: "5000",
+        discountedPrice: "3750",
+        validUntil: new Date("2025-09-30"),
+        maxRedemptions: 50,
+        currentRedemptions: 12,
+        requiredMembership: "premium",
+      },
+
+      // Health Deals
+      {
+        title: "Health Checkup Package - 35% Off",
+        description: "Comprehensive health checkup with blood tests and consultation",
+        category: "health",
+        imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop",
+        discountPercentage: 35,
+        discountCode: "HEALTH35",
+        originalPrice: "5000",
+        discountedPrice: "3250",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 200,
+        currentRedemptions: 89,
+        requiredMembership: "premium",
+      },
+      {
+        title: "Dental Treatment - 30% Off",
+        description: "Complete dental care including cleaning and consultation",
+        category: "health",
+        imageUrl: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600&h=400&fit=crop",
+        discountPercentage: 30,
+        discountCode: "DENTAL30",
+        originalPrice: "3000",
+        discountedPrice: "2100",
+        validUntil: new Date("2025-06-30"),
+        maxRedemptions: 150,
+        currentRedemptions: 67,
+        requiredMembership: "premium",
+      },
+
+      // Entertainment Deals
+      {
+        title: "Movie Theater Package - 40% Off",
+        description: "Movie tickets with popcorn and beverage combo",
+        category: "entertainment",
+        imageUrl: "https://images.unsplash.com/photo-1489185078527-623fcaef7ede?w=600&h=400&fit=crop",
+        discountPercentage: 40,
+        discountCode: "MOVIE40",
+        originalPrice: "800",
+        discountedPrice: "480",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 500,
+        currentRedemptions: 234,
+        requiredMembership: "basic",
+      },
+      {
+        title: "Concert Tickets - 25% Off",
+        description: "Live music concert featuring popular artists",
+        category: "entertainment",
+        imageUrl: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&h=400&fit=crop",
+        discountPercentage: 25,
+        discountCode: "CONCERT25",
+        originalPrice: "2500",
+        discountedPrice: "1875",
+        validUntil: new Date("2025-08-31"),
+        maxRedemptions: 300,
+        currentRedemptions: 156,
+        requiredMembership: "premium",
+      },
+
+      // Travel and Tourism Deals
+      {
+        title: "Goa Beach Resort - 45% Off",
+        description: "3 days 2 nights package at luxury beach resort",
+        category: "travel",
+        imageUrl: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop",
+        discountPercentage: 45,
+        discountCode: "GOA45",
+        originalPrice: "15000",
+        discountedPrice: "8250",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 100,
+        currentRedemptions: 34,
+        requiredMembership: "basic",
+      },
+      {
+        title: "International Flight Booking - 20% Off",
+        description: "Book international flights with major airlines",
+        category: "travel",
+        imageUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&h=400&fit=crop",
+        discountPercentage: 20,
+        discountCode: "FLIGHT20",
+        originalPrice: "50000",
+        discountedPrice: "40000",
+        validUntil: new Date("2025-09-30"),
+        maxRedemptions: 50,
+        currentRedemptions: 18,
+        requiredMembership: "ultimate",
+      },
+
+      // Events Deals
+      {
+        title: "Wedding Photography - 30% Off",
+        description: "Professional wedding photography with album",
+        category: "events",
+        imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=400&fit=crop",
+        discountPercentage: 30,
+        discountCode: "WEDDING30",
+        originalPrice: "25000",
+        discountedPrice: "17500",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 75,
+        currentRedemptions: 23,
+        requiredMembership: "premium",
+      },
+      {
+        title: "Party Hall Booking - 35% Off",
+        description: "Spacious party hall with catering services",
+        category: "events",
+        imageUrl: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&h=400&fit=crop",
+        discountPercentage: 35,
+        discountCode: "PARTY35",
+        originalPrice: "20000",
+        discountedPrice: "13000",
+        validUntil: new Date("2025-10-31"),
+        maxRedemptions: 60,
+        currentRedemptions: 28,
+        requiredMembership: "premium",
+      },
+
+      // Real Estate Deals
+      {
+        title: "Property Consultation - 50% Off",
+        description: "Expert property consultation for buying/selling",
+        category: "realestate",
+        imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop",
+        discountPercentage: 50,
+        discountCode: "PROPERTY50",
+        originalPrice: "10000",
+        discountedPrice: "5000",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 30,
+        currentRedemptions: 12,
+        requiredMembership: "ultimate",
+      },
+      {
+        title: "Home Loan Processing - 25% Off",
+        description: "Fast home loan processing with competitive rates",
+        category: "realestate",
+        imageUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&h=400&fit=crop",
+        discountPercentage: 25,
+        discountCode: "LOAN25",
+        originalPrice: "15000",
+        discountedPrice: "11250",
+        validUntil: new Date("2025-08-31"),
+        maxRedemptions: 40,
+        currentRedemptions: 15,
+        requiredMembership: "premium",
+      },
+
+      // Education Deals
+      {
+        title: "Online Course Bundle - 60% Off",
+        description: "Complete programming and design course bundle",
+        category: "education",
+        imageUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+        discountPercentage: 60,
+        discountCode: "LEARN60",
+        originalPrice: "12000",
+        discountedPrice: "4800",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 200,
+        currentRedemptions: 89,
+        requiredMembership: "premium",
+      },
+      {
+        title: "Language Classes - 40% Off",
+        description: "English and foreign language classes with certified teachers",
+        category: "education",
+        imageUrl: "https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=600&h=400&fit=crop",
+        discountPercentage: 40,
+        discountCode: "LANG40",
+        originalPrice: "8000",
+        discountedPrice: "4800",
+        validUntil: new Date("2025-09-30"),
+        maxRedemptions: 150,
+        currentRedemptions: 67,
+        requiredMembership: "premium",
+      },
+
+      // Freelancers Deals
+      {
+        title: "Graphic Design Service - 35% Off",
+        description: "Professional logo and branding design services",
+        category: "freelancers",
+        imageUrl: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop",
+        discountPercentage: 35,
+        discountCode: "DESIGN35",
+        originalPrice: "5000",
+        discountedPrice: "3250",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 100,
+        currentRedemptions: 34,
+        requiredMembership: "basic",
+      },
+      {
+        title: "Content Writing Package - 45% Off",
+        description: "SEO-optimized content writing for websites and blogs",
+        category: "freelancers",
+        imageUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop",
+        discountPercentage: 45,
+        discountCode: "WRITE45",
+        originalPrice: "3000",
+        discountedPrice: "1650",
+        validUntil: new Date("2025-10-31"),
+        maxRedemptions: 120,
+        currentRedemptions: 56,
+        requiredMembership: "basic",
+      },
+
+      // Consultants Deals
+      {
+        title: "Business Consultation - 40% Off",
+        description: "Strategic business planning and growth consultation",
+        category: "consultants",
+        imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
+        discountPercentage: 40,
+        discountCode: "BUSINESS40",
+        originalPrice: "15000",
+        discountedPrice: "9000",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 50,
+        currentRedemptions: 18,
+        requiredMembership: "ultimate",
+      },
+      {
+        title: "Legal Advisory Service - 30% Off",
+        description: "Expert legal advice for business and personal matters",
+        category: "consultants",
+        imageUrl: "https://images.unsplash.com/photo-1589578228447-e1a4e481c6c8?w=600&h=400&fit=crop",
+        discountPercentage: 30,
+        discountCode: "LEGAL30",
+        originalPrice: "8000",
+        discountedPrice: "5600",
+        validUntil: new Date("2025-11-30"),
+        maxRedemptions: 75,
+        currentRedemptions: 29,
+        requiredMembership: "premium",
+      },
+
+      // Automotive Deals
+      {
+        title: "Car Service Package - 40% Off",
+        description: "Complete car servicing with oil change and inspection",
+        category: "automotive",
+        imageUrl: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&h=400&fit=crop",
+        discountPercentage: 40,
+        discountCode: "SERVICE40",
+        originalPrice: "5000",
+        discountedPrice: "3000",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 200,
+        currentRedemptions: 89,
+        requiredMembership: "basic",
+      },
+      {
+        title: "Car Insurance - 25% Off",
+        description: "Comprehensive car insurance with roadside assistance",
+        category: "automotive",
+        imageUrl: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&h=400&fit=crop",
+        discountPercentage: 25,
+        discountCode: "INSURANCE25",
+        originalPrice: "12000",
+        discountedPrice: "9000",
+        validUntil: new Date("2025-03-31"),
+        maxRedemptions: 100,
+        currentRedemptions: 45,
+        requiredMembership: "premium",
+      },
+
+      // Services Deals
+      {
+        title: "Home Cleaning Service - 50% Off",
+        description: "Professional home cleaning with eco-friendly products",
+        category: "services",
+        imageUrl: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=400&fit=crop",
+        discountPercentage: 50,
+        discountCode: "CLEAN50",
+        originalPrice: "2000",
+        discountedPrice: "1000",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 300,
+        currentRedemptions: 145,
+        requiredMembership: "basic",
+      },
+      {
+        title: "Plumbing Services - 35% Off",
+        description: "Expert plumbing repair and installation services",
+        category: "services",
+        imageUrl: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=600&h=400&fit=crop",
+        discountPercentage: 35,
+        discountCode: "PLUMBER35",
+        originalPrice: "3000",
+        discountedPrice: "1950",
+        validUntil: new Date("2025-09-30"),
+        maxRedemptions: 150,
+        currentRedemptions: 67,
+        requiredMembership: "basic",
+      },
+
+      // Others Category Deals
+      {
+        title: "Pet Grooming Service - 40% Off",
+        description: "Professional pet grooming and care services",
+        category: "others",
+        imageUrl: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&h=400&fit=crop",
+        discountPercentage: 40,
+        discountCode: "PET40",
+        originalPrice: "1500",
+        discountedPrice: "900",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 100,
+        currentRedemptions: 34,
+        requiredMembership: "basic",
+      },
+      {
+        title: "Gift Vouchers - 20% Off",
+        description: "Universal gift vouchers for various stores and services",
+        category: "others",
+        imageUrl: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=600&h=400&fit=crop",
+        discountPercentage: 20,
+        discountCode: "GIFT20",
+        originalPrice: "5000",
+        discountedPrice: "4000",
+        validUntil: new Date("2025-12-31"),
+        maxRedemptions: 500,
+        currentRedemptions: 234,
+        requiredMembership: "basic",
       },
 
       // Home & Garden Deals
@@ -353,81 +787,399 @@ export class MemStorage implements IStorage {
         maxRedemptions: 120,
         currentRedemptions: 56,
         requiredMembership: "premium",
-      },
+      }
+    ];
 
-      // Entertainment Deals
-      {
-        title: "Movie Tickets - 25% Off",
-        description: "Enjoy latest blockbusters with discounted movie tickets",
-        category: "entertainment",
-        imageUrl: "https://images.unsplash.com/photo-1489599849323-2429c8e8d90a?w=600&h=400&fit=crop",
-        discountPercentage: 25,
-        discountCode: "MOVIE25",
-        originalPrice: "400",
-        discountedPrice: "300",
-        validUntil: new Date("2025-12-31"),
-        maxRedemptions: 1000,
-        currentRedemptions: 445,
-        requiredMembership: "basic",
-      },
-      {
-        title: "Gaming Zone Package - 50% Off",
-        description: "Unlimited gaming for 2 hours with snacks included",
-        category: "entertainment",
-        imageUrl: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop",
-        discountPercentage: 50,
-        discountCode: "GAME50",
-        originalPrice: "1000",
-        discountedPrice: "500",
-        validUntil: new Date("2025-03-31"),
-        maxRedemptions: 200,
-        currentRedemptions: 89,
-        requiredMembership: "basic",
-      },
-      {
-        title: "Concert Tickets - 20% Off",
-        description: "Live music concert tickets with premium seating",
-        category: "entertainment",
-        imageUrl: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&h=400&fit=crop",
-        discountPercentage: 20,
-        discountCode: "CONCERT20",
-        originalPrice: "2500",
-        discountedPrice: "2000",
-        validUntil: new Date("2025-08-15"),
-        maxRedemptions: 500,
-        currentRedemptions: 167,
-        requiredMembership: "premium",
-      },
+    // Create deal objects from sample data
+    sampleDeals.forEach(dealData => {
+      const deal: Deal = {
+        id: this.currentDealId++,
+        vendorId: vendor.id,
+        ...dealData,
+        validFrom: new Date(),
+        isActive: true,
+        isApproved: true,
+        approvedBy: adminUser.id,
+        viewCount: Math.floor(Math.random() * 2000) + 100,
+        createdAt: new Date(),
+      };
+      this.deals.set(deal.id, deal);
+    });
 
-      // Health & Beauty Deals
-      {
-        title: "Spa Package - 40% Off",
-        description: "Relaxing spa treatment with massage and facial",
-        category: "beauty",
-        imageUrl: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop",
-        discountPercentage: 40,
-        discountCode: "SPA40",
-        originalPrice: "3500",
-        discountedPrice: "2100",
-        validUntil: new Date("2025-06-30"),
-        maxRedemptions: 100,
-        currentRedemptions: 34,
-        requiredMembership: "premium",
-      },
-      {
-        title: "Skincare Products - 35% Off",
-        description: "Premium skincare products for all skin types",
-        category: "beauty",
-        imageUrl: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=400&fit=crop",
-        discountPercentage: 35,
-        discountCode: "SKIN35",
-        originalPrice: "2000",
-        discountedPrice: "1300",
-        validUntil: new Date("2025-04-30"),
-        maxRedemptions: 250,
-        currentRedemptions: 112,
-        requiredMembership: "basic",
-      },
+    // Sample deal claim
+    const firstDeal = Array.from(this.deals.values())[0];
+    if (firstDeal) {
+      const claim1: DealClaim = {
+        id: this.currentDealClaimId++,
+        userId: customerUser.id,
+        dealId: firstDeal.id,
+        claimedAt: new Date("2024-12-15"),
+        usedAt: new Date("2024-12-16"),
+        savingsAmount: "1200",
+        status: "used",
+      };
+      this.dealClaims.set(claim1.id, claim1);
+    }
+  }
+
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.email === email);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.username === username);
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const user: User = {
+      id: this.currentUserId++,
+      ...insertUser,
+      role: insertUser.role || "customer",
+      membershipPlan: insertUser.membershipPlan || "basic",
+      membershipExpiry: insertUser.membershipExpiry || null,
+      isPromotionalUser: insertUser.isPromotionalUser || false,
+      totalSavings: insertUser.totalSavings || "0",
+      dealsClaimed: insertUser.dealsClaimed || 0,
+      createdAt: new Date(),
+      isActive: true,
+    };
+    this.users.set(user.id, user);
+    return user;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser = { ...user, ...updates };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+
+  async getUsersByRole(role: string): Promise<User[]> {
+    return Array.from(this.users.values()).filter(user => user.role === role);
+  }
+
+  // Vendor operations
+  async getVendor(id: number): Promise<Vendor | undefined> {
+    return this.vendors.get(id);
+  }
+
+  async getVendorByUserId(userId: number): Promise<Vendor | undefined> {
+    return Array.from(this.vendors.values()).find(vendor => vendor.userId === userId);
+  }
+
+  async createVendor(insertVendor: InsertVendor): Promise<Vendor> {
+    const vendor: Vendor = {
+      id: this.currentVendorId++,
+      ...insertVendor,
+      isApproved: false,
+      rating: "0.0",
+      totalDeals: 0,
+      totalRedemptions: 0,
+      createdAt: new Date(),
+    };
+    this.vendors.set(vendor.id, vendor);
+    return vendor;
+  }
+
+  async updateVendor(id: number, updates: Partial<Vendor>): Promise<Vendor | undefined> {
+    const vendor = this.vendors.get(id);
+    if (!vendor) return undefined;
+    
+    const updatedVendor = { ...vendor, ...updates };
+    this.vendors.set(id, updatedVendor);
+    return updatedVendor;
+  }
+
+  async getAllVendors(): Promise<Vendor[]> {
+    return Array.from(this.vendors.values());
+  }
+
+  async getPendingVendors(): Promise<Vendor[]> {
+    return Array.from(this.vendors.values()).filter(vendor => !vendor.isApproved);
+  }
+
+  async approveVendor(id: number): Promise<Vendor | undefined> {
+    const vendor = this.vendors.get(id);
+    if (!vendor) return undefined;
+    
+    vendor.isApproved = true;
+    this.vendors.set(id, vendor);
+    return vendor;
+  }
+
+  // Deal operations
+  async getDeal(id: number): Promise<Deal | undefined> {
+    return this.deals.get(id);
+  }
+
+  async getDealsBy(filters: Partial<Deal>): Promise<Deal[]> {
+    return Array.from(this.deals.values()).filter(deal => {
+      return Object.entries(filters).every(([key, value]) => 
+        deal[key as keyof Deal] === value
+      );
+    });
+  }
+
+  async createDeal(insertDeal: InsertDeal): Promise<Deal> {
+    const deal: Deal = {
+      id: this.currentDealId++,
+      ...insertDeal,
+      validFrom: insertDeal.validFrom || new Date(),
+      isActive: insertDeal.isActive ?? true,
+      isApproved: false,
+      approvedBy: null,
+      viewCount: 0,
+      createdAt: new Date(),
+    };
+    this.deals.set(deal.id, deal);
+    return deal;
+  }
+
+  async updateDeal(id: number, updates: Partial<Deal>): Promise<Deal | undefined> {
+    const deal = this.deals.get(id);
+    if (!deal) return undefined;
+    
+    const updatedDeal = { ...deal, ...updates };
+    this.deals.set(id, updatedDeal);
+    return updatedDeal;
+  }
+
+  async deleteDeal(id: number): Promise<boolean> {
+    return this.deals.delete(id);
+  }
+
+  async getActiveDeals(): Promise<Deal[]> {
+    return Array.from(this.deals.values()).filter(deal => 
+      deal.isActive && deal.isApproved && new Date(deal.validUntil) > new Date()
+    );
+  }
+
+  async getDealsByCategory(category: string): Promise<Deal[]> {
+    return Array.from(this.deals.values()).filter(deal => 
+      deal.category === category && deal.isActive && deal.isApproved
+    );
+  }
+
+  async getDealsByVendor(vendorId: number): Promise<Deal[]> {
+    return Array.from(this.deals.values()).filter(deal => deal.vendorId === vendorId);
+  }
+
+  async getPendingDeals(): Promise<Deal[]> {
+    return Array.from(this.deals.values()).filter(deal => !deal.isApproved);
+  }
+
+  async approveDeal(id: number, approvedBy: number): Promise<Deal | undefined> {
+    const deal = this.deals.get(id);
+    if (!deal) return undefined;
+    
+    deal.isApproved = true;
+    deal.approvedBy = approvedBy;
+    this.deals.set(id, deal);
+    return deal;
+  }
+
+  async incrementDealViews(id: number): Promise<void> {
+    const deal = this.deals.get(id);
+    if (deal) {
+      deal.viewCount = (deal.viewCount || 0) + 1;
+      this.deals.set(id, deal);
+    }
+  }
+
+  // Deal claim operations
+  async claimDeal(insertClaim: InsertDealClaim): Promise<DealClaim> {
+    const claim: DealClaim = {
+      id: this.currentDealClaimId++,
+      ...insertClaim,
+      claimedAt: new Date(),
+      status: "claimed",
+      usedAt: null,
+    };
+    this.dealClaims.set(claim.id, claim);
+    return claim;
+  }
+
+  async getUserClaims(userId: number): Promise<DealClaim[]> {
+    return Array.from(this.dealClaims.values())
+      .filter(claim => claim.userId === userId)
+      .sort((a, b) => new Date(b.claimedAt).getTime() - new Date(a.claimedAt).getTime());
+  }
+
+  async getDealClaims(dealId: number): Promise<DealClaim[]> {
+    return Array.from(this.dealClaims.values()).filter(claim => claim.dealId === dealId);
+  }
+
+  async updateClaimStatus(id: number, status: string, usedAt?: Date): Promise<DealClaim | undefined> {
+    const claim = this.dealClaims.get(id);
+    if (!claim) return undefined;
+    
+    claim.status = status;
+    if (usedAt) claim.usedAt = usedAt;
+    this.dealClaims.set(id, claim);
+    return claim;
+  }
+
+  // Help ticket operations
+  async createHelpTicket(insertTicket: InsertHelpTicket): Promise<HelpTicket> {
+    const ticket: HelpTicket = {
+      id: this.currentHelpTicketId++,
+      ...insertTicket,
+      status: "open",
+      createdAt: new Date(),
+    };
+    this.helpTickets.set(ticket.id, ticket);
+    return ticket;
+  }
+
+  async getHelpTickets(): Promise<HelpTicket[]> {
+    return Array.from(this.helpTickets.values())
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getUserHelpTickets(userId: number): Promise<HelpTicket[]> {
+    return Array.from(this.helpTickets.values())
+      .filter(ticket => ticket.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async updateHelpTicket(id: number, updates: Partial<HelpTicket>): Promise<HelpTicket | undefined> {
+    const ticket = this.helpTickets.get(id);
+    if (!ticket) return undefined;
+    
+    const updatedTicket = { ...ticket, ...updates };
+    this.helpTickets.set(id, updatedTicket);
+    return updatedTicket;
+  }
+
+  // System log operations
+  async createSystemLog(insertLog: InsertSystemLog): Promise<SystemLog> {
+    const log: SystemLog = {
+      id: this.currentSystemLogId++,
+      ...insertLog,
+      timestamp: new Date(),
+    };
+    this.systemLogs.set(log.id, log);
+    return log;
+  }
+
+  async getSystemLogs(limit = 100): Promise<SystemLog[]> {
+    return Array.from(this.systemLogs.values())
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, limit);
+  }
+
+  // Wishlist operations
+  async addToWishlist(insertWishlist: InsertWishlist): Promise<Wishlist> {
+    // Check if already exists
+    const existing = Array.from(this.wishlists.values()).find(w => 
+      w.userId === insertWishlist.userId && w.dealId === insertWishlist.dealId
+    );
+    
+    if (existing) {
+      return existing;
+    }
+
+    const wishlist: Wishlist = {
+      id: this.currentWishlistId++,
+      ...insertWishlist,
+      createdAt: new Date(),
+    };
+    this.wishlists.set(wishlist.id, wishlist);
+    return wishlist;
+  }
+
+  async removeFromWishlist(userId: number, dealId: number): Promise<boolean> {
+    const wishlistItem = Array.from(this.wishlists.values()).find(w => 
+      w.userId === userId && w.dealId === dealId
+    );
+    
+    if (wishlistItem) {
+      return this.wishlists.delete(wishlistItem.id);
+    }
+    return false;
+  }
+
+  async getUserWishlist(userId: number): Promise<Wishlist[]> {
+    return Array.from(this.wishlists.values())
+      .filter(w => w.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async isInWishlist(userId: number, dealId: number): Promise<boolean> {
+    return Array.from(this.wishlists.values()).some(w => 
+      w.userId === userId && w.dealId === dealId
+    );
+  }
+
+  // Analytics operations
+  async getAnalytics() {
+    const users = Array.from(this.users.values());
+    const vendors = Array.from(this.vendors.values());
+    const deals = Array.from(this.deals.values());
+    const claims = Array.from(this.dealClaims.values());
+
+    const totalUsers = users.length;
+    const totalVendors = vendors.length;
+    const totalDeals = deals.length;
+    const totalClaims = claims.length;
+
+    // Calculate revenue estimate based on claims
+    const revenueEstimate = claims.reduce((total, claim) => {
+      const savingsAmount = parseFloat(claim.savingsAmount || "0");
+      return total + (savingsAmount * 0.1); // Assume 10% commission
+    }, 0);
+
+    // City statistics
+    const cityStats = vendors.reduce((acc, vendor) => {
+      const city = vendor.city;
+      if (!acc[city]) {
+        acc[city] = { city, dealCount: 0, userCount: 0 };
+      }
+      acc[city].dealCount += deals.filter(d => d.vendorId === vendor.id).length;
+      return acc;
+    }, {} as Record<string, any>);
+
+    users.forEach(user => {
+      if (user.city && cityStats[user.city]) {
+        cityStats[user.city].userCount++;
+      }
+    });
+
+    // Category statistics
+    const categoryStats = deals.reduce((acc, deal) => {
+      const category = deal.category;
+      if (!acc[category]) {
+        acc[category] = { category, dealCount: 0, claimCount: 0 };
+      }
+      acc[category].dealCount++;
+      acc[category].claimCount += claims.filter(c => c.dealId === deal.id).length;
+      return acc;
+    }, {} as Record<string, any>);
+
+    return {
+      totalUsers,
+      totalVendors,
+      totalDeals,
+      totalClaims,
+      revenueEstimate,
+      cityStats: Object.values(cityStats),
+      categoryStats: Object.values(categoryStats),
+    };
+  }
+}
+
+export const storage = new MemStorage();
       {
         title: "Hair Styling Service - 30% Off",
         description: "Professional hair cut, styling, and treatment",
