@@ -1,8 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { MapPin, Clock, Eye, Heart } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { MapPin, Clock, Eye, Heart, ExternalLink, Shield, Star, Users, Calendar, Tag, Info } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth";
 
 interface DealCardProps {
   id: number;
@@ -21,8 +24,13 @@ interface DealCardProps {
     businessName: string;
     city: string;
     state: string;
+    rating?: number;
+    description?: string;
   };
   requiredMembership: string;
+  discountCode?: string;
+  terms?: string;
+  isActive?: boolean;
   isFavorite?: boolean;
   onClaim?: () => void;
   onView?: () => void;
@@ -44,12 +52,17 @@ export default function DealCard({
   viewCount,
   vendor,
   requiredMembership,
+  discountCode,
+  terms,
+  isActive = true,
   isFavorite = false,
   onClaim,
   onView,
   onToggleFavorite,
 }: DealCardProps) {
   const [isFlashing, setIsFlashing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     // Flash effect for high discount percentages
@@ -192,14 +205,219 @@ export default function DealCard({
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 space-y-2">
+        <Dialog open={showModal} onOpenChange={setShowModal}>
+          <DialogTrigger asChild>
+            <Button 
+              variant="outline"
+              className="w-full" 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowModal(true);
+                onView?.();
+              }}
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Deal Details
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center space-x-2">
+                <Tag className="h-5 w-5" />
+                <span>{title}</span>
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* Deal Image */}
+              {imageUrl && (
+                <div className="relative">
+                  <img 
+                    src={imageUrl} 
+                    alt={title}
+                    className="w-full h-64 object-cover rounded-lg"
+                  />
+                  <div className="absolute top-4 right-4 bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold">
+                    {discountPercentage}% OFF
+                  </div>
+                </div>
+              )}
+
+              {/* Deal Information */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Deal Details</h3>
+                    <p className="text-gray-700">{description}</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Category:</span>
+                      <Badge className={`${categoryColors[category as keyof typeof categoryColors]} border-0`}>
+                        {category}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Discount:</span>
+                      <span className="font-semibold text-red-600">{discountPercentage}% OFF</span>
+                    </div>
+
+                    {originalPrice && discountedPrice && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Price:</span>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-gray-900">₹{discountedPrice}</div>
+                          <div className="text-sm text-gray-500 line-through">₹{originalPrice}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Valid Until:</span>
+                      <span className="font-medium">{formatDate(validUntil)}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Membership:</span>
+                      <Badge className={`${membershipColors[requiredMembership as keyof typeof membershipColors]} text-xs`}>
+                        {requiredMembership.charAt(0).toUpperCase() + requiredMembership.slice(1)}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Vendor Information */}
+                  {vendor && (
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-2">Vendor Details</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <MapPin className="h-4 w-4 text-gray-500" />
+                          <span className="font-medium">{vendor.businessName}</span>
+                        </div>
+                        <div className="text-sm text-gray-600">{vendor.city}, {vendor.state}</div>
+                        {vendor.rating && (
+                          <div className="flex items-center space-x-1">
+                            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                            <span className="text-sm font-medium">{vendor.rating}/5</span>
+                          </div>
+                        )}
+                        {vendor.description && (
+                          <p className="text-sm text-gray-600 mt-2">{vendor.description}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Stats */}
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Deal Stats</h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Views:</span>
+                        <span className="font-medium">{viewCount}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Claimed:</span>
+                        <span className="font-medium">{currentRedemptions}</span>
+                      </div>
+                      {maxRedemptions && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-600">Available:</span>
+                          <span className="font-medium">{maxRedemptions - currentRedemptions}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Discount Code Section */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900 flex items-center">
+                  <Shield className="h-5 w-5 mr-2" />
+                  Discount Code
+                </h3>
+                
+                {user?.membershipPlan && user.membershipPlan !== 'basic' ? (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">Use code:</span>
+                      <code className="bg-gray-100 px-3 py-1 rounded font-mono text-sm font-bold">
+                        {discountCode || `DEAL${id}`}
+                      </code>
+                    </div>
+                    <p className="text-xs text-green-600 mt-2">
+                      Copy this code and use it at checkout to get your discount!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-gradient-to-r from-primary/10 to-royal/10 border border-primary/20 rounded-lg p-6 text-center">
+                    <Shield className="h-12 w-12 text-primary mx-auto mb-3" />
+                    <h4 className="font-semibold text-gray-900 mb-2">Subscribe to Access Exclusive Deals and Discounts</h4>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Upgrade your membership to unlock discount codes and get access to premium deals.
+                    </p>
+                    <Button className="w-full">
+                      <Users className="h-4 w-4 mr-2" />
+                      Upgrade Membership
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* Terms and Conditions */}
+              {terms && (
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-gray-900 flex items-center">
+                    <Info className="h-5 w-5 mr-2" />
+                    Terms & Conditions
+                  </h3>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="text-sm text-gray-700">{terms}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3">
+                <Button 
+                  className="flex-1"
+                  onClick={() => {
+                    setShowModal(false);
+                    onClaim?.();
+                  }}
+                  disabled={!isActive || (maxRedemptions ? currentRedemptions >= maxRedemptions : false)}
+                >
+                  {maxRedemptions && currentRedemptions >= maxRedemptions ? "Sold Out" : "Claim This Deal"}
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFavorite?.();
+                  }}
+                >
+                  <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         <Button 
           className="w-full" 
           onClick={(e) => {
             e.stopPropagation();
             onClaim?.();
           }}
-          disabled={maxRedemptions ? currentRedemptions >= maxRedemptions : false}
+          disabled={!isActive || (maxRedemptions ? currentRedemptions >= maxRedemptions : false)}
         >
           {maxRedemptions && currentRedemptions >= maxRedemptions ? "Sold Out" : "Claim Deal"}
         </Button>
