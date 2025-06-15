@@ -84,9 +84,9 @@ export default function DealCard({
   };
 
   const membershipColors = {
-    basic: "bg-gray-100 text-gray-700",
-    premium: "bg-primary/10 text-primary",
-    ultimate: "bg-royal/10 text-royal",
+    basic: "bg-gray-100 text-gray-800 border-gray-200",
+    premium: "bg-blue-50 text-blue-700 border-blue-200",
+    ultimate: "bg-purple-50 text-purple-700 border-purple-200",
   };
 
   const formatDate = (dateString: string) => {

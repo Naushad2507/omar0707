@@ -154,19 +154,19 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
     switch (tier) {
       case 'ultimate':
         return {
-          badge: 'bg-gradient-to-r from-purple-500 to-pink-500 text-white',
+          badge: 'bg-purple-50 text-purple-700 border-purple-200',
           icon: Crown,
           label: 'Ultimate'
         };
       case 'premium':
         return {
-          badge: 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white',
+          badge: 'bg-blue-50 text-blue-700 border-blue-200',
           icon: Star,
           label: 'Premium'
         };
       default:
         return {
-          badge: 'bg-gray-500 text-white',
+          badge: 'bg-gray-100 text-gray-800 border-gray-200',
           icon: ShoppingBag,
           label: 'Basic'
         };
