@@ -169,8 +169,64 @@ export default function Home() {
       <Navbar selectedCity={selectedCity} onCityChange={setSelectedCity} />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-royal/5 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-br from-primary/5 to-royal/5 py-16 relative overflow-hidden">
+        {/* Background Icons of Indian Monuments */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          {/* Taj Mahal */}
+          <svg className="absolute top-10 right-20 w-32 h-32 text-primary" viewBox="0 0 200 200" fill="currentColor">
+            <path d="M100 20 L120 40 L180 40 L180 60 L160 60 L160 180 L40 180 L40 60 L20 60 L20 40 L80 40 L100 20 Z"/>
+            <circle cx="100" cy="80" r="25"/>
+            <path d="M90 30 L110 30 L105 15 L95 15 Z"/>
+            <rect x="60" y="120" width="15" height="40"/>
+            <rect x="125" y="120" width="15" height="40"/>
+          </svg>
+          
+          {/* Gateway of India */}
+          <svg className="absolute bottom-20 left-10 w-28 h-28 text-saffron" viewBox="0 0 200 200" fill="currentColor">
+            <rect x="20" y="60" width="160" height="120"/>
+            <path d="M20 60 L100 20 L180 60"/>
+            <rect x="80" y="100" width="40" height="80"/>
+            <circle cx="50" cy="90" r="8"/>
+            <circle cx="150" cy="90" r="8"/>
+            <rect x="10" y="170" width="180" height="10"/>
+          </svg>
+          
+          {/* Red Fort */}
+          <svg className="absolute top-32 left-32 w-24 h-24 text-red-400" viewBox="0 0 200 200" fill="currentColor">
+            <rect x="30" y="80" width="140" height="100"/>
+            <rect x="20" y="70" width="160" height="20"/>
+            <rect x="70" y="40" width="60" height="40"/>
+            <circle cx="100" cy="50" r="8"/>
+            <rect x="80" y="130" width="40" height="50"/>
+          </svg>
+          
+          {/* India Gate */}
+          <svg className="absolute bottom-32 right-32 w-20 h-20 text-royal" viewBox="0 0 200 200" fill="currentColor">
+            <rect x="70" y="40" width="60" height="140"/>
+            <path d="M50 40 L100 20 L150 40"/>
+            <rect x="85" y="100" width="30" height="80"/>
+            <rect x="40" y="170" width="120" height="10"/>
+          </svg>
+          
+          {/* Lotus Temple outline */}
+          <svg className="absolute top-60 right-60 w-16 h-16 text-pink-300" viewBox="0 0 200 200" fill="currentColor">
+            <path d="M100 40 L80 60 L60 80 L80 100 L100 120 L120 100 L140 80 L120 60 Z"/>
+            <path d="M100 60 L90 70 L100 80 L110 70 Z"/>
+            <circle cx="100" cy="80" r="15"/>
+          </svg>
+          
+          {/* Qutub Minar */}
+          <svg className="absolute bottom-40 left-60 w-12 h-24 text-amber-400" viewBox="0 0 100 200" fill="currentColor">
+            <rect x="35" y="20" width="30" height="160"/>
+            <rect x="30" y="15" width="40" height="10"/>
+            <rect x="25" y="170" width="50" height="15"/>
+            <line x1="35" y1="40" x2="65" y2="40" stroke="currentColor" strokeWidth="2"/>
+            <line x1="35" y1="80" x2="65" y2="80" stroke="currentColor" strokeWidth="2"/>
+            <line x1="35" y1="120" x2="65" y2="120" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-in">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
