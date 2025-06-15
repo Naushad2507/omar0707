@@ -23,16 +23,43 @@ import {
   Home as HomeIcon, 
   Dumbbell,
   Loader2,
-  MapPin
+  MapPin,
+  Smartphone,
+  Sparkles,
+  Gem,
+  Star,
+  Heart,
+  Camera,
+  Music,
+  Calendar,
+  Building,
+  GraduationCap,
+  PenTool,
+  Briefcase,
+  Car,
+  Wrench,
+  Gift
 } from "lucide-react";
 
 const categoryIcons = {
+  electronics: Smartphone,
   fashion: Shirt,
-  electronics: Laptop,
-  travel: Plane,
-  food: Utensils,
+  beauty: Sparkles,
+  luxury: Gem,
+  horoscope: Star,
+  health: Heart,
+  restaurants: Utensils,
+  entertainment: Camera,
   home: HomeIcon,
-  fitness: Dumbbell,
+  events: Calendar,
+  realestate: Building,
+  education: GraduationCap,
+  freelancers: PenTool,
+  consultants: Briefcase,
+  travel: Plane,
+  automotive: Car,
+  services: Wrench,
+  others: Gift,
 };
 
 export default function CustomerDeals() {
