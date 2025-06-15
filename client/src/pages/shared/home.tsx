@@ -243,7 +243,7 @@ export default function Home() {
       </section>
 
       {/* Promotional Banner */}
-      <section className="py-12 bg-gradient-to-r from-success to-success/80">
+      <section className="py-12 flash-peacock">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-2">🎉 Limited Time Offer!</h3>
           <p className="text-lg mb-2">Enjoy 1 Year Free Premium Plan – Offer valid until 14th August 2026</p>

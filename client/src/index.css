@@ -27,6 +27,7 @@
   --warning: hsl(32, 95%, 44%);
   --saffron: hsl(16, 100%, 60%);
   --royal: hsl(238, 69%, 60%);
+  --peacock: hsl(180, 100%, 25%);
 }
 
 .dark {
@@ -54,6 +55,7 @@
   --warning: hsl(32, 95%, 44%);
   --saffron: hsl(16, 100%, 60%);
   --royal: hsl(238, 69%, 60%);
+  --peacock: hsl(180, 100%, 35%);
 }
 
 @layer base {
@@ -97,6 +99,30 @@
   
   .bg-royal {
     background-color: hsl(var(--royal));
+  }
+  
+  .bg-peacock {
+    background-color: hsl(var(--peacock));
+  }
+  
+  .text-peacock {
+    color: hsl(var(--peacock));
+  }
+  
+  /* Flashing animation for promotional banners */
+  @keyframes flash-peacock {
+    0%, 100% {
+      background-color: hsl(var(--peacock));
+      box-shadow: 0 0 20px hsl(var(--peacock) / 0.5);
+    }
+    50% {
+      background-color: hsl(180, 100%, 35%);
+      box-shadow: 0 0 30px hsl(180, 100%, 35% / 0.8);
+    }
+  }
+  
+  .flash-peacock {
+    animation: flash-peacock 2s ease-in-out infinite;
   }
   
   .border-success {
