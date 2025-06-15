@@ -99,11 +99,11 @@ export default function Home() {
     queryKey: ["/api/categories"],
   });
 
-  const { data: deals } = useQuery({
+  const { data: deals } = useQuery<Array<any>>({
     queryKey: ["/api/deals", selectedCity],
   });
 
-  const { data: cities } = useQuery({
+  const { data: cities } = useQuery<Array<any>>({
     queryKey: ["/api/cities"],
   });
 
