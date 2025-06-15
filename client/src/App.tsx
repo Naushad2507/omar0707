@@ -52,6 +52,7 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/help" component={Help} />
       
       {/* Customer routes */}
       <Route path="/customer/dashboard">

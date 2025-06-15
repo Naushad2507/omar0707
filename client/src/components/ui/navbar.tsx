@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, MapPin, User, LogOut, Home, ShoppingBag, CreditCard, Store, Settings, Users, BarChart3 } from "lucide-react";
+import { Menu, MapPin, User, LogOut, Home, ShoppingBag, CreditCard, Store, Settings, Users, BarChart3, HelpCircle } from "lucide-react";
 import { majorCities } from "@/lib/cities";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -41,36 +41,41 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
         { label: "Home", href: "/", icon: Home },
         { label: "Pricing", href: "/pricing", icon: CreditCard },
         { label: "For Vendors", href: "/vendor/benefits", icon: Store },
+        { label: "Help", href: "/help", icon: HelpCircle },
       ];
     }
 
-    switch (user.role) {
-      case "customer":
-        return [
-          { label: "Dashboard", href: "/customer/dashboard", icon: Home },
-          { label: "Deals", href: "/customer/deals", icon: ShoppingBag },
-          { label: "My Claims", href: "/customer/claims", icon: CreditCard },
-        ];
-      case "vendor":
-        return [
-          { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
-          { label: "My Deals", href: "/vendor/deals", icon: ShoppingBag },
-          { label: "Analytics", href: "/vendor/dashboard", icon: BarChart3 },
-        ];
-      case "admin":
-      case "superadmin":
-        return [
-          { label: "Dashboard", href: "/admin/dashboard", icon: Home },
-          { label: "Users", href: "/admin/users", icon: Users },
-          { label: "Vendors", href: "/admin/vendors", icon: Store },
-          { label: "Deals", href: "/admin/deals", icon: ShoppingBag },
-          ...(user.role === "superadmin" ? [
-            { label: "System Logs", href: "/superadmin/logs", icon: Settings },
-          ] : []),
-        ];
-      default:
-        return [];
-    }
+    const baseItems = {
+      customer: [
+        { label: "Dashboard", href: "/customer/dashboard", icon: Home },
+        { label: "Deals", href: "/customer/deals", icon: ShoppingBag },
+        { label: "My Claims", href: "/customer/claims", icon: CreditCard },
+        { label: "Help", href: "/help", icon: HelpCircle },
+      ],
+      vendor: [
+        { label: "Dashboard", href: "/vendor/dashboard", icon: Home },
+        { label: "My Deals", href: "/vendor/deals", icon: ShoppingBag },
+        { label: "Analytics", href: "/vendor/dashboard", icon: BarChart3 },
+        { label: "Help", href: "/help", icon: HelpCircle },
+      ],
+      admin: [
+        { label: "Dashboard", href: "/admin/dashboard", icon: Home },
+        { label: "Users", href: "/admin/users", icon: Users },
+        { label: "Vendors", href: "/admin/vendors", icon: Store },
+        { label: "Deals", href: "/admin/deals", icon: ShoppingBag },
+        { label: "Help", href: "/help", icon: HelpCircle },
+      ],
+      superadmin: [
+        { label: "Dashboard", href: "/admin/dashboard", icon: Home },
+        { label: "Users", href: "/admin/users", icon: Users },
+        { label: "Vendors", href: "/admin/vendors", icon: Store },
+        { label: "Deals", href: "/admin/deals", icon: ShoppingBag },
+        { label: "System Logs", href: "/superadmin/logs", icon: Settings },
+        { label: "Help", href: "/help", icon: HelpCircle },
+      ]
+    };
+
+    return baseItems[user.role as keyof typeof baseItems] || [];
   };
 
   const navigationItems = getNavigationItems();
