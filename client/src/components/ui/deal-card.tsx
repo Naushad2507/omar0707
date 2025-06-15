@@ -162,16 +162,7 @@ export default function DealCard({
             </div>
           )}
 
-          {/* Pricing */}
-          {originalPrice && discountedPrice && (
-            <div className="flex items-center space-x-2">
-              <span className="text-lg font-bold text-gray-900">₹{discountedPrice}</span>
-              <span className="text-sm text-gray-500 line-through">₹{originalPrice}</span>
-              <span className="text-sm font-medium text-success">
-                Save ₹{(parseFloat(originalPrice) - parseFloat(discountedPrice)).toFixed(0)}
-              </span>
-            </div>
-          )}
+
 
           {/* Validity and Redemptions */}
           <div className="space-y-2">
@@ -265,15 +256,7 @@ export default function DealCard({
                       <span className="font-semibold text-red-600">{discountPercentage}% OFF</span>
                     </div>
 
-                    {originalPrice && discountedPrice && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Price:</span>
-                        <div className="text-right">
-                          <div className="text-lg font-bold text-gray-900">₹{discountedPrice}</div>
-                          <div className="text-sm text-gray-500 line-through">₹{originalPrice}</div>
-                        </div>
-                      </div>
-                    )}
+
 
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">Valid Until:</span>
@@ -313,26 +296,7 @@ export default function DealCard({
                     </div>
                   )}
 
-                  {/* Stats */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Deal Stats</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Views:</span>
-                        <span className="font-medium">{viewCount}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Claimed:</span>
-                        <span className="font-medium">{currentRedemptions}</span>
-                      </div>
-                      {maxRedemptions && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-600">Available:</span>
-                          <span className="font-medium">{maxRedemptions - currentRedemptions}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+
                 </div>
               </div>
 
@@ -354,7 +318,7 @@ export default function DealCard({
                       </code>
                     </div>
                     <p className="text-xs text-green-600 mt-2">
-                      Copy this code and use it at checkout to get your discount!
+                      Present your Membership card at Checkout to get discount
                     </p>
                   </div>
                 ) : (

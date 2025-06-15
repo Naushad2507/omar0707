@@ -249,17 +249,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Pricing */}
-        {deal.originalPrice && deal.discountedPrice && (
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-green-600">
-              ₹{deal.discountedPrice}
-            </span>
-            <span className="text-lg text-gray-500 line-through">
-              ₹{deal.originalPrice}
-            </span>
-          </div>
-        )}
+
 
         {/* Validity and redemption info */}
         <div className="flex items-center justify-between text-sm text-gray-500">
@@ -337,6 +327,9 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
                       <code className="text-lg font-mono font-bold text-green-800 bg-white px-2 py-1 rounded">
                         {discountCode}
                       </code>
+                      <p className="text-xs text-green-600 mt-2">
+                        Present your Membership card at Checkout to get discount
+                      </p>
                     </div>
                     <Button
                       size="sm"
