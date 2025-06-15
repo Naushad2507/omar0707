@@ -141,7 +141,7 @@ export default function SecureDeals() {
             </div>
             
             {/* Membership status */}
-            {isAuthenticated && membershipInfo && (
+            {isAuthenticated && membershipInfo && user && (
               <Card className="max-w-xs">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">

@@ -73,7 +73,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
   // Get discount code mutation
   const getDiscountCodeMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return await apiRequest(`/api/deals/${dealId}/discount-code`, "GET") as DiscountCodeResponse;
+      return await apiRequest(`/api/deals/${dealId}/discount-code`, "GET") as unknown as DiscountCodeResponse;
     },
     onSuccess: (data) => {
       setDiscountCode(data.discountCode);
@@ -192,7 +192,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
   const tierStyling = getTierStyling(user?.membershipPlan || 'basic');
   const TierIcon = tierStyling.icon;
   const isExpired = new Date(deal.validUntil) < new Date();
-  const isFullyRedeemed = deal.maxRedemptions && deal.currentRedemptions >= deal.maxRedemptions;
+  const isFullyRedeemed = deal.maxRedemptions && deal.currentRedemptions && deal.currentRedemptions >= deal.maxRedemptions;
 
   return (
     <Card className={`group relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${className}`}>
@@ -300,7 +300,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
           ) : !discountCode ? (
             <Button
               onClick={handleGetDiscountCode}
-              disabled={getDiscountCodeMutation.isPending || isExpired || isFullyRedeemed}
+              disabled={getDiscountCodeMutation.isPending || isExpired || !!isFullyRedeemed}
               className="w-full"
               size="lg"
             >
