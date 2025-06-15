@@ -352,7 +352,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
                         {discountCode}
                       </code>
                       <p className="text-xs text-green-600 mt-2">
-                        Present your Membership card at Checkout to get discount
+                        Present your membership card at checkout to get discount on total bill
                       </p>
                     </div>
                     <Button
