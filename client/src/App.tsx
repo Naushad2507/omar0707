@@ -13,6 +13,7 @@ import Signup from "@/pages/shared/signup";
 import Pricing from "@/pages/shared/pricing";
 import Terms from "@/pages/shared/terms";
 import Privacy from "@/pages/shared/privacy";
+import Help from "@/pages/shared/help";
 
 // Customer pages
 import CustomerDashboard from "@/pages/customer/dashboard";

@@ -3,6 +3,7 @@ import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import MembershipCard from "@/components/ui/membership-card";
 import DealCard from "@/components/ui/deal-card";
+import Tutorial from "@/components/ui/tutorial";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,8 @@ import {
   TrendingUp,
   Clock,
   MapPin,
-  Gift
+  Gift,
+  BookOpen
 } from "lucide-react";
 
 export default function CustomerDashboard() {
@@ -83,12 +85,25 @@ export default function CustomerDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Welcome back, {currentUser.name}!
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Your savings dashboard is ready. Discover new deals and track your progress.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Welcome back, {currentUser.name}!
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Your savings dashboard is ready. Discover new deals and track your progress.
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Tutorial type="customer" />
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/customer/deals">
+                  <Ticket className="h-4 w-4 mr-2" />
+                  Browse Deals
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Promotional Banner for promotional users */}

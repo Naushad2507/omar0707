@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
+import Tutorial from "@/components/ui/tutorial";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,8 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  Target
+  Target,
+  BookOpen
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 
@@ -136,12 +138,25 @@ export default function VendorDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {vendor ? `Welcome, ${vendor.businessName}!` : 'Vendor Dashboard'}
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Manage your deals and track your business performance
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {(vendor as any) ? `Welcome, ${(vendor as any).businessName}!` : 'Vendor Dashboard'}
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Manage your deals and track your business performance
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Tutorial type="vendor" />
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/vendor/deals">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Manage Deals
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Approval Status */}
