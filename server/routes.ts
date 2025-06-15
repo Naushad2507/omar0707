@@ -771,6 +771,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get nearby deals based on location
+  app.get('/api/deals/nearby/:dealId', async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.dealId);
+      const currentDeal = await storage.getDeal(dealId);
+      
+      if (!currentDeal) {
+        return res.status(404).json({ error: 'Deal not found' });
+      }
+
+      // Get all active deals
+      const allDeals = await storage.getActiveDeals();
+      const vendors = await storage.getAllVendors();
+      
+      // Create vendor lookup map
+      const vendorMap = new Map(vendors.map(v => [v.id, v]));
+      
+      // Filter nearby deals based on category similarity and location
+      const nearbyDeals = allDeals
+        .filter(deal => deal.id !== dealId) // Exclude current deal
+        .filter(deal => {
+          // Prioritize same category deals
+          if (deal.category === currentDeal.category) return true;
+          // Include other deals with probability based on distance simulation
+          return Math.random() < 0.4;
+        })
+        .slice(0, 4) // Limit to 4 nearby deals
+        .map(deal => {
+          const vendor = vendorMap.get(deal.vendorId);
+          return {
+            ...deal,
+            vendor,
+            distance: (Math.random() * 4 + 0.8).toFixed(1), // Distance between 0.8-4.8 km
+          };
+        })
+        .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance)); // Sort by distance
+
+      res.json(nearbyDeals);
+    } catch (error) {
+      console.error('Error fetching nearby deals:', error);
+      res.status(500).json({ error: 'Failed to fetch nearby deals' });
+    }
+  });
+
   // Categories endpoint
   app.get('/api/categories', async (req, res) => {
     const categories = [

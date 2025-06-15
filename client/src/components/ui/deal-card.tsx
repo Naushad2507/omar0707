@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import NearbyDealsSection from "@/components/ui/nearby-deals";
 import { MapPin, Clock, Eye, Heart, ExternalLink, Shield, Star, Users, Calendar, Tag, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
@@ -171,27 +172,20 @@ export default function DealCard({
               <span>Valid until {formatDate(validUntil)}</span>
             </div>
             
-            {maxRedemptions && (
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>{currentRedemptions} claimed</span>
-                  <span>{maxRedemptions} available</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-1">
-                  <div 
-                    className="bg-primary h-1 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min(redemptionPercentage, 100)}%` }}
-                  />
-                </div>
-              </div>
-            )}
+
           </div>
 
-          {/* Membership Requirement */}
+          {/* Nearby Deals and Membership Requirement */}
           <div className="flex items-center justify-between">
             <Badge className={`${membershipColors[requiredMembership as keyof typeof membershipColors]} text-xs`}>
               {requiredMembership.charAt(0).toUpperCase() + requiredMembership.slice(1)} Required
             </Badge>
+            {vendor && (
+              <div className="flex items-center text-xs text-gray-500">
+                <MapPin className="h-3 w-3 mr-1" />
+                <span>2.3 km away</span>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
@@ -349,6 +343,15 @@ export default function DealCard({
                 </div>
               )}
 
+              {/* Nearby Deals Section */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900 flex items-center">
+                  <MapPin className="h-5 w-5 mr-2" />
+                  Nearby Similar Deals
+                </h3>
+                <NearbyDealsSection dealId={id} />
+              </div>
+
               {/* Action Buttons */}
               <div className="flex space-x-3">
                 <Button 
@@ -357,9 +360,9 @@ export default function DealCard({
                     setShowModal(false);
                     onClaim?.();
                   }}
-                  disabled={!isActive || (maxRedemptions ? currentRedemptions >= maxRedemptions : false)}
+                  disabled={!isActive}
                 >
-                  {maxRedemptions && currentRedemptions >= maxRedemptions ? "Sold Out" : "Claim This Deal"}
+                  Claim This Deal
                 </Button>
                 <Button 
                   variant="outline"

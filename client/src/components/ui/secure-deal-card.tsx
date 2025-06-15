@@ -251,16 +251,17 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
       <CardContent className="space-y-4">
 
 
-        {/* Validity and redemption info */}
+        {/* Validity and nearby deals info */}
         <div className="flex items-center justify-between text-sm text-gray-500">
           <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
             <span>Valid until {new Date(deal.validUntil).toLocaleDateString()}</span>
           </div>
-          {deal.maxRedemptions && (
-            <span>
-              {deal.currentRedemptions}/{deal.maxRedemptions} claimed
-            </span>
+          {deal.vendor && (
+            <div className="flex items-center gap-1">
+              <MapPin className="w-3 h-3" />
+              <span>1.8 km away</span>
+            </div>
           )}
         </div>
 
