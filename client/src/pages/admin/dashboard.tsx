@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { useAuth } from "@/lib/auth";
 import { Link } from "wouter";
 import { 
@@ -20,6 +21,7 @@ import {
   Eye,
   DollarSign
 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from "recharts";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -41,7 +43,7 @@ export default function AdminDashboard() {
   const stats = [
     {
       title: "Total Users",
-      value: analytics?.totalUsers?.toLocaleString() || "0",
+      value: (analytics as any)?.totalUsers?.toLocaleString() || "0",
       change: "+12%",
       changeType: "increase",
       icon: Users,
@@ -50,7 +52,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Active Vendors",
-      value: analytics?.totalVendors?.toLocaleString() || "0",
+      value: (analytics as any)?.totalVendors?.toLocaleString() || "0",
       change: "+8%",
       changeType: "increase",
       icon: Store,
@@ -59,7 +61,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Total Deals",
-      value: analytics?.totalDeals?.toLocaleString() || "0",
+      value: (analytics as any)?.totalDeals?.toLocaleString() || "0",
       change: "+15%",
       changeType: "increase",
       icon: Ticket,
@@ -68,7 +70,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Revenue",
-      value: `₹${(analytics?.revenueEstimate || 0).toLocaleString('en-IN')}`,
+      value: `₹${((analytics as any)?.revenueEstimate || 0).toLocaleString('en-IN')}`,
       change: "+22%",
       changeType: "increase",
       icon: DollarSign,
@@ -106,6 +108,47 @@ export default function AdminDashboard() {
       iconColor: "text-warning",
     },
   ];
+
+  // Chart data based on analytics
+  const cityChartData = (analytics as any)?.cityStats?.map((city: any) => ({
+    name: city.city,
+    deals: city.dealCount,
+    users: city.userCount,
+  })) || [];
+
+  const categoryChartData = (analytics as any)?.categoryStats?.map((category: any) => ({
+    name: category.category,
+    deals: category.dealCount,
+    claims: category.claimCount,
+  })) || [];
+
+  const monthlyTrendData = [
+    { month: 'Jan', users: 1200, deals: 450, revenue: 25000 },
+    { month: 'Feb', users: 1800, deals: 620, revenue: 35000 },
+    { month: 'Mar', users: 2400, deals: 780, revenue: 48000 },
+    { month: 'Apr', users: 3200, deals: 920, revenue: 62000 },
+    { month: 'May', users: 4100, deals: 1150, revenue: 78000 },
+    { month: 'Jun', users: 4800, deals: 1380, revenue: 92000 },
+  ];
+
+  const chartConfig = {
+    users: {
+      label: "Users",
+      color: "hsl(var(--primary))",
+    },
+    deals: {
+      label: "Deals",
+      color: "hsl(var(--success))",
+    },
+    claims: {
+      label: "Claims",
+      color: "hsl(var(--warning))",
+    },
+    revenue: {
+      label: "Revenue",
+      color: "hsl(var(--royal))",
+    },
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -146,36 +189,76 @@ export default function AdminDashboard() {
           })}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* City Performance Heatmap */}
+        {/* Charts Section */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          {/* Monthly Growth Trends */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <TrendingUp className="h-5 w-5 mr-2" />
+                Monthly Growth Trends
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <LineChart data={monthlyTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Line type="monotone" dataKey="users" stroke="var(--color-users)" strokeWidth={2} />
+                  <Line type="monotone" dataKey="deals" stroke="var(--color-deals)" strokeWidth={2} />
+                </LineChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* City Performance Chart */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <MapPin className="h-5 w-5 mr-2" />
-                City Performance Heatmap
+                Top Cities Performance
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {analytics?.cityStats?.slice(0, 6).map((city: any, index: number) => {
-                  const maxDeals = Math.max(...(analytics.cityStats?.map((c: any) => c.dealCount) || [1]));
-                  const percentage = (city.dealCount / maxDeals) * 100;
-                  const colors = ['bg-primary', 'bg-success', 'bg-warning', 'bg-saffron', 'bg-royal', 'bg-secondary'];
-                  
-                  return (
-                    <div key={city.city} className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-700 font-medium">{city.city}</span>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600">{city.dealCount} deals</span>
-                          <span className="text-sm text-gray-500">• {city.userCount} users</span>
-                        </div>
-                      </div>
-                      <Progress value={percentage} className="h-2" />
-                    </div>
-                  );
-                })}
-              </div>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <BarChart data={cityChartData.slice(0, 6)}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="deals" fill="var(--color-deals)" />
+                  <Bar dataKey="users" fill="var(--color-users)" />
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Category Performance */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BarChart3 className="h-5 w-5 mr-2" />
+                Category Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="min-h-[300px]">
+                <AreaChart data={categoryChartData.slice(0, 8)}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Area type="monotone" dataKey="deals" stackId="1" stroke="var(--color-deals)" fill="var(--color-deals)" />
+                  <Area type="monotone" dataKey="claims" stackId="1" stroke="var(--color-claims)" fill="var(--color-claims)" />
+                </AreaChart>
+              </ChartContainer>
             </CardContent>
           </Card>
 
@@ -220,9 +303,9 @@ export default function AdminDashboard() {
               </Button>
             </CardHeader>
             <CardContent>
-              {pendingVendors && pendingVendors.length > 0 ? (
+              {pendingVendors && (pendingVendors as any).length > 0 ? (
                 <div className="space-y-4">
-                  {pendingVendors.slice(0, 3).map((vendor: any) => (
+                  {(pendingVendors as any).slice(0, 3).map((vendor: any) => (
                     <div key={vendor.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                       <div>
                         <p className="font-medium text-gray-900">{vendor.businessName}</p>
