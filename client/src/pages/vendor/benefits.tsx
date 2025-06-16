@@ -16,7 +16,8 @@ import {
   ArrowRight,
   Star,
   Clock,
-  Shield
+  Shield,
+  IndianRupee
 } from "lucide-react";
 
 export default function VendorBenefits() {
@@ -40,7 +41,7 @@ export default function VendorBenefits() {
       details: "Location-based discovery helps customers find your deals when they're close"
     },
     {
-      icon: DollarSign,
+       icon: IndianRupee,
       title: "Zero Commission - Keep 100% of Sales",
       description: "No transaction fees, keep all your revenue",
       details: "Unlike other platforms, we don't take a cut from your sales"
