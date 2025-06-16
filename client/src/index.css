@@ -23,11 +23,90 @@
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
-  --success: hsl(160, 84%, 39%);
+  --success: hsl(142, 76%, 36%);
   --warning: hsl(32, 95%, 44%);
   --saffron: hsl(16, 100%, 60%);
   --royal: hsl(238, 69%, 60%);
   --peacock: hsl(180, 100%, 25%);
+  --chart-1: hsl(217, 91%, 60%);
+  --chart-2: hsl(142, 76%, 36%);
+  --chart-3: hsl(32, 95%, 44%);
+  --chart-4: hsl(238, 69%, 60%);
+  --chart-5: hsl(345, 82%, 60%);
+  --chart-6: hsl(180, 62%, 55%);
+  --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(238, 69%, 60%) 100%);
+  --gradient-success: linear-gradient(135deg, hsl(142, 76%, 36%) 0%, hsl(160, 84%, 39%) 100%);
+  --gradient-warning: linear-gradient(135deg, hsl(32, 95%, 44%) 0%, hsl(16, 100%, 60%) 100%);
+  --gradient-danger: linear-gradient(135deg, hsl(0, 84.2%, 60.2%) 0%, hsl(345, 82%, 60%) 100%);
+}
+
+/* Modern Dashboard Styles */
+.stat-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.stat-card-primary {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.stat-card-success {
+  background: var(--gradient-success);
+  color: white;
+}
+
+.stat-card-warning {
+  background: var(--gradient-warning);
+  color: white;
+}
+
+.stat-card-danger {
+  background: var(--gradient-danger);
+  color: white;
+}
+
+.chart-container {
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.metric-tile {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.metric-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .dark {

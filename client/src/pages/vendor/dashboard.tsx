@@ -98,23 +98,23 @@ export default function VendorDashboard() {
   ];
 
   const dealStatusData = [
-    { name: 'Active', value: activeDeals, color: '#10B981' },
-    { name: 'Pending', value: pendingDeals, color: '#F59E0B' },
-    { name: 'Inactive', value: totalDeals - activeDeals - pendingDeals, color: '#6B7280' }
+    { name: 'Active', value: activeDeals, color: 'hsl(var(--chart-2))' },
+    { name: 'Pending', value: pendingDeals, color: 'hsl(var(--chart-3))' },
+    { name: 'Inactive', value: totalDeals - activeDeals - pendingDeals, color: 'hsl(var(--chart-6))' }
   ];
 
   const chartConfig = {
     views: {
       label: "Views",
-      color: "hsl(var(--primary))",
+      color: "hsl(var(--chart-1))",
     },
     redemptions: {
       label: "Redemptions",
-      color: "hsl(var(--success))",
+      color: "hsl(var(--chart-2))",
     },
     revenue: {
       label: "Revenue",
-      color: "hsl(var(--royal))",
+      color: "hsl(var(--chart-4))",
     },
   };
 
@@ -206,22 +206,31 @@ export default function VendorDashboard() {
         {/* Stats Grid */}
         {(vendor as any) && isApproved && (
           <div className="grid md:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat) => {
+            {stats.map((stat, index) => {
               const Icon = stat.icon;
+              const gradientClass = index === 0 ? 'stat-card-primary' : 
+                                   index === 1 ? 'stat-card-success' : 
+                                   index === 2 ? 'stat-card-warning' : 'stat-card-danger';
               return (
-                <Card key={stat.title}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-gray-500 text-sm">{stat.title}</p>
-                        <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                      </div>
-                      <div className={`${stat.bgColor} p-3 rounded-lg`}>
-                        <Icon className={`h-6 w-6 ${stat.color}`} />
+                <div key={stat.title} className={`stat-card ${gradientClass} rounded-xl p-6 shadow-lg`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white/80 text-sm font-medium">{stat.title}</p>
+                      <p className="text-3xl font-bold text-white mt-2">{stat.value}</p>
+                      <div className="flex items-center mt-2">
+                        <span className="text-white/90 text-sm">{stat.change}</span>
+                        {stat.changeType === 'increase' ? (
+                          <TrendingUp className="h-4 w-4 text-white/90 ml-1" />
+                        ) : (
+                          <TrendingUp className="h-4 w-4 text-white/90 ml-1 rotate-180" />
+                        )}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                      <Icon className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -231,79 +240,111 @@ export default function VendorDashboard() {
         {(vendor as any) && isApproved && (
           <div className="grid lg:grid-cols-2 gap-8 mb-8">
             {/* Deal Performance Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BarChart3 className="h-5 w-5 mr-2" />
+            <div className="glass-card">
+              <div className="p-6 border-b border-gray-200/50">
+                <h3 className="text-lg font-semibold gradient-text flex items-center">
+                  <BarChart3 className="h-5 w-5 mr-2 text-blue-600" />
                   Deal Performance
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div className="p-6">
                 <ChartContainer config={chartConfig} className="min-h-[300px]">
                   <BarChart data={dealPerformanceData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.3)" />
+                    <XAxis 
+                      dataKey="name" 
+                      angle={-45} 
+                      textAnchor="end" 
+                      height={80}
+                      tick={{ fill: '#6B7280', fontSize: 12 }}
+                    />
+                    <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      contentStyle={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                      }}
+                    />
                     <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="views" fill="var(--color-views)" />
-                    <Bar dataKey="redemptions" fill="var(--color-redemptions)" />
+                    <Bar dataKey="views" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="redemptions" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ChartContainer>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Monthly Trends */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <TrendingUp className="h-5 w-5 mr-2" />
+            <div className="glass-card">
+              <div className="p-6 border-b border-gray-200/50">
+                <h3 className="text-lg font-semibold gradient-text flex items-center">
+                  <TrendingUp className="h-5 w-5 mr-2 text-green-600" />
                   Monthly Performance
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div className="p-6">
                 <ChartContainer config={chartConfig} className="min-h-[300px]">
                   <LineChart data={monthlyRedemptionData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.3)" />
+                    <XAxis dataKey="month" tick={{ fill: '#6B7280', fontSize: 12 }} />
+                    <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      contentStyle={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                      }}
+                    />
                     <ChartLegend content={<ChartLegendContent />} />
-                    <Line type="monotone" dataKey="redemptions" stroke="var(--color-redemptions)" strokeWidth={2} />
-                    <Line type="monotone" dataKey="revenue" stroke="var(--color-revenue)" strokeWidth={2} />
+                    <Line type="monotone" dataKey="redemptions" stroke="hsl(var(--chart-2))" strokeWidth={3} dot={{ fill: 'hsl(var(--chart-2))', strokeWidth: 2, r: 4 }} />
+                    <Line type="monotone" dataKey="revenue" stroke="hsl(var(--chart-4))" strokeWidth={3} dot={{ fill: 'hsl(var(--chart-4))', strokeWidth: 2, r: 4 }} />
                   </LineChart>
                 </ChartContainer>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Deal Status Distribution */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Target className="h-5 w-5 mr-2" />
+            <div className="glass-card">
+              <div className="p-6 border-b border-gray-200/50">
+                <h3 className="text-lg font-semibold gradient-text flex items-center">
+                  <Target className="h-5 w-5 mr-2 text-purple-600" />
                   Deal Status Distribution
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div className="p-6">
                 <ChartContainer config={chartConfig} className="min-h-[300px]">
                   <PieChart>
                     <Pie
                       data={dealStatusData}
                       cx="50%"
                       cy="50%"
-                      outerRadius={80}
+                      innerRadius={40}
+                      outerRadius={90}
                       dataKey="value"
+                      paddingAngle={3}
                     >
                       {dealStatusData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      contentStyle={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                      }}
+                    />
                     <ChartLegend content={<ChartLegendContent />} />
                   </PieChart>
                 </ChartContainer>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Performance Metrics */}
             <Card>
