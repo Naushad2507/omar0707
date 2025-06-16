@@ -159,13 +159,13 @@ export default function SuperAdminDashboard() {
   ];
 
   const chartConfig = {
-    users: { label: "Users", color: "hsl(var(--primary))" },
-    vendors: { label: "Vendors", color: "hsl(var(--success))" },
-    deals: { label: "Deals", color: "hsl(var(--warning))" },
-    revenue: { label: "Revenue", color: "hsl(var(--royal))" },
-    cpu: { label: "CPU %", color: "hsl(var(--destructive))" },
-    memory: { label: "Memory %", color: "hsl(var(--warning))" },
-    requests: { label: "Requests", color: "hsl(var(--primary))" },
+    users: { label: "Users", color: "hsl(var(--chart-1))" },
+    vendors: { label: "Vendors", color: "hsl(var(--chart-2))" },
+    deals: { label: "Deals", color: "hsl(var(--chart-3))" },
+    revenue: { label: "Revenue", color: "hsl(var(--chart-4))" },
+    cpu: { label: "CPU %", color: "hsl(var(--chart-5))" },
+    memory: { label: "Memory %", color: "hsl(var(--chart-3))" },
+    requests: { label: "Requests", color: "hsl(var(--chart-1))" },
   };
 
   const recentAlerts = [
@@ -222,28 +222,29 @@ export default function SuperAdminDashboard() {
 
         {/* Platform Overview Stats */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat) => {
+          {stats.map((stat, index) => {
             const Icon = stat.icon;
+            const gradientClass = index === 0 ? 'stat-card-primary' : 
+                                 index === 1 ? 'stat-card-success' : 
+                                 index === 2 ? 'stat-card-warning' : 'stat-card-danger';
             return (
-              <Card key={stat.title}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-500 text-sm">{stat.title}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                      <div className="flex items-center mt-1">
-                        {stat.changeType === "increase" && <TrendingUp className="h-3 w-3 text-success mr-1" />}
-                        <span className={`text-xs ${stat.changeType === "increase" ? "text-success" : "text-gray-500"}`}>
-                          {stat.change}
-                        </span>
-                      </div>
-                    </div>
-                    <div className={`${stat.bgColor} p-3 rounded-lg`}>
-                      <Icon className={`h-6 w-6 ${stat.color}`} />
+              <div key={stat.title} className={`stat-card ${gradientClass} rounded-xl p-6 shadow-lg`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/80 text-sm font-medium">{stat.title}</p>
+                    <p className="text-3xl font-bold text-white mt-2">{stat.value}</p>
+                    <div className="flex items-center mt-2">
+                      {stat.changeType === "increase" && <TrendingUp className="h-4 w-4 text-white/90 mr-1" />}
+                      <span className="text-white/90 text-sm">
+                        {stat.change}
+                      </span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                    <Icon className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -251,51 +252,67 @@ export default function SuperAdminDashboard() {
         {/* Advanced Analytics Charts */}
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           {/* Platform Growth Trends */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <TrendingUp className="h-5 w-5 mr-2" />
+          <div className="glass-card">
+            <div className="p-6 border-b border-gray-200/50">
+              <h3 className="text-lg font-semibold gradient-text flex items-center">
+                <TrendingUp className="h-5 w-5 mr-2 text-blue-600" />
                 Platform Growth Overview
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6">
               <ChartContainer config={chartConfig} className="min-h-[300px]">
                 <AreaChart data={platformGrowthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.3)" />
+                  <XAxis dataKey="month" tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    }}
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
-                  <Area type="monotone" dataKey="users" stackId="1" stroke="var(--color-users)" fill="var(--color-users)" fillOpacity={0.6} />
-                  <Area type="monotone" dataKey="vendors" stackId="2" stroke="var(--color-vendors)" fill="var(--color-vendors)" fillOpacity={0.6} />
-                  <Area type="monotone" dataKey="deals" stackId="3" stroke="var(--color-deals)" fill="var(--color-deals)" fillOpacity={0.6} />
+                  <Area type="monotone" dataKey="users" stackId="1" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1))" fillOpacity={0.8} />
+                  <Area type="monotone" dataKey="vendors" stackId="2" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.8} />
+                  <Area type="monotone" dataKey="deals" stackId="3" stroke="hsl(var(--chart-3))" fill="hsl(var(--chart-3))" fillOpacity={0.8} />
                 </AreaChart>
               </ChartContainer>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* System Performance Monitoring */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Server className="h-5 w-5 mr-2" />
+          <div className="glass-card">
+            <div className="p-6 border-b border-gray-200/50">
+              <h3 className="text-lg font-semibold gradient-text flex items-center">
+                <Server className="h-5 w-5 mr-2 text-purple-600" />
                 Real-time System Metrics
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6">
               <ChartContainer config={chartConfig} className="min-h-[300px]">
                 <LineChart data={systemPerformanceData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.3)" />
+                  <XAxis dataKey="time" tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    }}
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
-                  <Line type="monotone" dataKey="cpu" stroke="var(--color-cpu)" strokeWidth={2} />
-                  <Line type="monotone" dataKey="memory" stroke="var(--color-memory)" strokeWidth={2} />
+                  <Line type="monotone" dataKey="cpu" stroke="hsl(var(--chart-5))" strokeWidth={3} dot={{ fill: 'hsl(var(--chart-5))', strokeWidth: 2, r: 4 }} />
+                  <Line type="monotone" dataKey="memory" stroke="hsl(var(--chart-3))" strokeWidth={3} dot={{ fill: 'hsl(var(--chart-3))', strokeWidth: 2, r: 4 }} />
                 </LineChart>
               </ChartContainer>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* User Distribution */}
           <Card>
