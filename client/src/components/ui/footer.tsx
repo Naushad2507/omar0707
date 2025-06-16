@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Facebook, Twitter, Instagram, Linkedin, Shield } from "lucide-react";
+import InstoredeelzLogo from "@/components/ui/instoredealz-logo";
 
 export default function Footer() {
   return (
@@ -8,7 +9,9 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div>
-            <h3 className="text-2xl font-bold mb-4">Instoredealz</h3>
+            <div className="mb-4">
+              <InstoredeelzLogo size="lg" className="text-white" />
+            </div>
             <p className="text-gray-300 mb-4">
               Your ultimate destination for discovering amazing deals from local businesses across India.
             </p>

@@ -89,9 +89,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
           <div className="flex items-center space-x-8">
             <div className="flex-shrink-0">
               <Link href="/">
-                <h1 className="text-2xl font-bold text-primary cursor-pointer">
-                  Instoredealz
-                </h1>
+                <InstoredeelzLogo size="md" className="cursor-pointer" />
               </Link>
             </div>
             
