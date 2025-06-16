@@ -1,4 +1,4 @@
-import logoImage from "@assets/Instoredealz logo_1749978877977.jpg";
+import logoImage from "../../assets/Instoredealz logo_1749978877977.jpg";
 
 interface LogoProps {
   className?: string;

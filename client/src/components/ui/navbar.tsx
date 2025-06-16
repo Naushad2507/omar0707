@@ -8,6 +8,7 @@ import { Menu, MapPin, User, LogOut, Home, ShoppingBag, CreditCard, Store, Setti
 import { majorCities } from "@/lib/cities";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import InstoredeelzLogo from "@/components/ui/instoredealz-logo";
 
 interface NavbarProps {
   selectedCity?: string;
