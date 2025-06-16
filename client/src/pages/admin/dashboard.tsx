@@ -152,19 +152,19 @@ export default function AdminDashboard() {
   const chartConfig = {
     users: {
       label: "Users",
-      color: "hsl(var(--primary))",
+      color: "hsl(var(--chart-1))",
     },
     deals: {
       label: "Deals",
-      color: "hsl(var(--success))",
+      color: "hsl(var(--chart-2))",
     },
     claims: {
       label: "Claims",
-      color: "hsl(var(--warning))",
+      color: "hsl(var(--chart-3))",
     },
     revenue: {
       label: "Revenue",
-      color: "hsl(var(--royal))",
+      color: "hsl(var(--chart-4))",
     },
   };
 
@@ -183,26 +183,27 @@ export default function AdminDashboard() {
 
         {/* Overview Stats */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat) => {
+          {stats.map((stat, index) => {
             const Icon = stat.icon;
+            const gradientClass = index === 0 ? 'stat-card-primary' : 
+                                 index === 1 ? 'stat-card-success' : 
+                                 index === 2 ? 'stat-card-warning' : 'stat-card-danger';
             return (
-              <Card key={stat.title}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-500 text-sm">{stat.title}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                      <div className="flex items-center mt-1">
-                        <TrendingUp className="h-3 w-3 text-success mr-1" />
-                        <span className="text-xs text-success">{stat.change} from last month</span>
-                      </div>
-                    </div>
-                    <div className={`${stat.bgColor} p-3 rounded-lg`}>
-                      <Icon className={`h-6 w-6 ${stat.color}`} />
+              <div key={stat.title} className={`stat-card ${gradientClass} rounded-xl p-6 shadow-lg`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/80 text-sm font-medium">{stat.title}</p>
+                    <p className="text-3xl font-bold text-white mt-2">{stat.value}</p>
+                    <div className="flex items-center mt-2">
+                      <TrendingUp className="h-4 w-4 text-white/90 mr-1" />
+                      <span className="text-white/90 text-sm">{stat.change} from last month</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                    <Icon className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -210,75 +211,99 @@ export default function AdminDashboard() {
         {/* Charts Section */}
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           {/* Monthly Growth Trends */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <TrendingUp className="h-5 w-5 mr-2" />
+          <div className="glass-card">
+            <div className="p-6 border-b border-gray-200/50">
+              <h3 className="text-lg font-semibold gradient-text flex items-center">
+                <TrendingUp className="h-5 w-5 mr-2 text-blue-600" />
                 Monthly Growth Trends
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6">
               <ChartContainer config={chartConfig} className="min-h-[300px]">
                 <LineChart data={monthlyTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.3)" />
+                  <XAxis dataKey="month" tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    }}
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
-                  <Line type="monotone" dataKey="users" stroke="var(--color-users)" strokeWidth={2} />
-                  <Line type="monotone" dataKey="deals" stroke="var(--color-deals)" strokeWidth={2} />
+                  <Line type="monotone" dataKey="users" stroke="hsl(var(--chart-1))" strokeWidth={3} dot={{ fill: 'hsl(var(--chart-1))', strokeWidth: 2, r: 4 }} />
+                  <Line type="monotone" dataKey="deals" stroke="hsl(var(--chart-2))" strokeWidth={3} dot={{ fill: 'hsl(var(--chart-2))', strokeWidth: 2, r: 4 }} />
                 </LineChart>
               </ChartContainer>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* City Performance Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <MapPin className="h-5 w-5 mr-2" />
+          <div className="glass-card">
+            <div className="p-6 border-b border-gray-200/50">
+              <h3 className="text-lg font-semibold gradient-text flex items-center">
+                <MapPin className="h-5 w-5 mr-2 text-green-600" />
                 Top Cities Performance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6">
               <ChartContainer config={chartConfig} className="min-h-[300px]">
                 <BarChart data={cityChartData.slice(0, 6)}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.3)" />
+                  <XAxis dataKey="name" tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    }}
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
-                  <Bar dataKey="deals" fill="var(--color-deals)" />
-                  <Bar dataKey="users" fill="var(--color-users)" />
+                  <Bar dataKey="deals" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="users" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ChartContainer>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Category Performance */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BarChart3 className="h-5 w-5 mr-2" />
+          <div className="glass-card">
+            <div className="p-6 border-b border-gray-200/50">
+              <h3 className="text-lg font-semibold gradient-text flex items-center">
+                <BarChart3 className="h-5 w-5 mr-2 text-orange-600" />
                 Category Performance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6">
               <ChartContainer config={chartConfig} className="min-h-[300px]">
                 <AreaChart data={categoryChartData.slice(0, 8)}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.3)" />
+                  <XAxis dataKey="name" tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    }}
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
-                  <Area type="monotone" dataKey="deals" stackId="1" stroke="var(--color-deals)" fill="var(--color-deals)" />
-                  <Area type="monotone" dataKey="claims" stackId="1" stroke="var(--color-claims)" fill="var(--color-claims)" />
+                  <Area type="monotone" dataKey="deals" stackId="1" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.8} />
+                  <Area type="monotone" dataKey="claims" stackId="1" stroke="hsl(var(--chart-3))" fill="hsl(var(--chart-3))" fillOpacity={0.8} />
                 </AreaChart>
               </ChartContainer>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Recent Activity */}
           <Card>
