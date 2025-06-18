@@ -22,6 +22,7 @@ import SecureDeals from "@/pages/customer/secure-deals";
 import ClaimHistory from "@/pages/customer/claim-history";
 import CustomerWishlist from "@/pages/customer/wishlist";
 import MembershipCard from "@/pages/customer/membership-card";
+import DealDetail from "@/pages/customer/deal-detail";
 
 // Vendor pages
 import VendorBenefits from "@/pages/vendor/benefits";
@@ -84,6 +85,11 @@ function Router() {
       <Route path="/customer/membership-card">
         <ProtectedRoute allowedRoles={['customer']}>
           <MembershipCard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/deals/:id">
+        <ProtectedRoute allowedRoles={['customer']}>
+          <DealDetail />
         </ProtectedRoute>
       </Route>
       

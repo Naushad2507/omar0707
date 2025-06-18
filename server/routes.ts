@@ -306,6 +306,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Increment deal view count
+  app.post('/api/deals/:id/view', async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.id);
+      await storage.incrementDealViews(dealId);
+      res.status(200).json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to increment view count" });
+    }
+  });
+
   app.post('/api/deals/:id/claim', requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
       const dealId = parseInt(req.params.id);
@@ -322,16 +333,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check redemption limit
-      if (deal.maxRedemptions && deal.currentRedemptions >= deal.maxRedemptions) {
+      if (deal.maxRedemptions && (deal.currentRedemptions || 0) >= deal.maxRedemptions) {
         return res.status(400).json({ message: "Deal redemption limit reached" });
       }
       
-      // Check if user already claimed this deal
-      const existingClaim = (await storage.getUserClaims(userId))
-        .find(claim => claim.dealId === dealId);
-      if (existingClaim) {
-        return res.status(400).json({ message: "Deal already claimed" });
-      }
+      // Allow multiple claims per deal - removed the restriction
+      // Users can now claim the same deal multiple times
       
       // Check membership requirement
       const user = await storage.getUser(userId);
