@@ -183,7 +183,7 @@ export default function DealDetail() {
   // Claim deal mutation
   const claimDealMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return await apiRequest(`/api/deals/${dealId}/claim`, "POST");
+      return await apiRequest(`/api/deals/${dealId}/claim`, "POST", {});
     },
     onSuccess: () => {
       toast({

@@ -22,7 +22,7 @@ export default function CustomerWishlist() {
 
   const removeFromWishlistMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return apiRequest('DELETE', `/api/wishlist/${dealId}`);
+      return apiRequest(`/api/wishlist/${dealId}`, 'DELETE');
     },
     onSuccess: () => {
       toast({
