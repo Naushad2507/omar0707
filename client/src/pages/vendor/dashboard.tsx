@@ -24,7 +24,7 @@ import {
   Target,
   BookOpen
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, Tooltip, Legend } from "recharts";
 
 export default function VendorDashboard() {
   const { user } = useAuth();
