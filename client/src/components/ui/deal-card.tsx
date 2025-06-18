@@ -213,20 +213,20 @@ export default function DealCard({
       </CardContent>
 
       <CardFooter className="p-4 pt-0 space-y-2">
+        <Button 
+          className="w-full" 
+          onClick={(e) => {
+            e.stopPropagation();
+            onView?.();
+          }}
+        >
+          <ExternalLink className="h-4 w-4 mr-2" />
+          View Deal Details
+        </Button>
+
         <Dialog open={showModal} onOpenChange={setShowModal}>
           <DialogTrigger asChild>
-            <Button 
-              variant="outline"
-              className="w-full" 
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowModal(true);
-                onView?.();
-              }}
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              View Deal Details
-            </Button>
+            <div style={{ display: 'none' }}></div>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -411,16 +411,7 @@ export default function DealCard({
           </DialogContent>
         </Dialog>
 
-        <Button 
-          className="w-full" 
-          onClick={(e) => {
-            e.stopPropagation();
-            onView?.();
-          }}
-          variant="outline"
-        >
-          View Deal Details
-        </Button>
+
       </CardFooter>
     </Card>
   );
