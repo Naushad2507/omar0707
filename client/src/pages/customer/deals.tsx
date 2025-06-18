@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth, hasMembershipLevel } from "@/lib/auth";
@@ -343,7 +343,7 @@ export default function CustomerDeals() {
                     onClaim={() => handleClaimDeal(deal)}
                     onToggleFavorite={() => handleToggleFavorite(deal.id)}
                     onView={() => {
-                      // Increment view count would be handled by API
+                      window.location.href = `/customer/deals/${deal.id}`;
                     }}
                   />
                 </div>

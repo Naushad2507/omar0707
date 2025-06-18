@@ -779,6 +779,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get nearby deals based on location
+  // Get individual deal by ID
+  app.get('/api/deals/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.id);
+      const deal = await storage.getDeal(dealId);
+      
+      if (!deal) {
+        return res.status(404).json({ message: "Deal not found" });
+      }
+      
+      // Get vendor information
+      let dealWithVendor: any = { ...deal };
+      if (deal.vendorId) {
+        const vendor = await storage.getVendor(deal.vendorId);
+        if (vendor) {
+          dealWithVendor.vendor = vendor;
+        }
+      }
+      
+      res.json(dealWithVendor);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch deal" });
+    }
+  });
+
   app.get('/api/deals/nearby/:dealId', async (req: AuthenticatedRequest, res) => {
     try {
       const dealId = parseInt(req.params.dealId);

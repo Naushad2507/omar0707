@@ -380,11 +380,10 @@ export default function DealCard({
                   className="flex-1"
                   onClick={() => {
                     setShowModal(false);
-                    onClaim?.();
+                    onView?.();
                   }}
-                  disabled={!isActive}
                 >
-                  Claim This Deal
+                  View Deal Details
                 </Button>
                 {vendor && (
                   <Button 
@@ -416,11 +415,11 @@ export default function DealCard({
           className="w-full" 
           onClick={(e) => {
             e.stopPropagation();
-            onClaim?.();
+            onView?.();
           }}
-          disabled={!isActive || (maxRedemptions ? currentRedemptions >= maxRedemptions : false)}
+          variant="outline"
         >
-          {maxRedemptions && currentRedemptions >= maxRedemptions ? "Sold Out" : "Claim Deal"}
+          View Deal Details
         </Button>
       </CardFooter>
     </Card>
