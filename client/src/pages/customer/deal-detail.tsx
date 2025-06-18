@@ -123,7 +123,7 @@ export default function DealDetail() {
   // Increment view count when component mounts
   useEffect(() => {
     if (deal && id) {
-      apiRequest(`/api/deals/${id}/view`, "POST").catch(() => {
+      apiRequest(`/api/deals/${id}/view`, "POST", {}).catch(() => {
         // Silently fail view tracking
       });
     }
@@ -417,14 +417,14 @@ export default function DealDetail() {
               </CardHeader>
 
               <CardContent className="space-y-6">
-                {/* Pricing Info */}
+                {/* Discount Info */}
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
-                    <span className="text-2xl font-bold text-green-600">₹{deal.discountedPrice}</span>
-                    <span className="text-lg text-gray-500 line-through">₹{deal.originalPrice}</span>
+                    <span className="text-2xl font-bold text-green-600">{deal.discountPercentage}% OFF</span>
+                    <span className="text-sm text-gray-600">on total bill</span>
                   </div>
                   <Badge variant="secondary" className="text-sm">
-                    Save ₹{(parseFloat(deal.originalPrice) - parseFloat(deal.discountedPrice)).toFixed(2)}
+                    Subscription Discount
                   </Badge>
                 </div>
 

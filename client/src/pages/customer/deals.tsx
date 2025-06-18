@@ -110,7 +110,7 @@ export default function CustomerDeals() {
 
   const addToWishlistMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return apiRequest('POST', '/api/wishlist', { dealId });
+      return apiRequest('/api/wishlist', 'POST', { dealId });
     },
     onSuccess: () => {
       toast({
@@ -130,7 +130,7 @@ export default function CustomerDeals() {
 
   const removeFromWishlistMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return apiRequest('DELETE', `/api/wishlist/${dealId}`);
+      return apiRequest(`/api/wishlist/${dealId}`, 'DELETE');
     },
     onSuccess: () => {
       toast({
@@ -150,7 +150,7 @@ export default function CustomerDeals() {
 
   const claimDealMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return apiRequest('POST', `/api/deals/${dealId}/claim`);
+      return apiRequest(`/api/deals/${dealId}/claim`, 'POST');
     },
     onSuccess: () => {
       toast({
