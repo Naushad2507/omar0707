@@ -23,6 +23,7 @@ import ClaimHistory from "@/pages/customer/claim-history";
 import CustomerWishlist from "@/pages/customer/wishlist";
 import MembershipCard from "@/pages/customer/membership-card";
 import DealDetail from "@/pages/customer/deal-detail";
+import UpgradeMembership from "@/pages/customer/upgrade-membership";
 
 // Vendor pages
 import VendorBenefits from "@/pages/vendor/benefits";
@@ -89,6 +90,11 @@ function Router() {
       <Route path="/customer/membership-card">
         <ProtectedRoute allowedRoles={['customer']}>
           <MembershipCard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/customer/upgrade">
+        <ProtectedRoute allowedRoles={['customer']}>
+          <UpgradeMembership />
         </ProtectedRoute>
       </Route>
       <Route path="/customer/deals/:id">

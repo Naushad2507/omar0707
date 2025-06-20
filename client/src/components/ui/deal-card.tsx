@@ -345,9 +345,9 @@ export default function DealCard({
                     <Button 
                       size="sm" 
                       className="bg-gradient-to-r from-primary to-royal hover:from-primary/90 hover:to-royal/90"
-                      onClick={() => window.location.href = '/pricing'}
+                      onClick={() => window.location.href = '/customer/upgrade'}
                     >
-                      Upgrade Now
+                      Upgrade Plan
                     </Button>
                   </div>
                 )}

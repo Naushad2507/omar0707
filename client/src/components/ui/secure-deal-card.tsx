@@ -306,7 +306,11 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
               <p className="text-sm text-gray-700 mb-2">
                 Upgrade to access this deal
               </p>
-              <Button size="sm" className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+              <Button 
+                size="sm" 
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                onClick={() => window.location.href = '/customer/upgrade'}
+              >
                 <Zap className="w-4 h-4 mr-1" />
                 Upgrade Plan
               </Button>

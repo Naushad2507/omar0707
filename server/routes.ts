@@ -624,6 +624,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User self-upgrade membership endpoint
+  app.post('/api/users/upgrade-membership', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const userId = req.user!.id;
+      const { membershipPlan } = req.body;
+      
+      if (!['basic', 'premium', 'ultimate'].includes(membershipPlan)) {
+        return res.status(400).json({ message: "Invalid membership plan" });
+      }
+      
+      const updatedUser = await storage.updateUser(userId, {
+        membershipPlan,
+        membershipExpiry: membershipPlan !== 'basic' ? new Date('2025-12-31') : null,
+      });
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Log the upgrade
+      await storage.createSystemLog({
+        userId,
+        action: "MEMBERSHIP_UPGRADED",
+        details: { 
+          newPlan: membershipPlan,
+          upgradeDate: new Date().toISOString()
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+      
+      // Don't send password
+      const { password, ...safeUser } = updatedUser;
+      res.json(safeUser);
+    } catch (error) {
+      console.error("Error upgrading membership:", error);
+      res.status(500).json({ message: "Failed to upgrade membership" });
+    }
+  });
+
   app.put('/api/admin/users/:id/upgrade', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
       const userId = parseInt(req.params.id);
