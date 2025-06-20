@@ -47,8 +47,8 @@ const membershipPlans = [
   {
     id: 'premium',
     name: 'Premium',
-    price: 299,
-    period: 'month',
+    price: 8999,
+    period: 'year',
     description: 'Perfect for regular deal hunters',
     color: 'bg-blue-100 text-blue-800',
     icon: Star,
@@ -68,8 +68,8 @@ const membershipPlans = [
   {
     id: 'ultimate',
     name: 'Ultimate',
-    price: 499,
-    period: 'month',
+    price: 12999,
+    period: 'year',
     description: 'For the ultimate deal experience',
     color: 'bg-purple-100 text-purple-800',
     icon: Crown,
