@@ -28,6 +28,7 @@ import {
   Sparkles,
   Gem,
   Star,
+  Wand2,
   Heart,
   Camera,
   Music,

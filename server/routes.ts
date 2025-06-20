@@ -780,6 +780,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get nearby deals based on location
   // Get individual deal by ID
+  // Deal recommendations endpoint
+  app.post('/api/deals/recommendations', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const userId = req.user!.id;
+      const preferences = req.body;
+      
+      // Get all active deals
+      const allDeals = await storage.getActiveDeals();
+      let recommendedDeals = [];
+      
+      // Filter deals based on preferences
+      for (const deal of allDeals) {
+        const vendor = await storage.getVendor(deal.vendorId);
+        if (!vendor) continue;
+        
+        // Check category match
+        if (preferences.categories && preferences.categories.length > 0) {
+          if (!preferences.categories.includes(deal.category)) continue;
+        }
+        
+        // Check location match
+        if (preferences.location && vendor.city !== preferences.location) continue;
+        
+        // Check price range
+        const price = parseFloat(deal.discountedPrice || deal.originalPrice || '0');
+        if (price < preferences.priceRange[0] || price > preferences.priceRange[1]) continue;
+        
+        recommendedDeals.push({
+          ...deal,
+          vendor: {
+            businessName: vendor.businessName,
+            city: vendor.city,
+            state: vendor.state,
+          },
+          matchScore: Math.random() * 100 // Simple scoring for now
+        });
+      }
+      
+      // Sort by match score and limit results
+      recommendedDeals.sort((a, b) => b.matchScore - a.matchScore);
+      recommendedDeals = recommendedDeals.slice(0, 20);
+      
+      // Log recommendation generation
+      await storage.createSystemLog({
+        userId,
+        action: "RECOMMENDATIONS_GENERATED",
+        details: {
+          preferences,
+          resultsCount: recommendedDeals.length
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+      
+      res.json({
+        recommendations: recommendedDeals,
+        preferences,
+        generated: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error generating recommendations:", error);
+      res.status(500).json({ message: "Failed to generate recommendations" });
+    }
+  });
+
   app.get('/api/deals/:id', async (req: AuthenticatedRequest, res) => {
     try {
       const dealId = parseInt(req.params.id);

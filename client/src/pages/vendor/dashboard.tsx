@@ -462,9 +462,11 @@ export default function VendorDashboard() {
                       Create New Deal
                     </Link>
                   </Button>
-                  <Button variant="outline" className="w-full" onClick={() => navigate("/vendor/deals")}>
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    View Analytics
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href="/vendor/analytics">
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      View Analytics
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>

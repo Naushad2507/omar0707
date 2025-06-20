@@ -30,14 +30,24 @@ export default function Login() {
     setError("");
 
     try {
-      await login(email, password);
+      const userData = await login(email, password);
       toast({
         title: "Welcome back!",
         description: "You have been successfully logged in.",
       });
       
-      // Redirect based on user role will be handled by the auth state update
-      navigate("/");
+      // Role-based redirection after login
+      if (userData?.role === 'vendor') {
+        navigate("/vendor/dashboard");
+      } else if (userData?.role === 'customer') {
+        navigate("/customer/dashboard");
+      } else if (userData?.role === 'admin') {
+        navigate("/admin/dashboard");
+      } else if (userData?.role === 'superadmin') {
+        navigate("/superadmin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.");
     } finally {

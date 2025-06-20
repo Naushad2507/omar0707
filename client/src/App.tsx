@@ -29,6 +29,10 @@ import VendorBenefits from "@/pages/vendor/benefits";
 import VendorRegister from "@/pages/vendor/register-enhanced";
 import VendorDashboard from "@/pages/vendor/dashboard";
 import VendorDeals from "@/pages/vendor/deals-enhanced";
+import VendorAnalytics from "@/pages/vendor/analytics";
+
+// Customer wizard
+import DealWizard from "@/pages/customer/deal-wizard";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/dashboard";
@@ -110,6 +114,18 @@ function Router() {
       <Route path="/vendor/deals">
         <ProtectedRoute allowedRoles={['vendor']}>
           <VendorDeals />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/vendor/analytics">
+        <ProtectedRoute allowedRoles={['vendor']}>
+          <VendorAnalytics />
+        </ProtectedRoute>
+      </Route>
+      
+      {/* Deal Wizard */}
+      <Route path="/customer/deal-wizard">
+        <ProtectedRoute allowedRoles={['customer']}>
+          <DealWizard />
         </ProtectedRoute>
       </Route>
       

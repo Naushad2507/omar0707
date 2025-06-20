@@ -20,7 +20,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   signup: (userData: any) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
@@ -51,6 +51,8 @@ export const useAuth = create<AuthState>()(
           
           // Set token for future requests
           localStorage.setItem('auth_token', data.token);
+          
+          return data.user;
         } catch (error) {
           throw error;
         }

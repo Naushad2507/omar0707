@@ -340,13 +340,14 @@ export default function DealCard({
                 ) : (
                   <div className="bg-gradient-to-r from-primary/10 to-royal/10 border border-primary/20 rounded-lg p-6 text-center">
                     <Shield className="h-12 w-12 text-primary mx-auto mb-3" />
-                    <h4 className="font-semibold text-gray-900 mb-2">Subscribe to Access Exclusive Deals and Discounts</h4>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Upgrade your membership to unlock discount codes and get access to premium deals.
-                    </p>
-                    <Button className="w-full">
-                      <Users className="h-4 w-4 mr-2" />
-                      Upgrade Membership
+                    <h4 className="font-semibold text-gray-900 mb-2">Upgrade to Access Discount Codes</h4>
+                    <p className="text-sm text-gray-600 mb-4">Subscribe to premium or ultimate plan to view and use discount codes</p>
+                    <Button 
+                      size="sm" 
+                      className="bg-gradient-to-r from-primary to-royal hover:from-primary/90 hover:to-royal/90"
+                      onClick={() => window.location.href = '/pricing'}
+                    >
+                      Upgrade Now
                     </Button>
                   </div>
                 )}
