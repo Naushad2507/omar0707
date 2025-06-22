@@ -38,40 +38,30 @@ import {
   Tag
 } from "lucide-react";
 
-// Business categories
-const businessCategories = [
-  { id: "electronics", name: "Electronics" },
-  { id: "fashion", name: "Fashion and Clothing" },
-  { id: "beauty", name: "Beauty and Fitness" },
-  { id: "luxury", name: "Luxury Goods" },
-  { id: "horoscope", name: "Horoscope" },
-  { id: "health", name: "Health" },
-  { id: "restaurants", name: "Restaurants" },
-  { id: "entertainment", name: "Entertainment" },
-  { id: "home", name: "Home and Furniture" },
-  { id: "events", name: "Events" },
-  { id: "realestate", name: "Real Estate" },
-  { id: "education", name: "Education" },
-  { id: "freelancers", name: "Freelancers" },
-  { id: "consultants", name: "Consultants" },
-  { id: "travel", name: "Travel and Tourism" },
-  { id: "automotive", name: "Automotive" },
-  { id: "services", name: "Services" },
-  { id: "others", name: "Others" },
+// Company types
+const companyTypes = [
+  { id: "proprietorship", name: "Proprietorship" },
+  { id: "public_limited", name: "Public Limited" },
+  { id: "private_limited", name: "Private Limited" },
+  { id: "partnership", name: "Partnership" },
+  { id: "llp", name: "LLP (Limited Liability Partnership)" },
 ];
 
 const vendorRegistrationSchema = z.object({
   businessName: z.string().min(2, "Business/Store name must be at least 2 characters"),
-  ownerName: z.string().min(2, "Owner full name must be at least 2 characters"),
+  companyType: z.string().min(1, "Please select a company type"),
+  contactPersonName: z.string().min(2, "Contact person name must be at least 2 characters"),
+  mobileNumber: z.string().min(10, "Mobile number must be at least 10 digits"),
   contactNumber: z.string().min(10, "Contact number must be at least 10 digits"),
+  emailAddress: z.string().email("Please enter a valid email address"),
+  companyWebsite: z.string().url("Please enter a valid website URL").optional().or(z.literal("")),
   address: z.string().min(5, "Business/Store address must be at least 5 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  category: z.string().min(1, "Please select a category"),
   state: z.string().min(1, "Please select a state"),
   city: z.string().min(1, "Please select a city"),
   hasGst: z.enum(["yes", "no"]),
   gstNumber: z.string().optional(),
   panNumber: z.string().min(10, "PAN number must be 10 characters").max(10, "PAN number must be 10 characters"),
+  panCardFile: z.any().optional(),
   username: z.string().min(3, "Username must be at least 3 characters"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   logoUrl: z.string().optional(),
@@ -94,21 +84,25 @@ export default function VendorRegisterEnhanced() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [panCardFile, setPanCardFile] = useState<File | null>(null);
 
   const form = useForm<VendorRegistrationForm>({
     resolver: zodResolver(vendorRegistrationSchema),
     defaultValues: {
       businessName: "",
-      ownerName: "",
+      companyType: "",
+      contactPersonName: "",
+      mobileNumber: "",
       contactNumber: "",
+      emailAddress: "",
+      companyWebsite: "",
       address: "",
-      email: "",
-      category: "",
       state: "",
       city: "",
       hasGst: "no",
       gstNumber: "",
       panNumber: "",
+      panCardFile: null,
       username: "",
       password: "",
       logoUrl: "",
@@ -121,8 +115,11 @@ export default function VendorRegisterEnhanced() {
       const payload = {
         ...data,
         gstNumber: data.hasGst === "yes" ? data.gstNumber : null,
+        // Map new fields to existing backend fields for compatibility
+        ownerName: data.contactPersonName,
+        email: data.emailAddress,
       };
-      return apiRequest('POST', '/api/vendors/register', payload);
+      return apiRequest('/api/vendors/register', 'POST', payload);
     },
     onSuccess: () => {
       toast({
@@ -243,20 +240,20 @@ export default function VendorRegisterEnhanced() {
 
                     <FormField
                       control={form.control}
-                      name="category"
+                      name="companyType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Category *</FormLabel>
+                          <FormLabel>Company Type *</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select business category" />
+                                <SelectValue placeholder="Select company type" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {businessCategories.map((category) => (
-                                <SelectItem key={category.id} value={category.id}>
-                                  {category.name}
+                              {companyTypes.map((type) => (
+                                <SelectItem key={type.id} value={type.id}>
+                                  {type.name}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -344,21 +341,35 @@ export default function VendorRegisterEnhanced() {
                   </div>
                 </div>
 
-                {/* Owner Information Section */}
+                {/* Contact Person Information Section */}
                 <div className="border rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <User className="h-5 w-5 mr-2" />
-                    Owner Information
+                    Contact Person Information
                   </h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
-                      name="ownerName"
+                      name="contactPersonName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Owner Full Name *</FormLabel>
+                          <FormLabel>Contact Person Name *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter owner's full name" {...field} />
+                            <Input placeholder="Enter contact person's full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="mobileNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mobile Number *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter mobile number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -372,24 +383,39 @@ export default function VendorRegisterEnhanced() {
                         <FormItem>
                           <FormLabel>Contact Number *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter contact number" {...field} />
+                            <Input placeholder="Enter landline/alternate number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <div className="mt-6">
                     <FormField
                       control={form.control}
-                      name="email"
+                      name="emailAddress"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Email Address *</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="Enter email address" {...field} />
+                            <Input placeholder="Enter email address" type="email" {...field} />
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="companyWebsite"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Website</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://www.yourcompany.com (Optional)" {...field} />
+                          </FormControl>
+                          <FormDescription>
+                            Optional: Enter your company website URL
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -470,6 +496,55 @@ export default function VendorRegisterEnhanced() {
                           <FormDescription>
                             10-character PAN card number
                           </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* PAN Card Upload */}
+                  <div className="mt-6">
+                    <FormField
+                      control={form.control}
+                      name="panCardFile"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Upload PAN Card *</FormLabel>
+                          <FormControl>
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                              <div className="text-center">
+                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                                <div className="mt-4">
+                                  <Label
+                                    htmlFor="pan-upload"
+                                    className="cursor-pointer rounded-md bg-white font-medium text-primary hover:text-primary/80"
+                                  >
+                                    <span>Upload PAN Card</span>
+                                    <Input
+                                      id="pan-upload"
+                                      type="file"
+                                      accept="image/*,.pdf"
+                                      className="sr-only"
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                          setPanCardFile(file);
+                                          field.onChange(file);
+                                        }
+                                      }}
+                                    />
+                                  </Label>
+                                  <p className="pl-1">or drag and drop</p>
+                                </div>
+                                <p className="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
+                                {panCardFile && (
+                                  <div className="mt-2 text-sm text-green-600">
+                                    Selected: {panCardFile.name}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -582,7 +657,15 @@ export default function VendorRegisterEnhanced() {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel>
-                            I Agree to Instoredealz Terms and Conditions *
+                            I agree to the{" "}
+                            <a 
+                              href="/terms" 
+                              target="_blank" 
+                              className="text-primary hover:underline"
+                            >
+                              Instoredealz terms and conditions
+                            </a>{" "}
+                            *
                           </FormLabel>
                           <FormDescription>
                             By checking this box, you agree to our terms of service and privacy policy.
