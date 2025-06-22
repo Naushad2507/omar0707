@@ -158,7 +158,7 @@ export default function Help() {
       icon: Phone,
       title: "Phone Support",
       description: "Speak with our team",
-      contact: "+91-9876543210",
+      contact: "90044 08584",
       responseTime: "Mon-Fri, 9 AM - 6 PM IST"
     }
   ];

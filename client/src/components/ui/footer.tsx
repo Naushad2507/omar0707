@@ -115,9 +115,10 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-300">
-            © 2024 Instoredealz. All rights reserved.
-          </p>
+          <div className="text-gray-300 text-sm space-y-1">
+            <p>© 2024 QuantumQuirk EcomFlow Private Limited. All rights reserved.</p>
+            <p>Contact: support@instoredealz.com | Phone: 90044 08584</p>
+          </div>
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <span className="text-gray-300">🇮🇳 Made in India</span>
             <div className="flex items-center space-x-2">

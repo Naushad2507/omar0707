@@ -204,10 +204,11 @@ export default function Terms() {
               <p>
                 If you have any questions about these Terms and Conditions, please contact us at:
               </p>
-              <div className="mt-4">
-                <p><strong>Email:</strong> legal@instoredealz.com</p>
+              <div className="mt-4 space-y-2">
+                <p><strong>Company:</strong> QuantumQuirk EcomFlow Private Limited</p>
+                <p><strong>Email:</strong> support@instoredealz.com</p>
+                <p><strong>Phone:</strong> 90044 08584</p>
                 <p><strong>Address:</strong> Mumbai, Maharashtra, India</p>
-                <p><strong>Phone:</strong> +91-9876543210</p>
               </div>
             </CardContent>
           </Card>
