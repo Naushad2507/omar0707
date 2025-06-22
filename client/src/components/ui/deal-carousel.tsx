@@ -75,11 +75,23 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
             >
               <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border" onClick={onDealClick}>
                 <div className="relative">
-                  <img 
-                    src={deal.imageUrl} 
-                    alt={deal.title}
-                    className="w-full h-48 object-cover"
-                  />
+                  {deal.imageUrl ? (
+                    <img 
+                      src={deal.imageUrl} 
+                      alt={deal.title}
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                      <div className="text-center text-gray-500">
+                        <div className="text-4xl mb-2">🎁</div>
+                        <div className="text-sm">Deal Available</div>
+                      </div>
+                    </div>
+                  )}
                   {/* Flashing Discount Badge */}
                   <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-semibold animate-pulse">
                     <span className="animate-bounce">{deal.discountPercentage}% OFF</span>

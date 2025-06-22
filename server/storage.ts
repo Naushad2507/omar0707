@@ -617,35 +617,35 @@ export class MemStorage implements IStorage {
     const dealTemplates = {
       fashion: {
         titles: ["Winter Collection", "Designer Wear", "Casual Outfits", "Formal Suits", "Ethnic Wear"],
-        images: ["photo-1445205170230-053b83016050", "photo-1553062407-98eeb64c6a62", "photo-1602810318383-e386cc2a3ccf"]
+        images: ["1445205170230-053b83016050", "1553062407-98eeb64c6a62", "1602810318383-e386cc2a3ccf"]
       },
       electronics: {
         titles: ["Smart Phones", "Laptops", "Gaming Accessories", "Home Appliances", "Audio Systems"],
-        images: ["photo-1441986300917-64674bd600d8", "photo-1511707171634-5f897ff02aa9", "photo-1505740420928-5e560c06d30e"]
+        images: ["1441986300917-64674bd600d8", "1511707171634-5f897ff02aa9", "1505740420928-5e560c06d30e"]
       },
       restaurants: {
         titles: ["Multi-Cuisine Buffet", "Pizza Combo", "Fine Dining", "Street Food", "Healthy Meals"],
-        images: ["photo-1555939594-58d7cb561ad1", "photo-1513104890138-7c749659a591", "photo-1414235077428-338989a2e8c0"]
+        images: ["1555939594-58d7cb561ad1", "1513104890138-7c749659a591", "1414235077428-338989a2e8c0"]
       },
       beauty: {
         titles: ["Spa Package", "Hair Treatment", "Facial Services", "Makeup Session", "Wellness Package"],
-        images: ["photo-1560750588-73207b1ef5b8", "photo-1522335659846-4d79e4b6affe", "photo-1571019613454-1cb2f99b2d8b"]
+        images: ["1560750588-73207b1ef5b8", "1522335659846-4d79e4b6affe", "1540555700478-4be289fbecef"]
       },
       travel: {
         titles: ["Holiday Package", "Adventure Trip", "City Tour", "Resort Stay", "Flight Deals"],
-        images: ["photo-1506905925346-21bda4d32df4", "photo-1488646953014-85cb44e25828", "photo-1571896349842-33c89424de2d"]
+        images: ["1506905925346-21bda4d32df4", "1488646953014-85cb44e25828", "1571896349842-33c89424de2d"]
       },
       home: {
         titles: ["Furniture Sale", "Home Decor", "Kitchen Appliances", "Bedding Sets", "Garden Tools"],
-        images: ["photo-1555041469-a586c61ea9bc", "photo-1484154218962-a197022b5858", "photo-1586023492125-27b2c045efd7"]
+        images: ["1555041469-a586c61ea9bc", "1484154218962-a197022b5858", "1586023492125-27b2c045efd7"]
       },
       automotive: {
         titles: ["Car Service", "Bike Accessories", "Car Wash", "Tire Change", "Auto Parts"],
-        images: ["photo-1492144534655-ae79c964c9d7", "photo-1503376780353-7e6692767b70", "photo-1558618047-3c8c76ca7d13"]
+        images: ["1492144534655-ae79c964c9d7", "1503376780353-7e6692767b70", "1558618047-3c8c76ca7d13"]
       },
       health: {
         titles: ["Health Checkup", "Gym Membership", "Yoga Classes", "Medical Consultation", "Pharmacy Discount"],
-        images: ["photo-1559757148-5c350d0d3c56", "photo-1571019613454-1cb2f99b2d8b", "photo-1559757175-0eb30cd2c115"]
+        images: ["1559757148-5c350d0d3c56", "1571019613454-1cb2f99b2d8b", "1559757175-0eb30cd2c115"]
       }
     };
 
@@ -660,7 +660,7 @@ export class MemStorage implements IStorage {
       title: `${title} ${index + 1} - ${discount}% Off`,
       description: `Amazing ${discount}% discount on ${title.toLowerCase()}. Limited time offer!`,
       category,
-      imageUrl: `https://images.unsplash.com/${imageId}?w=600&h=400&fit=crop`,
+      imageUrl: `https://images.unsplash.com/photo-${imageId}?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400`,
       discountPercentage: discount,
       discountCode: `${category.toUpperCase()}${discount}${index}`,
       originalPrice: originalPrice.toString(),

@@ -126,48 +126,59 @@ export default function DealCard({
   return (
     <Card className="deal-card h-full flex flex-col" onClick={onView}>
       {/* Image */}
-      {imageUrl && (
-        <div className="relative h-48 overflow-hidden rounded-t-lg">
+      <div className="relative h-48 overflow-hidden rounded-t-lg">
+        {imageUrl ? (
           <img 
             src={imageUrl} 
             alt={title}
             className="w-full h-full object-cover"
-          />
-          <div className="absolute top-12 left-2">
-            <Badge className={`${categoryColors[category as keyof typeof categoryColors]} border-0`}>
-              {category}
-            </Badge>
-          </div>
-          <div className={`absolute top-2 right-2 rounded-full px-2 py-1 text-xs font-semibold transition-all duration-300 ${
-            isFlashing 
-              ? 'bg-red-500 text-white shadow-lg scale-110' 
-              : 'bg-white/90 backdrop-blur-sm text-gray-900'
-          }`}>
-            {discountPercentage}% OFF
-          </div>
-          
-          {/* Favorite Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite?.();
+            onError={(e) => {
+              e.currentTarget.src = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400";
             }}
-            className="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200"
-          >
-            <Heart 
-              className={`h-4 w-4 transition-colors duration-200 ${
-                isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'
-              }`} 
-            />
-          </button>
-          {viewCount > 0 && (
-            <div className="absolute bottom-2 right-2 bg-black/70 text-white rounded px-2 py-1 text-xs flex items-center space-x-1">
-              <Eye className="h-3 w-3" />
-              <span>{viewCount}</span>
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <div className="text-center text-gray-500">
+              <div className="text-4xl mb-2">🎁</div>
+              <div className="text-sm">Deal Available</div>
             </div>
-          )}
+          </div>
+        )}
+        
+        <div className="absolute top-12 left-2">
+          <Badge className={`${categoryColors[category as keyof typeof categoryColors]} border-0`}>
+            {category}
+          </Badge>
         </div>
-      )}
+        <div className={`absolute top-2 right-2 rounded-full px-2 py-1 text-xs font-semibold transition-all duration-300 ${
+          isFlashing 
+            ? 'bg-red-500 text-white shadow-lg scale-110' 
+            : 'bg-white/90 backdrop-blur-sm text-gray-900'
+        }`}>
+          {discountPercentage}% OFF
+        </div>
+        
+        {/* Favorite Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite?.();
+          }}
+          className="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200"
+        >
+          <Heart 
+            className={`h-4 w-4 transition-colors duration-200 ${
+              isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'
+            }`} 
+          />
+        </button>
+        {viewCount > 0 && (
+          <div className="absolute bottom-2 right-2 bg-black/70 text-white rounded px-2 py-1 text-xs flex items-center space-x-1">
+            <Eye className="h-3 w-3" />
+            <span>{viewCount}</span>
+          </div>
+        )}
+      </div>
 
       <CardContent className="flex-1 p-4">
         <div className="space-y-3">

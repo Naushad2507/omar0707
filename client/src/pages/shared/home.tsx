@@ -476,6 +476,12 @@ export default function Home() {
             autoPlay={true}
             interval={5000}
           />
+          
+          <div className="text-center mt-8">
+            <Button onClick={handleDealClick} size="lg" className="bg-primary hover:bg-primary/90">
+              View All Deals
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -494,6 +500,12 @@ export default function Home() {
             autoPlay={true}
             interval={4500}
           />
+          
+          <div className="text-center mt-8">
+            <Button onClick={handleDealClick} size="lg" className="bg-primary hover:bg-primary/90">
+              View All Deals
+            </Button>
+          </div>
         </div>
       </section>
 
