@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, MapPin, Clock } from "lucide-react";
@@ -30,6 +31,7 @@ interface DealCarouselProps {
 
 export default function DealCarousel({ deals, onDealClick, showClaims = false, className = "", autoPlay = false, interval = 4000 }: DealCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [, navigate] = useLocation();
   const cardsPerView = 3;
   const maxIndex = Math.max(0, deals.length - cardsPerView);
 
@@ -142,6 +144,16 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
                         {deal.category}
                       </Badge>
                     )}
+                    <Button 
+                      size="sm" 
+                      className="bg-primary hover:bg-primary/90 text-white px-4 py-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/deals/${deal.id}`);
+                      }}
+                    >
+                      View Deal
+                    </Button>
                   </div>
                 </div>
               </div>
