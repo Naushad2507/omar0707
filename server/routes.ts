@@ -992,6 +992,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(cities);
   });
 
+  // Admin deal distribution endpoints
+  app.get('/api/admin/deal-distribution', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const distribution = await storage.getDealsByCategory();
+      res.json(distribution);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch deal distribution" });
+    }
+  });
+
+  app.delete('/api/admin/deals/category/:category', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { category } = req.params;
+      const success = await storage.deleteDealsByCategory(category);
+      if (success) {
+        res.json({ message: `All deals in ${category} category deleted successfully` });
+      } else {
+        res.status(404).json({ message: "Category not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete category deals" });
+    }
+  });
+
+  app.post('/api/admin/deals/reset', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const success = await storage.resetAllDeals();
+      if (success) {
+        res.json({ message: "All deals reset successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to reset deals" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to reset deals" });
+    }
+  });
+
+  // Most claimed deals endpoint
+  app.get('/api/deals/most-claimed', async (req: AuthenticatedRequest, res) => {
+    try {
+      const deals = await storage.getMostClaimedDeals();
+      res.json(deals);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch most claimed deals" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

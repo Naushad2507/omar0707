@@ -112,15 +112,16 @@ export default function Terms() {
               <div>
                 <h4 className="font-semibold mb-2">Deal Validity</h4>
                 <p>
-                  All deals are subject to vendor terms and conditions. Instoredealz acts as a platform to connect 
-                  users with vendor offers but is not responsible for the fulfillment of deals by vendors.
+                  All deals are subject to vendor terms and conditions. Instoredealz  acts solely as a platform to connect 
+                  users with vendor offers and is not liable for the execution, availability, or outcome of vendor deals.
                 </p>
               </div>
               
               <div>
                 <h4 className="font-semibold mb-2">Deal Limitations</h4>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li>One deal claim per user per offer unless otherwise specified</li>
+                  <li>Discounts apply to the total bill value, as specified in each deal</li>
+                  <li>Deals may be claimed multiple times unless a vendor sets specified limitations</li>
                   <li>Deals cannot be combined with other offers</li>
                   <li>Claimed deals must be used within the validity period</li>
                   <li>Deals are non-transferable and non-refundable</li>
@@ -137,8 +138,9 @@ export default function Terms() {
               <div>
                 <h4 className="font-semibold mb-2">Deal Creation</h4>
                 <p>
-                  Vendors are responsible for creating accurate deal descriptions, setting appropriate terms, 
-                  and honoring all claimed deals according to the specified conditions.
+                  Vendors are responsible for creating accurate deal descriptions, discount   terms, 
+                  and honoring all claimed deals according to the specified conditions. Honoring all valid redemption by verified instoredealz subscribers.
+                  
                 </p>
               </div>
               

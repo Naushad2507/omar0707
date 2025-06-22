@@ -40,6 +40,9 @@ import AdminDashboard from "@/pages/admin/dashboard";
 import AdminUsers from "@/pages/admin/users";
 import AdminVendors from "@/pages/admin/vendors";
 import AdminDeals from "@/pages/admin/deals";
+// import AdminVendorsPending from "@/pages/admin/vendors-pending";
+// import AdminDealsPending from "@/pages/admin/deals-pending";
+import AdminDealDistribution from "@/pages/admin/deal-distribution";
 
 // Super Admin pages
 import SuperAdminDashboard from "@/pages/superadmin/dashboard";
@@ -154,6 +157,12 @@ function Router() {
       <Route path="/admin/deals">
         <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
           <AdminDeals />
+        </ProtectedRoute>
+      </Route>
+      {/* TODO: Add pending routes when pages are created */}
+      <Route path="/admin/deal-distribution">
+        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
+          <AdminDealDistribution />
         </ProtectedRoute>
       </Route>
       

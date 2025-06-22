@@ -345,23 +345,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Deals */}
+      {/* Most Claimed Deals */}
       {deals && deals.length > 0 && (
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Deals in {selectedCity}</h2>
-              <p className="text-gray-600">Don't miss out on these amazing offers</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Most Claimed Deals</h2>
+              <p className="text-gray-600">Popular deals that everyone loves</p>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {deals.slice(0, 6).map((deal: any) => (
-                <DealCard
-                  key={deal.id}
-                  {...deal}
-                  onView={handleDealClick}
-                  onClaim={handleDealClick}
-                />
+              {deals
+                .sort((a: any, b: any) => (b.currentRedemptions || 0) - (a.currentRedemptions || 0))
+                .slice(0, 15)
+                .map((deal: any) => (
+                <div key={deal.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer" onClick={handleDealClick}>
+                  <img 
+                    src={deal.imageUrl} 
+                    alt={deal.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-6">
+                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{deal.title}</h3>
+                    <p className="text-sm text-gray-600 mb-3">{deal.vendor?.businessName || 'Vendor'}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="text-lg font-bold text-primary">
+                        {deal.currentRedemptions || 0} Claims
+                      </div>
+                      <Badge variant="secondary" className="bg-saffron/10 text-saffron">
+                        {deal.discountPercentage}% OFF
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
             
