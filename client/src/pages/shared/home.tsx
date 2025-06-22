@@ -265,7 +265,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-in">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                Discover Amazing <span className="text-primary">Deals</span> Near You
+                Discover <span className="text-primary">Deals</span> Near You
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 Join thousands of savvy shoppers and local businesses on India's fastest-growing deals platform.
@@ -394,7 +394,7 @@ export default function Home() {
       <section className="py-16 bg-gradient-to-br from-saffron/5 to-royal/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Iconic India, Amazing Deals</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Iconic India, Great Deals</h2>
             <p className="text-gray-600">Discover incredible offers near India's most famous landmarks</p>
           </div>
           
