@@ -28,7 +28,9 @@ export default function MembershipCard({
     setQrCodeUrl(qrCode);
   }, [userId, membershipId]);
 
-  const getPlanColor = (plan: string) => {
+  const getPlanColor = (plan: string | null | undefined) => {
+    if (!plan) return "bg-gradient-to-br from-gray-600 to-gray-700";
+    
     switch (plan.toLowerCase()) {
       case "premium":
         return "membership-card"; // Uses CSS class with gradient

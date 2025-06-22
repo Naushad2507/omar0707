@@ -211,7 +211,10 @@ export default function DealCard({
           {/* Nearby Deals and Membership Requirement */}
           <div className="flex items-center justify-between">
             <Badge className={`${membershipColors[requiredMembership as keyof typeof membershipColors]} text-xs`}>
-              {requiredMembership.charAt(0).toUpperCase() + requiredMembership.slice(1)} Required
+              {requiredMembership ? 
+                requiredMembership.charAt(0).toUpperCase() + requiredMembership.slice(1) + ' Required' : 
+                'No Membership Required'
+              }
             </Badge>
             {vendor && (
               <div className="flex items-center text-xs text-gray-500">
@@ -293,7 +296,10 @@ export default function DealCard({
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">Membership:</span>
                       <Badge className={`${membershipColors[requiredMembership as keyof typeof membershipColors]} text-xs`}>
-                        {requiredMembership.charAt(0).toUpperCase() + requiredMembership.slice(1)}
+                        {requiredMembership ? 
+                          requiredMembership.charAt(0).toUpperCase() + requiredMembership.slice(1) : 
+                          'None'
+                        }
                       </Badge>
                     </div>
                   </div>
