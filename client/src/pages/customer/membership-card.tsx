@@ -1,320 +1,371 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import Navbar from "@/components/ui/navbar";
-import Footer from "@/components/ui/footer";
-import MembershipCardDigital from "@/components/ui/membership-card-digital";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { 
-  Download, 
-  Share2, 
-  Smartphone, 
-  Wallet,
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  Crown,
+  Shield,
+  Calendar,
   CreditCard,
+  QrCode,
+  Download,
+  Copy,
+  CheckCircle2,
+  Zap,
   Star,
-  TrendingUp,
   Gift,
-  Clock,
-  Loader2
+  Eye,
+  EyeOff,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-export default function MembershipCardPage() {
-  const { user } = useAuth();
-  const [isDownloading, setIsDownloading] = useState(false);
+interface MembershipCardData {
+  membershipTier: string;
+  membershipExpiry: string;
+  totalSavings: string;
+  dealsClaimed: number;
+  cardNumber: string;
+  qrCode: string;
+  isActive: boolean;
+}
 
-  const { data: claims, isLoading: claimsLoading } = useQuery({
-    queryKey: ["/api/users/claims"],
+const tierConfig = {
+  basic: {
+    name: "Basic",
+    color: "bg-gradient-to-br from-gray-400 to-gray-600",
+    icon: Shield,
+    benefits: ["Access to Food & Travel deals", "Standard support", "Basic rewards"],
+  },
+  premium: {
+    name: "Premium",
+    color: "bg-gradient-to-br from-blue-500 to-purple-600",
+    icon: Crown,
+    benefits: ["Access to most deal categories", "Priority support", "Enhanced rewards", "Exclusive offers"],
+  },
+  ultimate: {
+    name: "Ultimate",
+    color: "bg-gradient-to-br from-purple-600 to-pink-600",
+    icon: Star,
+    benefits: ["Access to ALL deals", "VIP support", "Maximum rewards", "Early access", "Premium concierge"],
+  },
+};
+
+export default function MembershipCard() {
+  const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const [showQR, setShowQR] = useState(false);
+  const [otpCode, setOtpCode] = useState<string>("");
+  const [isGeneratingOTP, setIsGeneratingOTP] = useState(false);
+
+  // Generate membership card data
+  const { data: cardData, isLoading } = useQuery<MembershipCardData>({
+    queryKey: ['/api/membership/card'],
+    enabled: isAuthenticated,
+    select: (data) => ({
+      membershipTier: user?.membershipPlan || 'basic',
+      membershipExpiry: user?.membershipExpiry || new Date('2025-12-31').toISOString(),
+      totalSavings: user?.totalSavings || '0',
+      dealsClaimed: user?.dealsClaimed || 0,
+      cardNumber: `ISD-${user?.id?.toString().padStart(8, '0')}`,
+      qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify({
+        userId: user?.id,
+        membershipTier: user?.membershipPlan,
+        cardNumber: `ISD-${user?.id?.toString().padStart(8, '0')}`,
+        expiry: user?.membershipExpiry,
+        timestamp: Date.now()
+      }))}`,
+      isActive: true,
+      ...data
+    }),
   });
 
-  if (!user) {
+  const generateOTP = async () => {
+    setIsGeneratingOTP(true);
+    try {
+      // Simulate OTP generation
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      setOtpCode(otp);
+      
+      toast({
+        title: "OTP Generated",
+        description: "Use this code for one-time deal access",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to generate OTP",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingOTP(false);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: "Information copied to clipboard",
+    });
+  };
+
+  const downloadCard = () => {
+    toast({
+      title: "Download Started",
+      description: "Your membership card is being downloaded",
+    });
+  };
+
+  if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-md mx-auto px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Please login to view your membership card
-          </h1>
-        </div>
-        <Footer />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <Shield className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+            <h2 className="text-xl font-semibold mb-2">Login Required</h2>
+            <p className="text-gray-600 mb-4">Please log in to view your membership card.</p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  const handleDownload = async () => {
-    setIsDownloading(true);
-    // Simulate download process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsDownloading(false);
-    // In a real app, this would generate and download the card image
-    alert("Card downloaded to your device!");
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <span>Loading your membership card...</span>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'My Instoredealz Membership Card',
-          text: 'Check out my membership card!',
-          url: window.location.href
-        });
-      } catch (error) {
-        console.log('Error sharing:', error);
-      }
-    } else {
-      // Fallback for browsers without Web Share API
-      navigator.clipboard.writeText(window.location.href);
-      alert("Card link copied to clipboard!");
-    }
-  };
-
-  // Generate membership ID based on user info
-  const membershipId = `ID${user.id.toString().padStart(4, '0')}-IND-${user.city?.substring(0, 3).toUpperCase() || 'MUM'}`;
-  
-  // Calculate membership dates
-  const validFrom = new Date().toISOString();
-  const validUntil = user.membershipExpiry || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+  const tierInfo = tierConfig[user.membershipPlan as keyof typeof tierConfig] || tierConfig.basic;
+  const TierIcon = tierInfo.icon;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Your Digital Membership Card
-          </h1>
-          <p className="text-gray-600">
-            Show this card at participating stores to claim your exclusive deals
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-8">
-          
-          {/* Membership Card */}
-          <div className="space-y-6">
-            <MembershipCardDigital
-              name={user.name}
-              membershipId={membershipId}
-              membershipPlan={user.membershipPlan || 'basic'}
-              city={user.city || 'Mumbai'}
-              validFrom={validFrom}
-              validUntil={validUntil}
-              userId={user.id}
-              className="shadow-2xl"
-            />
-
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-4">
-              <Button 
-                onClick={handleDownload} 
-                className="flex items-center justify-center"
-                disabled={isDownloading}
-              >
-                {isDownloading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Download className="h-4 w-4 mr-2" />
-                )}
-                {isDownloading ? 'Downloading...' : 'Download Card'}
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={handleShare}
-                className="flex items-center justify-center"
-              >
-                <Share2 className="h-4 w-4 mr-2" />
-                Share Card
-              </Button>
-            </div>
-
-            {/* Usage Instructions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-lg">
-                  <Smartphone className="h-5 w-5 mr-2" />
-                  How to Use Your Card
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">1</div>
-                  <div>
-                    <p className="font-medium">Show at Store</p>
-                    <p className="text-sm text-gray-600">Present this digital card at any participating store</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">2</div>
-                  <div>
-                    <p className="font-medium">Scan QR Code</p>
-                    <p className="text-sm text-gray-600">Store staff will scan the QR code to verify your membership</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">3</div>
-                  <div>
-                    <p className="font-medium">Claim Deal</p>
-                    <p className="text-sm text-gray-600">Enjoy exclusive discounts and deals automatically applied</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Digital Membership Card</h1>
+            <p className="text-gray-600">Your secure access to exclusive deals</p>
           </div>
 
-          {/* Membership Stats & Info */}
-          <div className="space-y-6">
-            
-            {/* Membership Status */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <CreditCard className="h-5 w-5 mr-2" />
-                    Membership Status
-                  </div>
-                  <Badge variant="default" className="bg-green-100 text-green-800">
-                    Active
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Plan</p>
-                    <p className="font-semibold capitalize">{user.membershipPlan || 'Basic'} Member</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Member Since</p>
-                    <p className="font-semibold">Jan 2024</p>
-                  </div>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Membership Card */}
+            <div className="space-y-6">
+              <Card className={`overflow-hidden ${tierInfo.color} text-white relative`}>
+                <div className="absolute top-4 right-4">
+                  <TierIcon className="w-8 h-8 opacity-30" />
                 </div>
                 
-                <div>
-                  <p className="text-sm text-gray-600">Valid Until</p>
-                  <p className="font-semibold">
-                    {new Date(validUntil).toLocaleDateString('en-IN', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric'
-                    })}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Savings Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <TrendingUp className="h-5 w-5 mr-2" />
-                  Your Savings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">
-                      ₹{user.totalSavings || '2,450'}
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-2xl font-bold text-white">
+                        {tierInfo.name} Member
+                      </CardTitle>
+                      <p className="text-white/80">Instoredealz</p>
                     </div>
-                    <p className="text-sm text-gray-600">Total Saved</p>
+                    <Badge className="bg-white/20 text-white border-white/30">
+                      Active
+                    </Badge>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {user.dealsClaimed || claims?.length || 12}
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="text-white/80 text-sm">Member Name</p>
+                    <p className="font-semibold text-lg">{user.name}</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-white/80 text-sm">Card Number</p>
+                      <p className="font-mono text-sm">{cardData?.cardNumber}</p>
                     </div>
-                    <p className="text-sm text-gray-600">Deals Claimed</p>
+                    <div>
+                      <p className="text-white/80 text-sm">Valid Until</p>
+                      <p className="text-sm">
+                        {cardData?.membershipExpiry ? 
+                          new Date(cardData.membershipExpiry).toLocaleDateString('en-IN', {
+                            month: 'short',
+                            year: 'numeric'
+                          }) : 
+                          'Dec 2025'
+                        }
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Membership Benefits */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Gift className="h-5 w-5 mr-2" />
-                  Membership Benefits
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm">Exclusive member-only deals</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm">Early access to new offers</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm">Birthday special discounts</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm">Priority customer support</span>
-                </div>
-              </CardContent>
-            </Card>
+                  <Separator className="bg-white/20" />
 
-            {/* Recent Activity */}
-            {!claimsLoading && claims && claims.length > 0 && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-white/80 text-sm">Total Savings</p>
+                      <p className="font-bold text-xl">₹{cardData?.totalSavings || '0'}</p>
+                    </div>
+                    <div>
+                      <p className="text-white/80 text-sm">Deals Claimed</p>
+                      <p className="font-bold text-xl">{cardData?.dealsClaimed || 0}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Card Actions */}
+              <div className="grid grid-cols-2 gap-4">
+                <Button 
+                  onClick={downloadCard} 
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Card
+                </Button>
+                <Button 
+                  onClick={() => copyToClipboard(cardData?.cardNumber || '')} 
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy Number
+                </Button>
+              </div>
+            </div>
+
+            {/* QR Code & Security */}
+            <div className="space-y-6">
+              {/* QR Code Section */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <Clock className="h-5 w-5 mr-2" />
-                    Recent Activity
+                    <QrCode className="w-5 h-5 mr-2" />
+                    Secure QR Code
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  {showQR ? (
+                    <div className="space-y-4">
+                      <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 inline-block">
+                        <img
+                          src={cardData?.qrCode}
+                          alt="Membership QR Code"
+                          className="w-48 h-48 mx-auto"
+                        />
+                      </div>
+                      <p className="text-sm text-gray-600">
+                        Show this QR code to vendors for instant deal verification
+                      </p>
+                      <Button 
+                        onClick={() => setShowQR(false)} 
+                        variant="outline" 
+                        size="sm"
+                      >
+                        <EyeOff className="w-4 h-4 mr-2" />
+                        Hide QR Code
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="bg-gray-100 p-8 rounded-lg">
+                        <QrCode className="w-16 h-16 mx-auto text-gray-400 mb-2" />
+                        <p className="text-gray-600">QR Code Hidden for Security</p>
+                      </div>
+                      <Button 
+                        onClick={() => setShowQR(true)} 
+                        className="w-full"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Show QR Code
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* One-Time Access OTP */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Shield className="w-5 h-5 mr-2" />
+                    One-Time Access
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-gray-600">
+                    Generate a secure 6-digit code for temporary deal access
+                  </p>
+                  
+                  {otpCode ? (
+                    <div className="text-center space-y-4">
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <p className="text-sm text-green-700 mb-2">Your OTP Code:</p>
+                        <p className="text-2xl font-mono font-bold text-green-800">{otpCode}</p>
+                        <p className="text-xs text-green-600 mt-2">Valid for 10 minutes</p>
+                      </div>
+                      <Button 
+                        onClick={() => copyToClipboard(otpCode)} 
+                        variant="outline" 
+                        size="sm"
+                      >
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copy Code
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      onClick={generateOTP} 
+                      disabled={isGeneratingOTP}
+                      className="w-full"
+                    >
+                      {isGeneratingOTP ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="w-4 h-4 mr-2" />
+                          Generate OTP
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Membership Benefits */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Gift className="w-5 h-5 mr-2" />
+                    Membership Benefits
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {claims.slice(0, 3).map((claim: any, index: number) => (
-                      <div key={claim.id} className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">
-                          Deal claimed
-                        </span>
-                        <span className="font-medium text-green-600">
-                          Saved ₹{claim.savingsAmount}
-                        </span>
+                    {tierInfo.benefits.map((benefit, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <span className="text-sm">{benefit}</span>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
-            )}
+            </div>
           </div>
         </div>
-
-        {/* Add to Wallet Section */}
-        <Card className="mt-8">
-          <CardContent className="p-6">
-            <div className="text-center">
-              <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Add to Digital Wallet
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Add your membership card to your phone's digital wallet for quick access
-              </p>
-              <div className="flex justify-center space-x-4">
-                <Button variant="outline" size="sm">
-                  Add to Apple Wallet
-                </Button>
-                <Button variant="outline" size="sm">
-                  Add to Google Pay
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
-
-      <Footer />
     </div>
   );
 }

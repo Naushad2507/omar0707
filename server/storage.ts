@@ -1,4 +1,19 @@
-import type { User, InsertUser, Vendor, InsertVendor, Deal, InsertDeal, DealClaim, InsertDealClaim, HelpTicket, InsertHelpTicket, SystemLog, InsertSystemLog, Wishlist, InsertWishlist } from "@shared/schema";
+import {
+  User,
+  InsertUser,
+  Vendor,
+  InsertVendor,
+  Deal,
+  InsertDeal,
+  DealClaim,
+  InsertDealClaim,
+  HelpTicket,
+  InsertHelpTicket,
+  SystemLog,
+  InsertSystemLog,
+  Wishlist,
+  InsertWishlist,
+} from "../shared/schema";
 
 export interface IStorage {
   // User operations
@@ -96,141 +111,344 @@ export class MemStorage implements IStorage {
   }
 
   private initializeWithSampleData() {
-    // Create sample admin user
+    // Create admin users
     const adminUser: User = {
       id: this.currentUserId++,
+      name: "Admin User",
       username: "admin",
       email: "admin@instoredealz.com",
       password: "admin123",
-      name: "System Admin",
       role: "admin",
       phone: "+91-9876543210",
       city: "Mumbai",
       state: "Maharashtra",
-      membershipPlan: "ultimate",
+      membershipPlan: null,
       membershipExpiry: null,
       isPromotionalUser: false,
-      totalSavings: "15000",
-      dealsClaimed: 25,
-      createdAt: new Date(),
-      isActive: true,
-    };
-    this.users.set(adminUser.id, adminUser);
-
-    // Create sample customer user
-    const customerUser: User = {
-      id: this.currentUserId++,
-      username: "customer",
-      email: "customer@example.com",
-      password: "customer123",
-      name: "John Doe",
-      role: "customer",
-      phone: "+91-9123456789",
-      city: "Delhi",
-      state: "Delhi",
-      membershipPlan: "premium",
-      membershipExpiry: new Date("2025-12-31"),
-      isPromotionalUser: false,
-      totalSavings: "5000",
-      dealsClaimed: 12,
-      createdAt: new Date(),
-      isActive: true,
-    };
-    this.users.set(customerUser.id, customerUser);
-
-    // Create sample vendor user
-    const vendorUser: User = {
-      id: this.currentUserId++,
-      username: "vendor",
-      email: "vendor@example.com",
-      password: "vendor123",
-      name: "Fashion Store Owner",
-      role: "vendor",
-      phone: "+91-9876543210",
-      city: "Mumbai",
-      state: "Maharashtra",
-      membershipPlan: "basic",
-      membershipExpiry: null,
-      isPromotionalUser: false,
-      totalSavings: "0",
+      totalSavings: "0.00",
       dealsClaimed: 0,
       createdAt: new Date(),
       isActive: true,
     };
-    this.users.set(vendorUser.id, vendorUser);
+
+    const superAdminUser: User = {
+      id: this.currentUserId++,
+      name: "Super Admin",
+      username: "superadmin",
+      email: "superadmin@instoredealz.com",
+      password: "superadmin123",
+      role: "superadmin",
+      phone: "+91-9876543211",
+      city: "Delhi",
+      state: "Delhi",
+      membershipPlan: null,
+      membershipExpiry: null,
+      isPromotionalUser: false,
+      totalSavings: "0.00",
+      dealsClaimed: 0,
+      createdAt: new Date(),
+      isActive: true,
+    };
+
+    // Create test customers with different membership tiers
+    const customerBasic: User = {
+      id: this.currentUserId++,
+      name: "Basic Customer",
+      username: "customer_basic",
+      email: "basic@example.com",
+      password: "customer123",
+      role: "customer",
+      phone: "+91-9876543212",
+      city: "Bangalore",
+      state: "Karnataka",
+      membershipPlan: "basic",
+      membershipExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      isPromotionalUser: false,
+      totalSavings: "2450.00",
+      dealsClaimed: 8,
+      createdAt: new Date(),
+      isActive: true,
+    };
+
+    const customerPremium: User = {
+      id: this.currentUserId++,
+      name: "Premium Customer",
+      username: "customer_premium",
+      email: "premium@example.com",
+      password: "customer123",
+      role: "customer",
+      phone: "+91-9876543213",
+      city: "Chennai",
+      state: "Tamil Nadu",
+      membershipPlan: "premium",
+      membershipExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      isPromotionalUser: false,
+      totalSavings: "8950.00",
+      dealsClaimed: 24,
+      createdAt: new Date(),
+      isActive: true,
+    };
+
+    const customerUltimate: User = {
+      id: this.currentUserId++,
+      name: "Ultimate Customer",
+      username: "customer_ultimate",
+      email: "ultimate@example.com",
+      password: "customer123",
+      role: "customer",
+      phone: "+91-9876543214",
+      city: "Hyderabad",
+      state: "Telangana",
+      membershipPlan: "ultimate",
+      membershipExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      isPromotionalUser: true,
+      totalSavings: "15750.00",
+      dealsClaimed: 42,
+      createdAt: new Date(),
+      isActive: true,
+    };
+
+    // Create vendor user
+    const vendorUser: User = {
+      id: this.currentUserId++,
+      name: "Fashion Store Owner",
+      username: "vendor",
+      email: "vendor@example.com",
+      password: "vendor123",
+      role: "vendor",
+      phone: "+91-9876543215",
+      city: "Mumbai",
+      state: "Maharashtra",
+      membershipPlan: null,
+      membershipExpiry: null,
+      isPromotionalUser: false,
+      totalSavings: "0.00",
+      dealsClaimed: 0,
+      createdAt: new Date(),
+      isActive: true,
+    };
+
+    // Save users
+    [adminUser, superAdminUser, customerBasic, customerPremium, customerUltimate, vendorUser].forEach(user => {
+      this.users.set(user.id, user);
+    });
 
     // Create sample vendor
     const vendor: Vendor = {
       id: this.currentVendorId++,
       userId: vendorUser.id,
-      businessName: "Fashion Hub",
-      gstNumber: "27AABCU9603R1ZX",
-      panNumber: "AABCU9603R",
+      businessName: "TrendyFashion Store",
+      gstNumber: "27ABCDE1234F1Z5",
+      panNumber: "ABCDE1234F",
       logoUrl: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=200&h=200&fit=crop",
       description: "Premium fashion retailer with latest trends",
       address: "Shop 123, Mall Road",
       city: "Mumbai",
       state: "Maharashtra",
+      latitude: "19.0760",
+      longitude: "72.8777",
       isApproved: true,
       rating: "4.8",
       totalDeals: 12,
       totalRedemptions: 345,
       createdAt: new Date(),
     };
+
     this.vendors.set(vendor.id, vendor);
 
-    // Generate 50 additional vendors for testing
-    const additionalVendors = this.generateTestVendors(50);
-    additionalVendors.forEach(vendor => {
-      this.vendors.set(vendor.id, vendor);
-    });
+    // Generate comprehensive test data
+    this.generateTestVendors().forEach(v => this.vendors.set(v.id, v));
+    this.generateTestUsers().forEach(u => this.users.set(u.id, u));
+    this.generateTestDeals().forEach(d => this.deals.set(d.id, d));
+    this.generateTestClaims();
+  }
 
-    // Generate 50 additional users for testing
-    const additionalUsers = this.generateTestUsers(50);
-    additionalUsers.forEach(user => {
-      this.users.set(user.id, user);
-    });
+  private generateTestVendors(): Vendor[] {
+    const vendors: Vendor[] = [];
+    const cities = ["Delhi", "Mumbai", "Bangalore", "Chennai", "Hyderabad", "Pune", "Kolkata", "Ahmedabad"];
+    const states = ["Delhi", "Maharashtra", "Karnataka", "Tamil Nadu", "Telangana", "Maharashtra", "West Bengal", "Gujarat"];
 
-    // Create comprehensive sample deals - 50 per category for testing
-    const sampleDeals = this.generateTestDeals();
-    
-    sampleDeals.forEach((dealData) => {
-      const deal: Deal = {
-        id: this.currentDealId++,
-        vendorId: vendor.id,
-        ...dealData,
+    for (let i = 0; i < 10; i++) {
+      const cityIndex = i % cities.length;
+      const vendor: Vendor = {
+        id: this.currentVendorId++,
+        userId: this.currentUserId++,
+        businessName: `Business ${i + 1}`,
+        gstNumber: `27ABCDE123${i}F1Z5`,
+        panNumber: `ABCDE123${i}F`,
+        logoUrl: `https://images.unsplash.com/photo-${1500000000000 + i}?w=200&h=200&fit=crop`,
+        description: `Quality business providing excellent services ${i + 1}`,
+        address: `Shop ${100 + i}, Business District`,
+        city: cities[cityIndex],
+        state: states[cityIndex],
+        latitude: `${19 + (i * 0.1)}`,
+        longitude: `${72 + (i * 0.1)}`,
+        isApproved: i < 8, // Most vendors approved
+        rating: `${4.2 + (i * 0.1)}`,
+        totalDeals: 5 + (i * 2),
+        totalRedemptions: 50 + (i * 25),
+        createdAt: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
+      };
+      vendors.push(vendor);
+      
+      // Create corresponding user for each vendor
+      const vendorUser: User = {
+        id: vendor.userId,
+        name: `Vendor ${i + 1}`,
+        username: `vendor_${i + 1}`,
+        email: `vendor${i + 1}@example.com`,
+        password: "vendor123",
+        role: "vendor",
+        phone: `+91-987654${3216 + i}`,
+        city: cities[cityIndex],
+        state: states[cityIndex],
+        membershipPlan: null,
+        membershipExpiry: null,
+        isPromotionalUser: false,
+        totalSavings: "0.00",
+        dealsClaimed: 0,
+        createdAt: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
         isActive: true,
-        isApproved: true,
-        approvedBy: adminUser.id,
-        viewCount: Math.floor(Math.random() * 1000),
-        createdAt: new Date(),
       };
-      this.deals.set(deal.id, deal);
+      this.users.set(vendorUser.id, vendorUser);
+    }
+
+    return vendors;
+  }
+
+  private generateTestUsers(): User[] {
+    const users: User[] = [];
+    const cities = ["Delhi", "Mumbai", "Bangalore", "Chennai", "Hyderabad", "Pune", "Kolkata", "Ahmedabad"];
+    const states = ["Delhi", "Maharashtra", "Karnataka", "Tamil Nadu", "Telangana", "Maharashtra", "West Bengal", "Gujarat"];
+    const membershipTiers = ["basic", "premium", "ultimate"];
+
+    for (let i = 0; i < 20; i++) {
+      const cityIndex = i % cities.length;
+      const membershipTier = membershipTiers[i % 3];
+      
+      const user: User = {
+        id: this.currentUserId++,
+        name: `Customer ${i + 1}`,
+        username: `customer_${i + 1}`,
+        email: `customer${i + 1}@example.com`,
+        password: "customer123",
+        role: "customer",
+        phone: `+91-987654${4000 + i}`,
+        city: cities[cityIndex],
+        state: states[cityIndex],
+        membershipPlan: membershipTier,
+        membershipExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        isPromotionalUser: i % 5 === 0,
+        totalSavings: `${(i + 1) * 450}.00`,
+        dealsClaimed: (i + 1) * 3,
+        createdAt: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
+        isActive: true,
+      };
+      users.push(user);
+    }
+
+    return users;
+  }
+
+  private generateTestDeals(): Deal[] {
+    const deals: Deal[] = [];
+    const categories = ["fashion", "electronics", "restaurants", "beauty", "travel", "home", "automotive", "health"];
+    
+    const dealTemplates = {
+      fashion: {
+        titles: ["50% Off Designer Clothes", "Buy 2 Get 1 Free Shoes", "Summer Collection Sale", "Winter Wear Discount", "Ethnic Wear Special"],
+        images: ["https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&h=300&fit=crop"]
+      },
+      electronics: {
+        titles: ["Smartphone Mega Sale", "Laptop Clearance", "Gaming Console Deals", "Smart TV Offers", "Headphones Discount"],
+        images: ["https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop"]
+      },
+      restaurants: {
+        titles: ["Dine-in 40% Off", "Free Dessert with Main Course", "Weekend Buffet Special", "Happy Hours 50% Off", "Family Meal Combo"],
+        images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop"]
+      },
+      beauty: {
+        titles: ["Spa Package 60% Off", "Skincare Bundle Deal", "Makeup Masterclass Free", "Hair Treatment Special", "Wellness Package"],
+        images: ["https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&h=300&fit=crop"]
+      },
+      travel: {
+        titles: ["Weekend Getaway 30% Off", "Flight + Hotel Combo", "Adventure Tour Package", "Luxury Resort Deal", "Backpacking Special"],
+        images: ["https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop"]
+      },
+      home: {
+        titles: ["Furniture Sale 45% Off", "Home Decor Bundle", "Kitchen Appliances Deal", "Garden Equipment Offer", "Smart Home Package"],
+        images: ["https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"]
+      },
+      automotive: {
+        titles: ["Car Service 50% Off", "Bike Accessories Deal", "Fuel Card Cashback", "Insurance Premium Discount", "Spare Parts Sale"],
+        images: ["https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=300&fit=crop"]
+      },
+      health: {
+        titles: ["Health Checkup Package", "Gym Membership 40% Off", "Yoga Classes Free Trial", "Nutrition Consultation", "Medical Insurance Deal"],
+        images: ["https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop"]
+      }
+    };
+
+    const membershipRequirements = ["basic", "premium", "ultimate"];
+    
+    categories.forEach((category, categoryIndex) => {
+      const templates = dealTemplates[category as keyof typeof dealTemplates];
+      
+      for (let i = 0; i < 10; i++) {
+        const vendorId = (categoryIndex * 2) + 1 + (i % 2); // Distribute across vendors
+        const titleIndex = i % templates.titles.length;
+        const membershipReq = i < 3 ? null : membershipRequirements[i % 3];
+        
+        const deal: Deal = {
+          id: this.currentDealId++,
+          title: templates.titles[titleIndex],
+          description: `Amazing ${category} deal with excellent value for money. Limited time offer with premium quality guaranteed.`,
+          vendorId: vendorId,
+          category: category,
+          imageUrl: templates.images[0],
+          originalPrice: `${1000 + (i * 200)}.00`,
+          discountedPrice: `${500 + (i * 100)}.00`,
+          discountPercentage: `${30 + (i * 5)}`,
+          validFrom: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
+          validUntil: new Date(Date.now() + ((30 - i) * 24 * 60 * 60 * 1000)),
+          redemptionLimit: 100 + (i * 10),
+          currentRedemptions: i * 5,
+          terms: "Valid for new customers only. Cannot be combined with other offers.",
+          isActive: true,
+          isApproved: i < 8, // Most deals approved
+          approvedBy: i < 8 ? 1 : null,
+          viewCount: (i + 1) * 25,
+          requiredMembership: membershipReq,
+          createdAt: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
+        };
+        deals.push(deal);
+      }
     });
 
-    // Create some deal claims for testing
-    const sampleClaims = [
-      {
-        userId: customerUser.id,
-        dealId: 1,
-        savingsAmount: "1200",
-      },
-      {
-        userId: customerUser.id, 
-        dealId: 2,
-        savingsAmount: "2000",
-      }
-    ];
+    return deals;
+  }
 
-    sampleClaims.forEach(claimData => {
-      const claim: DealClaim = {
-        id: this.currentDealClaimId++,
-        ...claimData,
-        claimedAt: new Date(),
-        status: "claimed",
-        usedAt: null,
-      };
-      this.dealClaims.set(claim.id, claim);
+  private generateTestClaims() {
+    // Generate claims for existing deals and users
+    const activeDeals = Array.from(this.deals.values()).filter(deal => deal.isActive);
+    const customers = Array.from(this.users.values()).filter(user => user.role === "customer");
+    
+    customers.forEach((customer, customerIndex) => {
+      const claimsCount = Math.min(customer.dealsClaimed, activeDeals.length);
+      
+      for (let i = 0; i < claimsCount; i++) {
+        const deal = activeDeals[i % activeDeals.length];
+        const claim: DealClaim = {
+          id: this.currentDealClaimId++,
+          userId: customer.id,
+          dealId: deal.id,
+          status: Math.random() > 0.3 ? "used" : "claimed",
+          claimedAt: new Date(Date.now() - ((claimsCount - i) * 24 * 60 * 60 * 1000)),
+          usedAt: Math.random() > 0.3 ? new Date() : null,
+          savingsAmount: `${Math.floor(Math.random() * 500) + 100}.00`,
+        };
+        this.dealClaims.set(claim.id, claim);
+      }
     });
   }
 
@@ -251,12 +469,6 @@ export class MemStorage implements IStorage {
     const user: User = {
       id: this.currentUserId++,
       ...insertUser,
-      role: insertUser.role || "customer",
-      membershipPlan: insertUser.membershipPlan || "basic",
-      membershipExpiry: insertUser.membershipExpiry || null,
-      isPromotionalUser: insertUser.isPromotionalUser || false,
-      totalSavings: insertUser.totalSavings || "0",
-      dealsClaimed: insertUser.dealsClaimed || 0,
       createdAt: new Date(),
       isActive: true,
     };
@@ -266,11 +478,12 @@ export class MemStorage implements IStorage {
 
   async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
     const user = this.users.get(id);
-    if (!user) return undefined;
-    
-    const updatedUser = { ...user, ...updates };
-    this.users.set(id, updatedUser);
-    return updatedUser;
+    if (user) {
+      const updatedUser = { ...user, ...updates };
+      this.users.set(id, updatedUser);
+      return updatedUser;
+    }
+    return undefined;
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -294,10 +507,6 @@ export class MemStorage implements IStorage {
     const vendor: Vendor = {
       id: this.currentVendorId++,
       ...insertVendor,
-      isApproved: false,
-      rating: "0.0",
-      totalDeals: 0,
-      totalRedemptions: 0,
       createdAt: new Date(),
     };
     this.vendors.set(vendor.id, vendor);
@@ -306,11 +515,12 @@ export class MemStorage implements IStorage {
 
   async updateVendor(id: number, updates: Partial<Vendor>): Promise<Vendor | undefined> {
     const vendor = this.vendors.get(id);
-    if (!vendor) return undefined;
-    
-    const updatedVendor = { ...vendor, ...updates };
-    this.vendors.set(id, updatedVendor);
-    return updatedVendor;
+    if (vendor) {
+      const updatedVendor = { ...vendor, ...updates };
+      this.vendors.set(id, updatedVendor);
+      return updatedVendor;
+    }
+    return undefined;
   }
 
   async getAllVendors(): Promise<Vendor[]> {
@@ -322,12 +532,7 @@ export class MemStorage implements IStorage {
   }
 
   async approveVendor(id: number): Promise<Vendor | undefined> {
-    const vendor = this.vendors.get(id);
-    if (!vendor) return undefined;
-    
-    vendor.isApproved = true;
-    this.vendors.set(id, vendor);
-    return vendor;
+    return this.updateVendor(id, { isApproved: true });
   }
 
   // Deal operations
@@ -337,9 +542,9 @@ export class MemStorage implements IStorage {
 
   async getDealsBy(filters: Partial<Deal>): Promise<Deal[]> {
     return Array.from(this.deals.values()).filter(deal => {
-      return Object.entries(filters).every(([key, value]) => 
-        deal[key as keyof Deal] === value
-      );
+      return Object.entries(filters).every(([key, value]) => {
+        return deal[key as keyof Deal] === value;
+      });
     });
   }
 
@@ -347,12 +552,6 @@ export class MemStorage implements IStorage {
     const deal: Deal = {
       id: this.currentDealId++,
       ...insertDeal,
-      validFrom: insertDeal.validFrom || new Date(),
-      isActive: true,
-      isApproved: false,
-      approvedBy: null,
-      viewCount: 0,
-      currentRedemptions: 0,
       createdAt: new Date(),
     };
     this.deals.set(deal.id, deal);
@@ -361,11 +560,12 @@ export class MemStorage implements IStorage {
 
   async updateDeal(id: number, updates: Partial<Deal>): Promise<Deal | undefined> {
     const deal = this.deals.get(id);
-    if (!deal) return undefined;
-    
-    const updatedDeal = { ...deal, ...updates };
-    this.deals.set(id, updatedDeal);
-    return updatedDeal;
+    if (deal) {
+      const updatedDeal = { ...deal, ...updates };
+      this.deals.set(id, updatedDeal);
+      return updatedDeal;
+    }
+    return undefined;
   }
 
   async deleteDeal(id: number): Promise<boolean> {
@@ -373,20 +573,15 @@ export class MemStorage implements IStorage {
   }
 
   async getActiveDeals(): Promise<Deal[]> {
-    return Array.from(this.deals.values())
-      .filter(deal => deal.isActive && deal.isApproved)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return Array.from(this.deals.values()).filter(deal => deal.isActive && deal.isApproved);
   }
 
   async getDealsByCategory(category: string): Promise<Deal[]> {
-    return Array.from(this.deals.values())
-      .filter(deal => deal.category === category && deal.isActive && deal.isApproved);
+    return Array.from(this.deals.values()).filter(deal => deal.category === category);
   }
 
   async getDealsByVendor(vendorId: number): Promise<Deal[]> {
-    return Array.from(this.deals.values())
-      .filter(deal => deal.vendorId === vendorId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return Array.from(this.deals.values()).filter(deal => deal.vendorId === vendorId);
   }
 
   async getPendingDeals(): Promise<Deal[]> {
@@ -394,13 +589,7 @@ export class MemStorage implements IStorage {
   }
 
   async approveDeal(id: number, approvedBy: number): Promise<Deal | undefined> {
-    const deal = this.deals.get(id);
-    if (!deal) return undefined;
-    
-    deal.isApproved = true;
-    deal.approvedBy = approvedBy;
-    this.deals.set(id, deal);
-    return deal;
+    return this.updateDeal(id, { isApproved: true, approvedBy });
   }
 
   async incrementDealViews(id: number): Promise<void> {
@@ -417,17 +606,13 @@ export class MemStorage implements IStorage {
       id: this.currentDealClaimId++,
       ...insertClaim,
       claimedAt: new Date(),
-      status: "claimed",
-      usedAt: null,
     };
     this.dealClaims.set(claim.id, claim);
     return claim;
   }
 
   async getUserClaims(userId: number): Promise<DealClaim[]> {
-    return Array.from(this.dealClaims.values())
-      .filter(claim => claim.userId === userId)
-      .sort((a, b) => new Date(b.claimedAt).getTime() - new Date(a.claimedAt).getTime());
+    return Array.from(this.dealClaims.values()).filter(claim => claim.userId === userId);
   }
 
   async getDealClaims(dealId: number): Promise<DealClaim[]> {
@@ -436,12 +621,12 @@ export class MemStorage implements IStorage {
 
   async updateClaimStatus(id: number, status: string, usedAt?: Date): Promise<DealClaim | undefined> {
     const claim = this.dealClaims.get(id);
-    if (!claim) return undefined;
-    
-    claim.status = status;
-    if (usedAt) claim.usedAt = usedAt;
-    this.dealClaims.set(id, claim);
-    return claim;
+    if (claim) {
+      const updatedClaim = { ...claim, status, usedAt: usedAt || claim.usedAt };
+      this.dealClaims.set(id, updatedClaim);
+      return updatedClaim;
+    }
+    return undefined;
   }
 
   // Help ticket operations
@@ -449,34 +634,28 @@ export class MemStorage implements IStorage {
     const ticket: HelpTicket = {
       id: this.currentHelpTicketId++,
       ...insertTicket,
-      status: "open",
-      priority: insertTicket.priority || "medium",
-      assignedTo: null,
       createdAt: new Date(),
-      updatedAt: new Date(),
     };
     this.helpTickets.set(ticket.id, ticket);
     return ticket;
   }
 
   async getHelpTickets(): Promise<HelpTicket[]> {
-    return Array.from(this.helpTickets.values())
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return Array.from(this.helpTickets.values());
   }
 
   async getUserHelpTickets(userId: number): Promise<HelpTicket[]> {
-    return Array.from(this.helpTickets.values())
-      .filter(ticket => ticket.userId === userId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return Array.from(this.helpTickets.values()).filter(ticket => ticket.userId === userId);
   }
 
   async updateHelpTicket(id: number, updates: Partial<HelpTicket>): Promise<HelpTicket | undefined> {
     const ticket = this.helpTickets.get(id);
-    if (!ticket) return undefined;
-    
-    const updatedTicket = { ...ticket, ...updates, updatedAt: new Date() };
-    this.helpTickets.set(id, updatedTicket);
-    return updatedTicket;
+    if (ticket) {
+      const updatedTicket = { ...ticket, ...updates };
+      this.helpTickets.set(id, updatedTicket);
+      return updatedTicket;
+    }
+    return undefined;
   }
 
   // System log operations
@@ -484,6 +663,7 @@ export class MemStorage implements IStorage {
     const log: SystemLog = {
       id: this.currentSystemLogId++,
       ...insertLog,
+      details: insertLog.details || {},
       createdAt: new Date(),
     };
     this.systemLogs.set(log.id, log);
@@ -491,211 +671,70 @@ export class MemStorage implements IStorage {
   }
 
   async getSystemLogs(limit = 100): Promise<SystemLog[]> {
-    return Array.from(this.systemLogs.values())
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, limit);
+    const logs = Array.from(this.systemLogs.values());
+    return logs.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)).slice(0, limit);
   }
 
   // Wishlist operations
   async addToWishlist(insertWishlist: InsertWishlist): Promise<Wishlist> {
-    // Check if already exists
-    const existing = Array.from(this.wishlists.values()).find(w => 
-      w.userId === insertWishlist.userId && w.dealId === insertWishlist.dealId
-    );
-    
-    if (existing) {
-      return existing;
-    }
-
     const wishlist: Wishlist = {
       id: this.currentWishlistId++,
       ...insertWishlist,
-      addedAt: new Date(),
+      createdAt: new Date(),
     };
     this.wishlists.set(wishlist.id, wishlist);
     return wishlist;
   }
 
   async removeFromWishlist(userId: number, dealId: number): Promise<boolean> {
-    const wishlist = Array.from(this.wishlists.values()).find(w => 
-      w.userId === userId && w.dealId === dealId
+    const wishlistItem = Array.from(this.wishlists.values()).find(
+      item => item.userId === userId && item.dealId === dealId
     );
-    
-    if (wishlist) {
-      return this.wishlists.delete(wishlist.id);
+    if (wishlistItem) {
+      return this.wishlists.delete(wishlistItem.id);
     }
     return false;
   }
 
   async getUserWishlist(userId: number): Promise<Wishlist[]> {
-    return Array.from(this.wishlists.values())
-      .filter(wishlist => wishlist.userId === userId)
-      .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime());
+    return Array.from(this.wishlists.values()).filter(item => item.userId === userId);
   }
 
   async isInWishlist(userId: number, dealId: number): Promise<boolean> {
-    return Array.from(this.wishlists.values()).some(w => 
-      w.userId === userId && w.dealId === dealId
+    return Array.from(this.wishlists.values()).some(
+      item => item.userId === userId && item.dealId === dealId
     );
   }
 
-  // Generate test vendors
-  private generateTestVendors(count: number): Vendor[] {
-    const vendors: Vendor[] = [];
-    const cities = ["Mumbai", "Delhi", "Bangalore", "Chennai", "Kolkata", "Pune", "Hyderabad", "Ahmedabad"];
-    const businessTypes = ["Store", "Boutique", "Mart", "Plaza", "Hub", "Center", "Outlet", "Shop"];
-    
-    for (let i = 0; i < count; i++) {
-      const city = cities[i % cities.length];
-      const businessType = businessTypes[i % businessTypes.length];
-      
-      vendors.push({
-        id: this.currentVendorId++,
-        userId: this.currentUserId - 1 - i,
-        businessName: `Test ${businessType} ${i + 1}`,
-        gstNumber: `27AAB${String(i).padStart(6, '0')}${i % 10}ZX`,
-        panNumber: `AAB${String(i).padStart(6, '0')}R`,
-        logoUrl: `https://images.unsplash.com/photo-144${1984904996 + i}?w=200&h=200&fit=crop`,
-        description: `Quality products and services in ${city}`,
-        address: `Shop ${i + 1}, Commercial Complex`,
-        city,
-        state: city === "Mumbai" ? "Maharashtra" : city === "Delhi" ? "Delhi" : "Karnataka",
-        isApproved: true,
-        rating: (3.5 + Math.random() * 1.5).toFixed(1),
-        totalDeals: Math.floor(Math.random() * 20) + 5,
-        totalRedemptions: Math.floor(Math.random() * 500) + 50,
-        createdAt: new Date(),
-      });
-    }
-    return vendors;
-  }
-
-  private generateTestUsers(count: number): User[] {
-    const users: User[] = [];
-    const cities = ["Mumbai", "Delhi", "Bangalore", "Chennai", "Kolkata", "Pune", "Hyderabad", "Ahmedabad"];
-    const membershipPlans = ["basic", "premium", "ultimate"];
-    
-    for (let i = 0; i < count; i++) {
-      const city = cities[i % cities.length];
-      
-      users.push({
-        id: this.currentUserId++,
-        username: `testuser${i + 1}`,
-        email: `testuser${i + 1}@example.com`,
-        password: "test123",
-        name: `Test User ${i + 1}`,
-        role: i % 10 === 0 ? "vendor" : "customer",
-        phone: `+91-${9000000000 + i}`,
-        city,
-        state: city === "Mumbai" ? "Maharashtra" : city === "Delhi" ? "Delhi" : "Karnataka",
-        membershipPlan: membershipPlans[i % membershipPlans.length],
-        membershipExpiry: new Date("2025-12-31"),
-        isPromotionalUser: i % 3 === 0,
-        totalSavings: (Math.random() * 10000).toFixed(2),
-        dealsClaimed: Math.floor(Math.random() * 50),
-        createdAt: new Date(),
-        isActive: true,
-      });
-    }
-    return users;
-  }
-
-  private generateTestDeals(): any[] {
-    const categories = ["fashion", "electronics", "restaurants", "beauty", "travel", "home", "automotive", "health"];
-    const deals: any[] = [];
-    
-    categories.forEach(category => {
-      for (let i = 0; i < 50; i++) {
-        deals.push(this.generateDealForCategory(category, i));
-      }
-    });
-    
-    return deals;
-  }
-
-  private generateDealForCategory(category: string, index: number): any {
-    const dealTemplates = {
-      fashion: {
-        titles: ["Winter Collection", "Designer Wear", "Casual Outfits", "Formal Suits", "Ethnic Wear"],
-        images: ["1445205170230-053b83016050", "1553062407-98eeb64c6a62", "1602810318383-e386cc2a3ccf"]
-      },
-      electronics: {
-        titles: ["Smart Phones", "Laptops", "Gaming Accessories", "Home Appliances", "Audio Systems"],
-        images: ["1441986300917-64674bd600d8", "1511707171634-5f897ff02aa9", "1505740420928-5e560c06d30e"]
-      },
-      restaurants: {
-        titles: ["Multi-Cuisine Buffet", "Pizza Combo", "Fine Dining", "Street Food", "Healthy Meals"],
-        images: ["1555939594-58d7cb561ad1", "1513104890138-7c749659a591", "1414235077428-338989a2e8c0"]
-      },
-      beauty: {
-        titles: ["Spa Package", "Hair Treatment", "Facial Services", "Makeup Session", "Wellness Package"],
-        images: ["1560750588-73207b1ef5b8", "1522335659846-4d79e4b6affe", "1540555700478-4be289fbecef"]
-      },
-      travel: {
-        titles: ["Holiday Package", "Adventure Trip", "City Tour", "Resort Stay", "Flight Deals"],
-        images: ["1506905925346-21bda4d32df4", "1488646953014-85cb44e25828", "1571896349842-33c89424de2d"]
-      },
-      home: {
-        titles: ["Furniture Sale", "Home Decor", "Kitchen Appliances", "Bedding Sets", "Garden Tools"],
-        images: ["1555041469-a586c61ea9bc", "1484154218962-a197022b5858", "1586023492125-27b2c045efd7"]
-      },
-      automotive: {
-        titles: ["Car Service", "Bike Accessories", "Car Wash", "Tire Change", "Auto Parts"],
-        images: ["1492144534655-ae79c964c9d7", "1503376780353-7e6692767b70", "1558618047-3c8c76ca7d13"]
-      },
-      health: {
-        titles: ["Health Checkup", "Gym Membership", "Yoga Classes", "Medical Consultation", "Pharmacy Discount"],
-        images: ["1559757148-5c350d0d3c56", "1571019613454-1cb2f99b2d8b", "1559757175-0eb30cd2c115"]
-      }
-    };
-
-    const template = dealTemplates[category] || dealTemplates.fashion;
-    const title = template.titles[index % template.titles.length];
-    const imageId = template.images[index % template.images.length];
-    const discount = [20, 25, 30, 35, 40, 45, 50][index % 7];
-    const originalPrice = Math.floor(Math.random() * 5000) + 500;
-    const discountedPrice = Math.floor(originalPrice * (1 - discount / 100));
-
-    return {
-      title: `${title} ${index + 1} - ${discount}% Off`,
-      description: `Amazing ${discount}% discount on ${title.toLowerCase()}. Limited time offer!`,
-      category,
-      imageUrl: `https://images.unsplash.com/photo-${imageId}?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400`,
-      discountPercentage: discount,
-      discountCode: `${category.toUpperCase()}${discount}${index}`,
-      originalPrice: originalPrice.toString(),
-      discountedPrice: discountedPrice.toString(),
-      validUntil: new Date(Date.now() + Math.random() * 90 * 24 * 60 * 60 * 1000),
-      maxRedemptions: Math.floor(Math.random() * 200) + 50,
-      currentRedemptions: Math.floor(Math.random() * 150),
-      requiredMembership: ["basic", "premium", "ultimate"][index % 3],
-    };
-  }
-
   async getMostClaimedDeals(): Promise<Deal[]> {
-    const deals = Array.from(this.deals.values())
-      .filter(deal => deal.isApproved && deal.isActive)
-      .sort((a, b) => (b.currentRedemptions || 0) - (a.currentRedemptions || 0));
-    return deals.slice(0, 15);
+    const dealClaimCounts = new Map<number, number>();
+    
+    Array.from(this.dealClaims.values()).forEach(claim => {
+      const count = dealClaimCounts.get(claim.dealId) || 0;
+      dealClaimCounts.set(claim.dealId, count + 1);
+    });
+
+    const deals = Array.from(this.deals.values()).filter(deal => deal.isActive && deal.isApproved);
+    
+    return deals.sort((a, b) => {
+      const aCount = dealClaimCounts.get(a.id) || 0;
+      const bCount = dealClaimCounts.get(b.id) || 0;
+      return bCount - aCount;
+    });
   }
 
   async getDealsByCategory(): Promise<Record<string, number>> {
-    const categoryCount: Record<string, number> = {};
+    const categoryCounts: Record<string, number> = {};
     Array.from(this.deals.values()).forEach(deal => {
-      categoryCount[deal.category] = (categoryCount[deal.category] || 0) + 1;
+      categoryCounts[deal.category] = (categoryCounts[deal.category] || 0) + 1;
     });
-    return categoryCount;
+    return categoryCounts;
   }
 
   async deleteDealsByCategory(category: string): Promise<boolean> {
     const dealsToDelete = Array.from(this.deals.values()).filter(deal => deal.category === category);
-    dealsToDelete.forEach(deal => {
-      this.deals.delete(deal.id);
-      Array.from(this.dealClaims.values())
-        .filter(claim => claim.dealId === deal.id)
-        .forEach(claim => this.dealClaims.delete(claim.id));
-    });
-    return true;
+    dealsToDelete.forEach(deal => this.deals.delete(deal.id));
+    return dealsToDelete.length > 0;
   }
 
   async resetAllDeals(): Promise<boolean> {
@@ -707,53 +746,68 @@ export class MemStorage implements IStorage {
   }
 
   async getAnalytics() {
-    const users = Array.from(this.users.values());
-    const vendors = Array.from(this.vendors.values());
-    const deals = Array.from(this.deals.values());
-    const claims = Array.from(this.dealClaims.values());
-
-    const totalUsers = users.length;
-    const totalVendors = vendors.length;
-    const totalDeals = deals.filter(d => d.isApproved).length;
-    const totalClaims = claims.length;
-    const revenueEstimate = claims.reduce((sum, claim) => sum + parseFloat(claim.savingsAmount), 0);
-
-    const cityStats = deals.reduce((acc, deal) => {
-      const vendor = vendors.find(v => v.id === deal.vendorId);
-      if (vendor) {
-        const city = vendor.city;
-        if (!acc[city]) {
-          acc[city] = { city, dealCount: 0, userCount: 0 };
-        }
-        acc[city].dealCount++;
-      }
-      return acc;
-    }, {} as Record<string, any>);
-
-    users.forEach(user => {
-      if (user.city && cityStats[user.city]) {
-        cityStats[user.city].userCount++;
+    const totalUsers = this.users.size;
+    const totalVendors = this.vendors.size;
+    const totalDeals = this.deals.size;
+    const totalClaims = this.dealClaims.size;
+    
+    const cityStats: { city: string; dealCount: number; userCount: number }[] = [];
+    const categoryStats: { category: string; dealCount: number; claimCount: number }[] = [];
+    
+    // Calculate city stats
+    const cityUserCounts = new Map<string, number>();
+    const cityDealCounts = new Map<string, number>();
+    
+    Array.from(this.users.values()).forEach(user => {
+      if (user.city) {
+        cityUserCounts.set(user.city, (cityUserCounts.get(user.city) || 0) + 1);
       }
     });
-
-    const categoryStats = deals.reduce((acc, deal) => {
-      const category = deal.category;
-      if (!acc[category]) {
-        acc[category] = { category, dealCount: 0, claimCount: 0 };
+    
+    Array.from(this.vendors.values()).forEach(vendor => {
+      const vendorDeals = Array.from(this.deals.values()).filter(deal => deal.vendorId === vendor.id).length;
+      cityDealCounts.set(vendor.city, (cityDealCounts.get(vendor.city) || 0) + vendorDeals);
+    });
+    
+    Array.from(cityUserCounts.keys()).forEach(city => {
+      cityStats.push({
+        city,
+        userCount: cityUserCounts.get(city) || 0,
+        dealCount: cityDealCounts.get(city) || 0,
+      });
+    });
+    
+    // Calculate category stats
+    const categoryDealCounts = new Map<string, number>();
+    const categoryClaimCounts = new Map<string, number>();
+    
+    Array.from(this.deals.values()).forEach(deal => {
+      categoryDealCounts.set(deal.category, (categoryDealCounts.get(deal.category) || 0) + 1);
+    });
+    
+    Array.from(this.dealClaims.values()).forEach(claim => {
+      const deal = this.deals.get(claim.dealId);
+      if (deal) {
+        categoryClaimCounts.set(deal.category, (categoryClaimCounts.get(deal.category) || 0) + 1);
       }
-      acc[category].dealCount++;
-      acc[category].claimCount += claims.filter(c => c.dealId === deal.id).length;
-      return acc;
-    }, {} as Record<string, any>);
-
+    });
+    
+    Array.from(categoryDealCounts.keys()).forEach(category => {
+      categoryStats.push({
+        category,
+        dealCount: categoryDealCounts.get(category) || 0,
+        claimCount: categoryClaimCounts.get(category) || 0,
+      });
+    });
+    
     return {
       totalUsers,
       totalVendors,
       totalDeals,
       totalClaims,
-      revenueEstimate,
-      cityStats: Object.values(cityStats),
-      categoryStats: Object.values(categoryStats),
+      revenueEstimate: totalClaims * 150, // Rough estimate
+      cityStats,
+      categoryStats,
     };
   }
 }
