@@ -11,6 +11,11 @@ interface AuthenticatedRequest extends Request {
     role: string;
     email: string;
   };
+  dealInfo?: {
+    deal: any;
+    user: any;
+    membershipTier: string;
+  };
 }
 
 // Middleware to check authentication
@@ -27,6 +32,83 @@ const requireRole = (roles: string[]) => (req: AuthenticatedRequest, res: Respon
     return res.status(403).json({ message: "Insufficient permissions" });
   }
   next();
+};
+
+// Middleware to check membership tier access for deals
+const checkMembershipAccess = async (req: AuthenticatedRequest, res: Response, next: any) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ 
+        message: "Please log in to access deal details",
+        requiresAuth: true 
+      });
+    }
+
+    const dealId = parseInt(req.params.id);
+    const deal = await storage.getDeal(dealId);
+    
+    if (!deal || !deal.isActive || !deal.isApproved) {
+      return res.status(404).json({ message: "Deal not found or not available" });
+    }
+
+    const user = await storage.getUser(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const membershipTier = user.membershipPlan || 'basic';
+    const dealCategory = deal.category.toLowerCase();
+
+    // Check if user can access this deal based on membership tier
+    let canAccess = false;
+    let upgradeMessage = '';
+    let suggestedTier = '';
+
+    switch (membershipTier) {
+      case 'basic':
+        const basicAllowedCategories = ['restaurants', 'fashion', 'travel', 'food'];
+        if (basicAllowedCategories.includes(dealCategory)) {
+          canAccess = true;
+        } else {
+          upgradeMessage = `Upgrade your plan to access ${deal.category} deals. Current plan: Basic`;
+          suggestedTier = 'premium';
+        }
+        break;
+      case 'premium':
+        const premiumRestrictedCategories = ['luxury', 'premium-electronics'];
+        if (!premiumRestrictedCategories.includes(dealCategory)) {
+          canAccess = true;
+        } else {
+          upgradeMessage = `Upgrade to Ultimate plan to access premium ${deal.category} deals. Current plan: Premium`;
+          suggestedTier = 'ultimate';
+        }
+        break;
+      case 'ultimate':
+        canAccess = true;
+        break;
+      default:
+        upgradeMessage = 'Please upgrade your membership to access deals';
+        suggestedTier = 'premium';
+    }
+
+    if (!canAccess) {
+      return res.status(403).json({
+        message: upgradeMessage,
+        requiresUpgrade: true,
+        currentTier: membershipTier,
+        suggestedTier: suggestedTier,
+        dealCategory: deal.category,
+        dealTitle: deal.title
+      });
+    }
+
+    // Store deal info in request for use in route handler
+    req.dealInfo = { deal, user, membershipTier };
+    next();
+  } catch (error) {
+    console.error("Error checking membership access:", error);
+    res.status(500).json({ message: "Failed to verify membership access" });
+  }
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -186,6 +268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public deal detail endpoint (no auth required for basic viewing)
   app.get('/api/deals/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -194,9 +277,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!deal) {
         return res.status(404).json({ message: "Deal not found" });
       }
-      
-      // Increment view count
-      await storage.incrementDealViews(id);
       
       // Get vendor info
       const vendor = await storage.getVendor(deal.vendorId);
@@ -210,6 +290,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch deal" });
+    }
+  });
+
+  // Protected deal detail endpoint with membership verification
+  app.get('/api/deals/:id/secure', checkMembershipAccess, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { deal, user, membershipTier } = req.dealInfo!;
+      
+      // Increment view count for authenticated access
+      await storage.incrementDealViews(deal.id);
+      
+      // Get vendor info
+      const vendor = await storage.getVendor(deal.vendorId);
+      
+      // Include discount code for authenticated users with proper membership
+      res.json({
+        ...deal,
+        vendor,
+        membershipTier,
+        hasAccess: true
+      });
+    } catch (error) {
+      console.error("Error fetching secure deal:", error);
+      res.status(500).json({ message: "Failed to fetch deal details" });
     }
   });
 

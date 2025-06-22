@@ -64,6 +64,9 @@ function Router() {
       <Route path="/privacy" component={Privacy} />
       <Route path="/help" component={Help} />
       
+      {/* Public deal detail route - accessible to all users */}
+      <Route path="/deals/:id" component={DealDetail} />
+      
       {/* Customer routes */}
       <Route path="/customer/dashboard">
         <ProtectedRoute allowedRoles={['customer']}>

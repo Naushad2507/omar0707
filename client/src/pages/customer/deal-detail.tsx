@@ -102,7 +102,7 @@ export default function DealDetail() {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Fetch deal details
+  // Fetch deal details (public endpoint)
   const { data: deal, isLoading } = useQuery<Deal>({
     queryKey: [`/api/deals/${id}`],
     enabled: !!id,
@@ -113,6 +113,18 @@ export default function DealDetail() {
     queryKey: [`/api/wishlist/check/${id}`],
     enabled: !!id && isAuthenticated,
   });
+
+  // Try to fetch secure deal details with membership verification
+  const { data: secureDeal, error: secureError } = useQuery<Deal & { hasAccess: boolean; membershipTier: string }>({
+    queryKey: [`/api/deals/${id}/secure`],
+    enabled: !!id && isAuthenticated,
+    retry: false,
+  });
+
+  // Check membership access error
+  const membershipError = secureError && 'response' in secureError 
+    ? (secureError as any).response?.data as DiscountError 
+    : null;
 
   useEffect(() => {
     if (wishlistCheck?.inWishlist) {
@@ -350,12 +362,14 @@ export default function DealDetail() {
       <div className="container mx-auto px-4 py-8">
         {/* Back button */}
         <div className="mb-6">
-          <Link href="/customer/deals">
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Deals
-            </Button>
-          </Link>
+          <Button 
+            variant="ghost" 
+            className="mb-4"
+            onClick={() => window.history.back()}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Deals
+          </Button>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -508,6 +522,29 @@ export default function DealDetail() {
                         <p className="text-sm text-gray-600 mb-2">Login to access discount codes</p>
                         <Button size="sm" variant="outline" onClick={() => setLocation("/login")}>
                           Login Required
+                        </Button>
+                      </div>
+                    ) : membershipError?.requiresUpgrade ? (
+                      <div className="text-center p-6 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-200">
+                        <Crown className="w-12 h-12 mx-auto mb-3 text-red-600" />
+                        <h4 className="font-semibold text-lg text-gray-900 mb-2">Upgrade Required</h4>
+                        <p className="text-sm text-gray-700 mb-2">
+                          {membershipError.message}
+                        </p>
+                        <div className="bg-white/50 rounded-md p-3 mb-4">
+                          <p className="text-xs text-gray-600">
+                            <span className="font-medium">Current Plan:</span> {membershipError.currentTier} 
+                            <span className="mx-2">→</span> 
+                            <span className="font-medium">Suggested:</span> {membershipError.suggestedTier}
+                          </p>
+                        </div>
+                        <Button 
+                          size="lg" 
+                          className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white"
+                          onClick={() => setLocation('/customer/upgrade')}
+                        >
+                          <Zap className="w-4 h-4 mr-2" />
+                          Upgrade Your Plan
                         </Button>
                       </div>
                     ) : !canAccessDeal() ? (
