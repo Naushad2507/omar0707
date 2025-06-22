@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, MapPin, Clock } from "lucide-react";
@@ -24,12 +24,25 @@ interface DealCarouselProps {
   onDealClick: () => void;
   showClaims?: boolean;
   className?: string;
+  autoPlay?: boolean;
+  interval?: number;
 }
 
-export default function DealCarousel({ deals, onDealClick, showClaims = false, className = "" }: DealCarouselProps) {
+export default function DealCarousel({ deals, onDealClick, showClaims = false, className = "", autoPlay = false, interval = 4000 }: DealCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const cardsPerView = 3;
   const maxIndex = Math.max(0, deals.length - cardsPerView);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!autoPlay || deals.length <= cardsPerView) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [autoPlay, interval, deals.length, cardsPerView, maxIndex]);
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => Math.max(0, prev - 1));

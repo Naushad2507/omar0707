@@ -473,6 +473,8 @@ export default function Home() {
             deals={featuredDeals}
             onDealClick={handleDealClick}
             showClaims={false}
+            autoPlay={true}
+            interval={5000}
           />
         </div>
       </section>
@@ -489,6 +491,8 @@ export default function Home() {
             deals={trendingDeals}
             onDealClick={handleDealClick}
             showClaims={false}
+            autoPlay={true}
+            interval={4500}
           />
         </div>
       </section>
@@ -514,6 +518,8 @@ export default function Home() {
                 }))}
               onDealClick={handleDealClick}
               showClaims={true}
+              autoPlay={true}
+              interval={4000}
             />
             
             <div className="text-center mt-8">
