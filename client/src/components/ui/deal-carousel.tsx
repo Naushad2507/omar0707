@@ -22,7 +22,7 @@ interface Deal {
 
 interface DealCarouselProps {
   deals: Deal[];
-  onDealClick: () => void;
+  onDealClick: (dealId?: number) => void;
   showClaims?: boolean;
   className?: string;
   autoPlay?: boolean;
@@ -75,7 +75,10 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
               key={deal.id} 
               className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3"
             >
-              <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border" onClick={onDealClick}>
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border" onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/deals/${deal.id}`);
+              }}>
                 <div className="relative">
                   {deal.imageUrl ? (
                     <img 

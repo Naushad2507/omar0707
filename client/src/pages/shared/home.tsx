@@ -133,7 +133,21 @@ export default function Home() {
     }
   };
 
-  const handleDealClick = () => {
+  const handleDealClick = (dealId?: number) => {
+    if (dealId) {
+      // Navigate to specific deal page
+      navigate(`/deals/${dealId}`);
+    } else {
+      // Navigate to all deals page
+      if (isAuthenticated) {
+        navigate("/customer/deals");
+      } else {
+        navigate("/login");
+      }
+    }
+  };
+
+  const handleViewAllDeals = () => {
     if (isAuthenticated) {
       navigate("/customer/deals");
     } else {
@@ -387,7 +401,7 @@ export default function Home() {
                 Join thousands of savvy shoppers and local businesses on India's fastest-growing deals platform.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" onClick={handleDealClick}>
+                <Button size="lg" onClick={handleViewAllDeals}>
                   Explore Deals
                 </Button>
                 <Button variant="outline" size="lg" asChild>
@@ -478,7 +492,7 @@ export default function Home() {
           />
           
           <div className="text-center mt-8">
-            <Button onClick={handleDealClick} size="lg" className="bg-primary hover:bg-primary/90">
+            <Button onClick={handleViewAllDeals} size="lg" className="bg-primary hover:bg-primary/90">
               View All Deals
             </Button>
           </div>
@@ -502,7 +516,7 @@ export default function Home() {
           />
           
           <div className="text-center mt-8">
-            <Button onClick={handleDealClick} size="lg" className="bg-primary hover:bg-primary/90">
+            <Button onClick={handleViewAllDeals} size="lg" className="bg-primary hover:bg-primary/90">
               View All Deals
             </Button>
           </div>
@@ -535,7 +549,7 @@ export default function Home() {
             />
             
             <div className="text-center mt-8">
-              <Button onClick={handleDealClick}>
+              <Button onClick={handleViewAllDeals} size="lg" className="bg-primary hover:bg-primary/90">
                 View All Deals
               </Button>
             </div>
