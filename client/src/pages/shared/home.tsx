@@ -140,27 +140,56 @@ export default function Home() {
     }
   };
 
-  // Get featured cities data
+  // Get featured cities with Indian iconic structures
   const featuredCities = [
     { 
-      name: "Mumbai", 
-      image: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
-      dealCount: 2845
+      id: "taj-mahal",
+      name: "Agra", 
+      image: "https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      dealCount: 2845,
+      monument: "Taj Mahal"
     },
     { 
+      id: "india-gate",
       name: "Delhi", 
-      image: "https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
-      dealCount: 2134
+      image: "https://images.pexels.com/photos/789750/pexels-photo-789750.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      dealCount: 2134,
+      monument: "India Gate"
     },
     { 
-      name: "Bangalore", 
-      image: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
-      dealCount: 1987
+      id: "gateway-of-india",
+      name: "Mumbai", 
+      image: "https://images.pexels.com/photos/3881104/pexels-photo-3881104.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      dealCount: 1987,
+      monument: "Gateway of India"
     },
     { 
-      name: "Chennai", 
-      image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
-      dealCount: 1543
+      id: "charminar",
+      name: "Hyderabad", 
+      image: "https://images.pexels.com/photos/10752318/pexels-photo-10752318.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      dealCount: 1543,
+      monument: "Charminar"
+    },
+    { 
+      id: "golden-temple",
+      name: "Amritsar", 
+      image: "https://images.pexels.com/photos/2611810/pexels-photo-2611810.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      dealCount: 1234,
+      monument: "Golden Temple"
+    },
+    { 
+      id: "red-fort",
+      name: "New Delhi", 
+      image: "https://images.pexels.com/photos/6467191/pexels-photo-6467191.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      dealCount: 1876,
+      monument: "Red Fort"
+    },
+    { 
+      id: "qutb-minar",
+      name: "South Delhi", 
+      image: "https://images.pexels.com/photos/13881271/pexels-photo-13881271.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
+      dealCount: 1456,
+      monument: "Qutb Minar"
     }
   ];
 
@@ -169,61 +198,67 @@ export default function Home() {
       <Navbar selectedCity={selectedCity} onCityChange={setSelectedCity} />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-royal/5 py-16 relative overflow-hidden">
-        {/* Background Icons of Indian Monuments */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          {/* Taj Mahal */}
-          <svg className="absolute top-10 right-20 w-32 h-32 text-primary" viewBox="0 0 200 200" fill="currentColor">
-            <path d="M100 20 L120 40 L180 40 L180 60 L160 60 L160 180 L40 180 L40 60 L20 60 L20 40 L80 40 L100 20 Z"/>
-            <circle cx="100" cy="80" r="25"/>
-            <path d="M90 30 L110 30 L105 15 L95 15 Z"/>
-            <rect x="60" y="120" width="15" height="40"/>
-            <rect x="125" y="120" width="15" height="40"/>
-          </svg>
+      <section className="py-16 relative overflow-hidden">
+        {/* Background Images of Indian Iconic Structures */}
+        <div className="absolute inset-0">
+          {/* Multiple background images with opacity overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-royal/10 z-10"></div>
           
-          {/* Gateway of India */}
-          <svg className="absolute bottom-20 left-10 w-28 h-28 text-saffron" viewBox="0 0 200 200" fill="currentColor">
-            <rect x="20" y="60" width="160" height="120"/>
-            <path d="M20 60 L100 20 L180 60"/>
-            <rect x="80" y="100" width="40" height="80"/>
-            <circle cx="50" cy="90" r="8"/>
-            <circle cx="150" cy="90" r="8"/>
-            <rect x="10" y="170" width="180" height="10"/>
-          </svg>
+          {/* Taj Mahal Background */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-20"
+            style={{
+              backgroundImage: `url('https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')`
+            }}
+          ></div>
           
-          {/* Red Fort */}
-          <svg className="absolute top-32 left-32 w-24 h-24 text-red-400" viewBox="0 0 200 200" fill="currentColor">
-            <rect x="30" y="80" width="140" height="100"/>
-            <rect x="20" y="70" width="160" height="20"/>
-            <rect x="70" y="40" width="60" height="40"/>
-            <circle cx="100" cy="50" r="8"/>
-            <rect x="80" y="130" width="40" height="50"/>
-          </svg>
+          {/* India Gate Background (layered) */}
+          <div 
+            className="absolute top-0 right-0 w-1/3 h-full bg-cover bg-center opacity-15"
+            style={{
+              backgroundImage: `url('https://images.pexels.com/photos/789750/pexels-photo-789750.jpeg?auto=compress&cs=tinysrgb&w=800&h=1080&fit=crop')`
+            }}
+          ></div>
           
-          {/* India Gate */}
-          <svg className="absolute bottom-32 right-32 w-20 h-20 text-royal" viewBox="0 0 200 200" fill="currentColor">
-            <rect x="70" y="40" width="60" height="140"/>
-            <path d="M50 40 L100 20 L150 40"/>
-            <rect x="85" y="100" width="30" height="80"/>
-            <rect x="40" y="170" width="120" height="10"/>
-          </svg>
+          {/* Gateway of India Background (layered) */}
+          <div 
+            className="absolute bottom-0 left-0 w-1/3 h-2/3 bg-cover bg-center opacity-15"
+            style={{
+              backgroundImage: `url('https://images.pexels.com/photos/3881104/pexels-photo-3881104.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop')`
+            }}
+          ></div>
           
-          {/* Lotus Temple outline */}
-          <svg className="absolute top-60 right-60 w-16 h-16 text-pink-300" viewBox="0 0 200 200" fill="currentColor">
-            <path d="M100 40 L80 60 L60 80 L80 100 L100 120 L120 100 L140 80 L120 60 Z"/>
-            <path d="M100 60 L90 70 L100 80 L110 70 Z"/>
-            <circle cx="100" cy="80" r="15"/>
-          </svg>
+          {/* Red Fort Background (layered) */}
+          <div 
+            className="absolute top-0 left-1/3 w-1/3 h-1/2 bg-cover bg-center opacity-10"
+            style={{
+              backgroundImage: `url('https://images.pexels.com/photos/6467191/pexels-photo-6467191.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop')`
+            }}
+          ></div>
           
-          {/* Qutub Minar */}
-          <svg className="absolute bottom-40 left-60 w-12 h-24 text-amber-400" viewBox="0 0 100 200" fill="currentColor">
-            <rect x="35" y="20" width="30" height="160"/>
-            <rect x="30" y="15" width="40" height="10"/>
-            <rect x="25" y="170" width="50" height="15"/>
-            <line x1="35" y1="40" x2="65" y2="40" stroke="currentColor" strokeWidth="2"/>
-            <line x1="35" y1="80" x2="65" y2="80" stroke="currentColor" strokeWidth="2"/>
-            <line x1="35" y1="120" x2="65" y2="120" stroke="currentColor" strokeWidth="2"/>
-          </svg>
+          {/* Golden Temple Background (layered) */}
+          <div 
+            className="absolute top-1/3 right-1/4 w-1/4 h-1/3 bg-cover bg-center opacity-12"
+            style={{
+              backgroundImage: `url('https://images.pexels.com/photos/2611810/pexels-photo-2611810.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop')`
+            }}
+          ></div>
+          
+          {/* Charminar Background (layered) */}
+          <div 
+            className="absolute bottom-1/4 right-1/3 w-1/4 h-1/3 bg-cover bg-center opacity-10"
+            style={{
+              backgroundImage: `url('https://images.pexels.com/photos/10752318/pexels-photo-10752318.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop')`
+            }}
+          ></div>
+          
+          {/* Qutb Minar Background (layered) */}
+          <div 
+            className="absolute bottom-0 left-1/2 w-1/5 h-1/2 bg-cover bg-center opacity-8"
+            style={{
+              backgroundImage: `url('https://images.pexels.com/photos/13881271/pexels-photo-13881271.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop')`
+            }}
+          ></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -343,20 +378,21 @@ export default function Home() {
       <section className="py-16 bg-gradient-to-br from-saffron/5 to-royal/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Serving Major Indian Cities</h2>
-            <p className="text-gray-600">Discover local deals in your city with our growing network</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Iconic India, Amazing Deals</h2>
+            <p className="text-gray-600">Discover incredible offers near India's most famous landmarks</p>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-6 mb-12">
+          <div className="grid md:grid-cols-4 lg:grid-cols-7 gap-6 mb-12">
             {featuredCities.map((city) => (
-              <div key={city.name} className="group cursor-pointer">
+              <div key={city.id} className="group cursor-pointer">
                 <img 
                   src={city.image} 
-                  alt={`${city.name} cityscape`}
+                  alt={`${city.monument} in ${city.name}`}
                   className="w-full h-48 object-cover rounded-xl group-hover:shadow-lg transition-all"
                 />
                 <div className="mt-4 text-center">
                   <h3 className="font-semibold text-gray-900">{city.name}</h3>
+                  <p className="text-sm text-primary font-medium">{city.monument}</p>
                   <p className="text-sm text-gray-500">{city.dealCount} active deals</p>
                 </div>
               </div>
