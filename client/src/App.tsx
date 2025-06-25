@@ -53,6 +53,7 @@ import NotFound from "@/pages/not-found";
 import ProtectedRoute from "@/components/ui/protected-route";
 import TestFlows from "@/pages/test-flows";
 import DealList from "@/components/DealList";
+import CategoryList from "@/components/CategoryList";
 
 function Router() {
   return (
@@ -67,6 +68,7 @@ function Router() {
       <Route path="/help" component={Help} />
       <Route path="/test" component={TestFlows} />
       <Route path="/deals-list" component={DealList} />
+      <Route path="/categories-list" component={CategoryList} />
       
       {/* Public deal detail route - accessible to all users */}
       <Route path="/deals/:id" component={DealDetail} />
