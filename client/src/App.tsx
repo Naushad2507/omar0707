@@ -52,6 +52,7 @@ import SystemLogs from "@/pages/superadmin/logs";
 import NotFound from "@/pages/not-found";
 import ProtectedRoute from "@/components/ui/protected-route";
 import TestFlows from "@/pages/test-flows";
+import DealList from "@/components/DealList";
 
 function Router() {
   return (
@@ -65,6 +66,7 @@ function Router() {
       <Route path="/privacy" component={Privacy} />
       <Route path="/help" component={Help} />
       <Route path="/test" component={TestFlows} />
+      <Route path="/deals-list" component={DealList} />
       
       {/* Public deal detail route - accessible to all users */}
       <Route path="/deals/:id" component={DealDetail} />
