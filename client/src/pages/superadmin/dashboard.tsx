@@ -474,7 +474,7 @@ export default function SuperAdminDashboard() {
                 Recent System Activity
               </CardTitle>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/superadmin/logs">View All Logs</Link>
+                <Link to="/superadmin/logs">View All Logs</Link>
               </Button>
             </CardHeader>
             <CardContent>
@@ -522,7 +522,7 @@ export default function SuperAdminDashboard() {
                 className="h-20 flex flex-col items-center justify-center space-y-2"
                 asChild
               >
-                <Link href="/admin/users">
+                <Link to="/admin/users">
                   <Users className="h-6 w-6" />
                   <span className="text-sm">User Management</span>
                 </Link>
@@ -533,7 +533,7 @@ export default function SuperAdminDashboard() {
                 className="h-20 flex flex-col items-center justify-center space-y-2"
                 asChild
               >
-                <Link href="/admin/vendors">
+                <Link to="/admin/vendors">
                   <Store className="h-6 w-6" />
                   <span className="text-sm">Vendor Management</span>
                 </Link>
@@ -544,7 +544,7 @@ export default function SuperAdminDashboard() {
                 className="h-20 flex flex-col items-center justify-center space-y-2"
                 asChild
               >
-                <Link href="/admin/deals">
+                <Link to="/admin/deals">
                   <Ticket className="h-6 w-6" />
                   <span className="text-sm">Deal Approval</span>
                 </Link>
@@ -555,7 +555,7 @@ export default function SuperAdminDashboard() {
                 className="h-20 flex flex-col items-center justify-center space-y-2"
                 asChild
               >
-                <Link href="/superadmin/admins">
+                <Link to="/superadmin/admins">
                   <UserCheck className="h-6 w-6" />
                   <span className="text-sm">Admin Users</span>
                 </Link>
@@ -566,7 +566,7 @@ export default function SuperAdminDashboard() {
                 className="h-20 flex flex-col items-center justify-center space-y-2"
                 asChild
               >
-                <Link href="/superadmin/logs">
+                <Link to="/superadmin/logs">
                   <Eye className="h-6 w-6" />
                   <span className="text-sm">System Logs</span>
                 </Link>
@@ -577,7 +577,7 @@ export default function SuperAdminDashboard() {
                 className="h-20 flex flex-col items-center justify-center space-y-2"
                 asChild
               >
-                <Link href="/admin/dashboard">
+                <Link to="/admin/dashboard">
                   <BarChart3 className="h-6 w-6" />
                   <span className="text-sm">Analytics</span>
                 </Link>

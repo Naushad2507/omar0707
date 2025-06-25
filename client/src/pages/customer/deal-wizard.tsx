@@ -172,7 +172,7 @@ export default function DealRecommendationWizard() {
               <h3 className="text-lg font-medium text-gray-900 mb-2">Login Required</h3>
               <p className="text-gray-600 mb-4">Please log in to use the deal recommendation wizard</p>
               <Button asChild>
-                <Link href="/login">Login Now</Link>
+                <Link to="/login">Login Now</Link>
               </Button>
             </CardContent>
           </Card>

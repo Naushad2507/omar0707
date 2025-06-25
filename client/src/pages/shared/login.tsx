@@ -60,7 +60,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/">
+          <Link to="/">
             <h1 className="text-3xl font-bold text-primary">Instoredealz</h1>
           </Link>
           <p className="text-gray-600 mt-2">Welcome back to your deals platform</p>
@@ -129,11 +129,11 @@ export default function Login() {
               <div className="text-center space-y-2">
                 <p className="text-sm text-gray-600">
                   Don't have an account?{" "}
-                  <Link href="/signup" className="text-primary hover:underline">
+                  <Link to="/signup" className="text-primary hover:underline">
                     Sign up
                   </Link>
                 </p>
-                <Link href="/" className="text-sm text-gray-500 hover:underline">
+                <Link to="/" className="text-sm text-gray-500 hover:underline">
                   Back to Home
                 </Link>
               </div>

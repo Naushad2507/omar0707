@@ -1,5 +1,5 @@
 import { useAuth, hasRole } from "@/lib/auth";
-import { useLocation } from "wouter";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -15,7 +15,8 @@ export default function ProtectedRoute({
   redirectTo = "/login" 
 }: ProtectedRouteProps) {
   const { user, isAuthenticated } = useAuth();
-  const [, navigate] = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!isAuthenticated) {

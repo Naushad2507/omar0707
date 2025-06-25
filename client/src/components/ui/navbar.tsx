@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,7 +16,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
-  const [location, navigate] = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -128,7 +129,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
           {/* Logo */}
           <div className="flex items-center space-x-8">
             <div className="flex-shrink-0">
-              <Link href="/">
+              <Link to="/">
                 <InstoredeelzLogo size="md" className="cursor-pointer" />
               </Link>
             </div>
@@ -140,9 +141,9 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    to={item.href}
                     className={`flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors ${
-                      location === item.href ? "text-primary font-medium" : ""
+                      location.pathname === item.href ? "text-primary font-medium" : ""
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -198,7 +199,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={getDashboardLink()} className="flex items-center">
+                    <Link to={getDashboardLink()} className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       Dashboard
                     </Link>
@@ -213,10 +214,10 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
             ) : (
               <div className="hidden md:flex items-center space-x-2">
                 <Button variant="outline" asChild>
-                  <Link href="/login">Login</Link>
+                  <Link to="/login">Login</Link>
                 </Button>
                 <Button asChild>
-                  <Link href="/signup">Sign Up</Link>
+                  <Link to="/signup">Sign Up</Link>
                 </Button>
               </div>
             )}
@@ -261,14 +262,14 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                         asChild
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <Link href="/login">Login</Link>
+                        <Link to="/login">Login</Link>
                       </Button>
                       <Button 
                         className="w-full" 
                         asChild
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <Link href="/signup">Sign Up</Link>
+                        <Link to="/signup">Sign Up</Link>
                       </Button>
                     </div>
                   )}

@@ -342,7 +342,7 @@ export default function AdminDashboard() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Pending Vendor Approvals</CardTitle>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/admin/vendors">View All</Link>
+                <Link to="/admin/vendors">View All</Link>
               </Button>
             </CardHeader>
             <CardContent>
@@ -377,7 +377,7 @@ export default function AdminDashboard() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Pending Deal Approvals</CardTitle>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/admin/deals">View All</Link>
+                <Link to="/admin/deals">View All</Link>
               </Button>
             </CardHeader>
             <CardContent>

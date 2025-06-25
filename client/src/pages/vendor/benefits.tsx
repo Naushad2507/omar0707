@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { 
   TrendingUp, 
   BarChart3, 
@@ -108,7 +108,7 @@ export default function VendorBenefits() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button size="lg" variant="secondary" asChild>
-                  <Link href="/vendor/register">
+                  <Link to="/vendor/register">
                     Become a Vendor
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
@@ -301,7 +301,7 @@ export default function VendorBenefits() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" asChild>
-              <Link href="/vendor/register">
+              <Link to="/vendor/register">
                 Start Free Today
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

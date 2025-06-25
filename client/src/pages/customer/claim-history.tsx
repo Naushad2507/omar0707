@@ -203,7 +203,7 @@ export default function ClaimHistory() {
             <CardTitle className="flex items-center justify-between">
               <span>Your Claims ({sortedClaims.length})</span>
               <Button variant="outline" asChild>
-                <Link href="/customer/deals">Browse More Deals</Link>
+                <Link to="/customer/deals">Browse More Deals</Link>
               </Button>
             </CardTitle>
           </CardHeader>
@@ -290,7 +290,7 @@ export default function ClaimHistory() {
                   }
                 </p>
                 <Button asChild>
-                  <Link href="/customer/deals">Browse Deals</Link>
+                  <Link to="/customer/deals">Browse Deals</Link>
                 </Button>
               </div>
             )}

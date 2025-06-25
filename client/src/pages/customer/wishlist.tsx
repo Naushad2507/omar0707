@@ -55,7 +55,7 @@ export default function CustomerWishlist() {
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Login Required</h2>
               <p className="text-gray-600 mb-6">Please login to view your favorites.</p>
               <Button asChild>
-                <Link href="/login">Login</Link>
+                <Link to="/login">Login</Link>
               </Button>
             </CardContent>
           </Card>
@@ -112,7 +112,7 @@ export default function CustomerWishlist() {
                 Start browsing deals and save your favorites for easy access later
               </p>
               <Button asChild>
-                <Link href="/customer/deals">
+                <Link to="/customer/deals">
                   <ShoppingBag className="h-4 w-4 mr-2" />
                   Browse Deals
                 </Link>

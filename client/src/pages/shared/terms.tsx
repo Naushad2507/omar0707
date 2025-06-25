@@ -217,7 +217,7 @@ export default function Terms() {
         </div>
 
         <div className="text-center mt-12">
-          <Link href="/" className="text-primary hover:underline">
+          <Link to="/" className="text-primary hover:underline">
             Back to Home
           </Link>
         </div>

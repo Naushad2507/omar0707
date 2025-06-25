@@ -659,7 +659,7 @@ export default function VendorRegisterEnhanced() {
                           <FormLabel>
                             I agree to the{" "}
                             <a 
-                              href="/terms" 
+                              to="/terms" 
                               target="_blank" 
                               className="text-primary hover:underline"
                             >

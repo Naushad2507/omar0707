@@ -345,7 +345,7 @@ export default function DealDetail() {
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-semibold mb-2">Deal Not Found</h2>
             <p className="text-gray-600 mb-4">The deal you're looking for doesn't exist.</p>
-            <Link href="/customer/deals">
+            <Link to="/customer/deals">
               <Button>Back to Deals</Button>
             </Link>
           </CardContent>

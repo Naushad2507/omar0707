@@ -238,10 +238,10 @@ export default function Pricing() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
-              <Link href="/signup">Start Free Today</Link>
+              <Link to="/signup">Start Free Today</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link href="/customer/deals">Browse Deals</Link>
+              <Link to="/customer/deals">Browse Deals</Link>
             </Button>
           </div>
         </div>

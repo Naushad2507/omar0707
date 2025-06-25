@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Linkedin, Shield } from "lucide-react";
 import InstoredeelzLogo from "@/components/ui/instoredealz-logo";
 
@@ -16,16 +16,16 @@ export default function Footer() {
               Your ultimate destination for discovering amazing deals from local businesses across India.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a to="#" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a to="#" className="text-gray-300 hover:text-white transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a to="#" className="text-gray-300 hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a to="#" className="text-gray-300 hover:text-white transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -36,22 +36,22 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">For Customers</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/customer/deals" className="hover:text-white transition-colors">
+                <Link to="/customer/deals" className="hover:text-white transition-colors">
                   Browse Deals
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="hover:text-white transition-colors">
+                <Link to="/pricing" className="hover:text-white transition-colors">
                   Membership Plans
                 </Link>
               </li>
               <li>
-                <Link href="/customer/dashboard" className="hover:text-white transition-colors">
+                <Link to="/customer/dashboard" className="hover:text-white transition-colors">
                   My Account
                 </Link>
               </li>
               <li>
-                <a href="#help" className="hover:text-white transition-colors">
+                <a to="#help" className="hover:text-white transition-colors">
                   Help Center
                 </a>
               </li>
@@ -63,22 +63,22 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">For Businesses</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/vendor/benefits" className="hover:text-white transition-colors">
+                <Link to="/vendor/benefits" className="hover:text-white transition-colors">
                   Become a Vendor
                 </Link>
               </li>
               <li>
-                <Link href="/vendor/dashboard" className="hover:text-white transition-colors">
+                <Link to="/vendor/dashboard" className="hover:text-white transition-colors">
                   Vendor Dashboard
                 </Link>
               </li>
               <li>
-                <a href="#marketing" className="hover:text-white transition-colors">
+                <a to="#marketing" className="hover:text-white transition-colors">
                   Marketing Tools
                 </a>
               </li>
               <li>
-                <a href="#support" className="hover:text-white transition-colors">
+                <a to="#support" className="hover:text-white transition-colors">
                   Business Support
                 </a>
               </li>
@@ -90,22 +90,22 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/terms" className="hover:text-white transition-colors">
+                <Link to="/terms" className="hover:text-white transition-colors">
                   Terms & Conditions
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-white transition-colors">
+                <Link to="/privacy" className="hover:text-white transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <a href="#cookies" className="hover:text-white transition-colors">
+                <a to="#cookies" className="hover:text-white transition-colors">
                   Cookie Consent
                 </a>
               </li>
               <li>
-                <a href="#refund" className="hover:text-white transition-colors">
+                <a to="#refund" className="hover:text-white transition-colors">
                   Refund Policy
                 </a>
               </li>

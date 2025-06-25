@@ -97,7 +97,7 @@ export default function CustomerDashboard() {
             <div className="flex items-center space-x-3">
               <Tutorial type="customer" />
               <Button variant="outline" size="sm" asChild>
-                <Link href="/customer/deals">
+                <Link to="/customer/deals">
                   <Ticket className="h-4 w-4 mr-2" />
                   Browse Deals
                 </Link>
@@ -121,7 +121,7 @@ export default function CustomerDashboard() {
                   </p>
                 </div>
                 <Button variant="secondary" asChild>
-                  <Link href="/pricing">View Plans</Link>
+                  <Link to="/pricing">View Plans</Link>
                 </Button>
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function CustomerDashboard() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-xl">Recent Claims</CardTitle>
               <Button variant="outline" asChild>
-                <Link href="/customer/claims">View All</Link>
+                <Link to="/customer/claims">View All</Link>
               </Button>
             </CardHeader>
             <CardContent>
@@ -227,7 +227,7 @@ export default function CustomerDashboard() {
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No claims yet</h3>
                   <p className="text-gray-600 mb-4">Start claiming deals to see your history here</p>
                   <Button asChild>
-                    <Link href="/customer/deals">Browse Deals</Link>
+                    <Link to="/customer/deals">Browse Deals</Link>
                   </Button>
                 </div>
               )}
@@ -244,7 +244,7 @@ export default function CustomerDashboard() {
                 Trending Deals
               </h2>
               <Button variant="outline" asChild>
-                <Link href="/customer/deals">View All Deals</Link>
+                <Link to="/customer/deals">View All Deals</Link>
               </Button>
             </div>
             

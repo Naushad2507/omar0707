@@ -405,7 +405,7 @@ export default function Home() {
                   Explore Deals
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <Link href="/vendor/benefits">Join as Vendor</Link>
+                  <Link to="/vendor/benefits">Join as Vendor</Link>
                 </Button>
               </div>
               <div className="mt-8 flex items-center space-x-8 text-sm text-gray-600">
@@ -470,7 +470,7 @@ export default function Home() {
           <p className="text-lg mb-2">Enjoy 1 Year Free Premium Plan – Offer valid until 14th August 2026</p>
           <p className="text-sm opacity-90 mb-4">New users only. Automatic upgrade after promotional period.</p>
           <Button variant="secondary" size="lg" asChild>
-            <Link href="/pricing">View Plans</Link>
+            <Link to="/pricing">View Plans</Link>
           </Button>
         </div>
       </section>
@@ -564,10 +564,10 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-8">Join thousands of users who save money every day</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
-              <Link href="/signup">Get Started Free</Link>
+              <Link to="/signup">Get Started Free</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link href="/pricing">View Pricing</Link>
+              <Link to="/pricing">View Pricing</Link>
             </Button>
           </div>
         </div>

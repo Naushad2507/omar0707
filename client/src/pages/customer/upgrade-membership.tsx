@@ -169,7 +169,7 @@ export default function UpgradeMembership() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
             <Button variant="outline" size="sm" asChild className="mr-4">
-              <Link href="/customer/dashboard">
+              <Link to="/customer/dashboard">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
               </Link>

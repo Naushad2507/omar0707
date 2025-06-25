@@ -150,7 +150,7 @@ export default function VendorDashboard() {
             <div className="flex items-center space-x-3">
               <Tutorial type="vendor" />
               <Button variant="outline" size="sm" asChild>
-                <Link href="/vendor/deals">
+                <Link to="/vendor/deals">
                   <BarChart3 className="h-4 w-4 mr-2" />
                   Manage Deals
                 </Link>
@@ -194,7 +194,7 @@ export default function VendorDashboard() {
                   </div>
                 </div>
                 <Button asChild>
-                  <Link href="/vendor/register">
+                  <Link to="/vendor/register">
                     Register Now
                   </Link>
                 </Button>
@@ -442,7 +442,7 @@ export default function VendorDashboard() {
                     <Store className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-4">No business profile found</p>
                     <Button asChild>
-                      <Link href="/vendor/register">Complete Registration</Link>
+                      <Link to="/vendor/register">Complete Registration</Link>
                     </Button>
                   </div>
                 )}
@@ -457,13 +457,13 @@ export default function VendorDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Button className="w-full" asChild>
-                    <Link href="/vendor/deals">
+                    <Link to="/vendor/deals">
                       <Plus className="h-4 w-4 mr-2" />
                       Create New Deal
                     </Link>
                   </Button>
                   <Button variant="outline" className="w-full" asChild>
-                    <Link href="/vendor/analytics">
+                    <Link to="/vendor/analytics">
                       <BarChart3 className="h-4 w-4 mr-2" />
                       View Analytics
                     </Link>
@@ -480,7 +480,7 @@ export default function VendorDashboard() {
                 <CardTitle>Recent Deals</CardTitle>
                 {vendor && isApproved && (
                   <Button asChild>
-                    <Link href="/vendor/deals">
+                    <Link to="/vendor/deals">
                       <Plus className="h-4 w-4 mr-2" />
                       Add Deal
                     </Link>
@@ -541,7 +541,7 @@ export default function VendorDashboard() {
                     
                     <div className="text-center pt-4">
                       <Button variant="outline" asChild>
-                        <Link href="/vendor/deals">View All Deals</Link>
+                        <Link to="/vendor/deals">View All Deals</Link>
                       </Button>
                     </div>
                   </div>
@@ -553,7 +553,7 @@ export default function VendorDashboard() {
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No deals created yet</h3>
                         <p className="text-gray-600 mb-4">Start creating deals to attract customers</p>
                         <Button asChild>
-                          <Link href="/vendor/deals">Create Your First Deal</Link>
+                          <Link to="/vendor/deals">Create Your First Deal</Link>
                         </Button>
                       </>
                     ) : (
