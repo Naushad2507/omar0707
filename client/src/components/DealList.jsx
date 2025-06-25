@@ -11,7 +11,7 @@ const DealList = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('https://api.instoredealz.com/S0G1IP/Deals/AllDeals');
+        const response = await fetch('/api/external/deals');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch deals: ${response.status} ${response.statusText}`);

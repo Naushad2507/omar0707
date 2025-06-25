@@ -54,6 +54,8 @@ import ProtectedRoute from "@/components/ui/protected-route";
 import TestFlows from "@/pages/test-flows";
 import DealList from "@/components/DealList";
 import CategoryList from "@/components/CategoryList";
+import StoreDeals from "@/components/StoreDeals";
+import BlogList from "@/components/BlogList";
 
 function Router() {
   return (
@@ -69,6 +71,10 @@ function Router() {
       <Route path="/test" component={TestFlows} />
       <Route path="/deals-list" component={DealList} />
       <Route path="/categories-list" component={CategoryList} />
+      <Route path="/blogs-list" component={BlogList} />
+      <Route path="/store-deals">
+        {() => <StoreDeals storeId="123" dealId="456" pinId="789" />}
+      </Route>
       
       {/* Public deal detail route - accessible to all users */}
       <Route path="/deals/:id" component={DealDetail} />

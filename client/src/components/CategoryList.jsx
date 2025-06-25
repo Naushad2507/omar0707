@@ -11,7 +11,7 @@ const CategoryList = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('https://api.instoredealz.com/S0G1IP/Category/AllCategories');
+        const response = await fetch('/api/external/categories');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch categories: ${response.status} ${response.statusText}`);
