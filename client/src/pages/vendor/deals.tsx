@@ -26,7 +26,10 @@ import {
   TrendingUp,
   Clock,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  MapPin,
+  Navigation,
+  Crosshair
 } from "lucide-react";
 
 const dealSchema = z.object({
@@ -41,6 +44,11 @@ const dealSchema = z.object({
   validUntil: z.string().min(1, "Please select an end date"),
   maxRedemptions: z.number().optional(),
   requiredMembership: z.enum(["basic", "premium", "ultimate"]),
+  // Location fields
+  address: z.string().min(1, "Address is required"),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  useCurrentLocation: z.boolean().optional(),
 });
 
 type DealForm = z.infer<typeof dealSchema>;
@@ -48,6 +56,8 @@ type DealForm = z.infer<typeof dealSchema>;
 export default function VendorDeals() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingDeal, setEditingDeal] = useState<any>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [locationError, setLocationError] = useState<string>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -77,8 +87,64 @@ export default function VendorDeals() {
       validUntil: "",
       maxRedemptions: undefined,
       requiredMembership: "basic",
+      address: "",
+      latitude: undefined,
+      longitude: undefined,
+      useCurrentLocation: false,
     },
   });
+
+  // Geolocation function
+  const getCurrentLocation = () => {
+    setIsGettingLocation(true);
+    setLocationError("");
+
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by this browser.");
+      setIsGettingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        form.setValue("latitude", latitude);
+        form.setValue("longitude", longitude);
+        form.setValue("useCurrentLocation", true);
+        setIsGettingLocation(false);
+        toast({
+          title: "Location captured!",
+          description: `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`,
+        });
+      },
+      (error) => {
+        let errorMessage = "Failed to get location.";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied by user.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information is unavailable.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out.";
+            break;
+        }
+        setLocationError(errorMessage);
+        setIsGettingLocation(false);
+        toast({
+          title: "Location Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000, // 5 minutes
+      }
+    );
+  };
 
   const createDealMutation = useMutation({
     mutationFn: async (data: DealForm) => {
@@ -89,6 +155,8 @@ export default function VendorDeals() {
         maxRedemptions: data.maxRedemptions || null,
         discountCode: data.discountCode || null,
         imageUrl: data.imageUrl || null,
+        latitude: data.latitude || null,
+        longitude: data.longitude || null,
       });
     },
     onSuccess: () => {
@@ -480,6 +548,67 @@ export default function VendorDeals() {
                         </FormItem>
                       )}
                     />
+                  </div>
+
+                  {/* Location Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Navigation className="h-5 w-5 text-blue-600" />
+                      <h3 className="text-lg font-medium">Location Information</h3>
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Business Address *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter your business address"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormDescription>Full address where customers can find your deal</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <Crosshair className="h-4 w-4 text-blue-600" />
+                          <span className="text-sm font-medium">GPS Coordinates</span>
+                        </div>
+                        <p className="text-xs text-gray-600 mt-1">
+                          Add precise location for better nearby deal discovery
+                        </p>
+                        {form.watch("latitude") && form.watch("longitude") && (
+                          <p className="text-xs text-green-600 mt-1">
+                            Location captured: {form.watch("latitude")?.toFixed(6)}, {form.watch("longitude")?.toFixed(6)}
+                          </p>
+                        )}
+                        {locationError && (
+                          <p className="text-xs text-red-600 mt-1">{locationError}</p>
+                        )}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={getCurrentLocation}
+                        disabled={isGettingLocation}
+                        className="flex items-center space-x-2"
+                      >
+                        {isGettingLocation ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Crosshair className="h-4 w-4" />
+                        )}
+                        <span>{isGettingLocation ? "Getting..." : "Get Location"}</span>
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="flex justify-end space-x-4">

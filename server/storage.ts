@@ -408,17 +408,20 @@ export class MemStorage implements IStorage {
           imageUrl: templates.images[0],
           originalPrice: `${1000 + (i * 200)}.00`,
           discountedPrice: `${500 + (i * 100)}.00`,
-          discountPercentage: `${30 + (i * 5)}`,
+          discountPercentage: 30 + (i * 5),
+          discountCode: i % 3 === 0 ? `SAVE${10 + i}` : null,
           validFrom: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
           validUntil: new Date(Date.now() + ((30 - i) * 24 * 60 * 60 * 1000)),
-          redemptionLimit: 100 + (i * 10),
+          maxRedemptions: 100 + (i * 10),
           currentRedemptions: i * 5,
-          terms: "Valid for new customers only. Cannot be combined with other offers.",
           isActive: true,
           isApproved: i < 8, // Most deals approved
           approvedBy: i < 8 ? 1 : null,
           viewCount: (i + 1) * 25,
-          requiredMembership: membershipReq,
+          requiredMembership: membershipReq || "basic",
+          address: `${category.charAt(0).toUpperCase() + category.slice(1)} Store, Shop ${i + 1}, Main Market, Mumbai, Maharashtra 400001`,
+          latitude: `19.${75000 + (i * 100)}`,
+          longitude: `72.${83000 + (i * 50)}`,
           createdAt: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
         };
         deals.push(deal);
@@ -469,6 +472,15 @@ export class MemStorage implements IStorage {
     const user: User = {
       id: this.currentUserId++,
       ...insertUser,
+      role: insertUser.role || "customer",
+      phone: insertUser.phone || null,
+      city: insertUser.city || null,
+      state: insertUser.state || null,
+      membershipPlan: insertUser.membershipPlan || null,
+      membershipExpiry: insertUser.membershipExpiry || null,
+      isPromotionalUser: insertUser.isPromotionalUser || null,
+      totalSavings: insertUser.totalSavings || null,
+      dealsClaimed: insertUser.dealsClaimed || null,
       createdAt: new Date(),
       isActive: true,
     };
@@ -507,6 +519,16 @@ export class MemStorage implements IStorage {
     const vendor: Vendor = {
       id: this.currentVendorId++,
       ...insertVendor,
+      gstNumber: insertVendor.gstNumber || null,
+      logoUrl: insertVendor.logoUrl || null,
+      description: insertVendor.description || null,
+      address: insertVendor.address || null,
+      latitude: insertVendor.latitude || null,
+      longitude: insertVendor.longitude || null,
+      isApproved: false,
+      rating: "0",
+      totalDeals: 0,
+      totalRedemptions: 0,
       createdAt: new Date(),
     };
     this.vendors.set(vendor.id, vendor);
@@ -552,6 +574,20 @@ export class MemStorage implements IStorage {
     const deal: Deal = {
       id: this.currentDealId++,
       ...insertDeal,
+      imageUrl: insertDeal.imageUrl || null,
+      discountCode: insertDeal.discountCode || null,
+      originalPrice: insertDeal.originalPrice || null,
+      discountedPrice: insertDeal.discountedPrice || null,
+      maxRedemptions: insertDeal.maxRedemptions || null,
+      latitude: insertDeal.latitude || null,
+      longitude: insertDeal.longitude || null,
+      currentRedemptions: 0,
+      viewCount: 0,
+      validFrom: new Date(),
+      isActive: true,
+      isApproved: false,
+      approvedBy: null,
+      requiredMembership: insertDeal.requiredMembership || "basic",
       createdAt: new Date(),
     };
     this.deals.set(deal.id, deal);
@@ -605,6 +641,8 @@ export class MemStorage implements IStorage {
     const claim: DealClaim = {
       id: this.currentDealClaimId++,
       ...insertClaim,
+      status: insertClaim.status || "claimed",
+      usedAt: insertClaim.usedAt || null,
       claimedAt: new Date(),
     };
     this.dealClaims.set(claim.id, claim);
@@ -634,7 +672,11 @@ export class MemStorage implements IStorage {
     const ticket: HelpTicket = {
       id: this.currentHelpTicketId++,
       ...insertTicket,
+      status: insertTicket.status || "open",
+      priority: insertTicket.priority || "medium",
+      assignedTo: insertTicket.assignedTo || null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.helpTickets.set(ticket.id, ticket);
     return ticket;
@@ -663,6 +705,9 @@ export class MemStorage implements IStorage {
     const log: SystemLog = {
       id: this.currentSystemLogId++,
       ...insertLog,
+      userId: insertLog.userId || null,
+      ipAddress: insertLog.ipAddress || null,
+      userAgent: insertLog.userAgent || null,
       details: insertLog.details || {},
       createdAt: new Date(),
     };
@@ -680,7 +725,7 @@ export class MemStorage implements IStorage {
     const wishlist: Wishlist = {
       id: this.currentWishlistId++,
       ...insertWishlist,
-      createdAt: new Date(),
+      addedAt: new Date(),
     };
     this.wishlists.set(wishlist.id, wishlist);
     return wishlist;

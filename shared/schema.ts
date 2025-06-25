@@ -65,6 +65,9 @@ export const deals = pgTable("deals", {
   approvedBy: integer("approved_by").references(() => users.id),
   viewCount: integer("view_count").default(0),
   requiredMembership: text("required_membership").default("basic"), // basic, premium, ultimate
+  address: text("address").notNull(),
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
