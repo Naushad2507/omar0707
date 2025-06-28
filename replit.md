@@ -113,5 +113,23 @@ The application follows a monorepo structure with clear separation between clien
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### June 28, 2025 - Enhanced Deal Management & Subscription System
+- **Updated DealList Component**: Integrated TanStack Query for efficient data fetching from /api/deals
+- **QR Code Integration**: Added magical QR code generation for deal claims using qrcode library with themed designs
+- **Enhanced UI/UX**: Implemented responsive card layouts with Tailwind CSS gradients, animations, and hover effects
+- **Subscription Component**: Created comprehensive subscription management with Razorpay payment integration
+- **Payment Processing**: Added /api/save-subscription endpoint with authentication and membership plan updates
+- **QR Code Library**: Enhanced with multiple themes (success, warning, premium, deal, membership, classic) and TypeScript safety
+
+### Technical Improvements
+- **QR Code Themes**: Pre-defined magical themes for different QR code types with customizable colors
+- **Payment Integration**: Razorpay SDK integration for secure payment processing (₹500 Premium, ₹1000 Ultimate plans)
+- **Authentication Flow**: Proper authentication checks using useAuth hook throughout subscription process
+- **Data Validation**: Comprehensive input validation and error handling for payment and subscription data
+- **System Logging**: Enhanced logging for subscription activities and payment transactions
+
 ## Changelog
 - June 15, 2025. Initial setup
+- June 28, 2025. Added subscription system and enhanced deal management with QR codes

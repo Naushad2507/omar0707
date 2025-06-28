@@ -1201,6 +1201,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Subscription endpoint
+  app.post('/api/save-subscription', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { planId, paymentId, amount, userId } = req.body;
+      
+      // Validate request data
+      if (!planId || !paymentId || !amount || !userId) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Missing required fields: planId, paymentId, amount, userId" 
+        });
+      }
+
+      // Verify the user matches the authenticated user
+      if (req.user!.id !== userId) {
+        return res.status(403).json({ 
+          success: false,
+          message: "User ID mismatch" 
+        });
+      }
+
+      // Get user to update their membership
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ 
+          success: false,
+          message: "User not found" 
+        });
+      }
+
+      // Update user's membership plan
+      const membershipPlan = planId === 'ultimate' ? 'ultimate' : 'premium';
+      const membershipExpiry = new Date();
+      membershipExpiry.setMonth(membershipExpiry.getMonth() + 1); // 1 month from now
+
+      const updatedUser = await storage.updateUser(userId, {
+        membershipPlan,
+        membershipExpiry,
+      });
+
+      if (!updatedUser) {
+        return res.status(500).json({ 
+          success: false,
+          message: "Failed to update user membership" 
+        });
+      }
+
+      // Log the subscription activity
+      await storage.createSystemLog({
+        userId: userId,
+        action: "SUBSCRIPTION_ACTIVATED",
+        details: { 
+          planId,
+          paymentId,
+          amount,
+          membershipPlan,
+          membershipExpiry: membershipExpiry.toISOString()
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+
+      // Generate subscription ID
+      const subscriptionId = `sub_${Date.now()}_${userId}`;
+
+      res.json({
+        success: true,
+        subscriptionId,
+        paymentId,
+        message: `${membershipPlan.charAt(0).toUpperCase() + membershipPlan.slice(1)} subscription activated successfully`,
+        membershipPlan,
+        expiryDate: membershipExpiry.toISOString()
+      });
+
+    } catch (error) {
+      console.error("Error saving subscription:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to process subscription" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

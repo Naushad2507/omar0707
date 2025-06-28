@@ -56,6 +56,7 @@ import DealList from "@/components/DealList";
 import CategoryList from "@/components/CategoryList";
 import StoreDeals from "@/components/StoreDeals";
 import BlogList from "@/components/BlogList";
+import Subscription from "@/components/Subscription";
 
 function Router() {
   return (
@@ -75,6 +76,7 @@ function Router() {
       <Route path="/categories" element={<CategoryList />} />
       <Route path="/blogs" element={<BlogList />} />
       <Route path="/store-deals" element={<StoreDeals storeId="123" dealId="456" pinId="789" />} />
+      <Route path="/subscription" element={<Subscription />} />
       
       {/* Public deal detail route - accessible to all users */}
       <Route path="/deals/:id" element={<DealDetail />} />
