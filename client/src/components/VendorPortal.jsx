@@ -33,7 +33,10 @@ import {
   Rocket,
   Trophy,
   Target,
-  Gift
+  Gift,
+  Crown,
+  Star,
+  Zap
 } from 'lucide-react';
 
 // Vendor registration validation schema
@@ -162,73 +165,154 @@ const VendorPortal = () => {
     ? Math.round(((Number(watchOriginalPrice) - Number(watchDiscountedPrice)) / Number(watchOriginalPrice)) * 100)
     : 0;
 
-  // External API call for vendor registration
+  // External API call for vendor registration using magic API
   const callExternalVendorAPI = async (vendorData) => {
     try {
-      const externalResponse = await fetch('https://api.instoredealz.com/S0G1IP/Company/AddCompanyVendor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          companyName: vendorData.businessName,
-          ownerName: vendorData.ownerName,
-          email: vendorData.email,
-          phone: vendorData.phone,
-          businessType: vendorData.businessType,
-          address: vendorData.address,
-          city: vendorData.city,
-          state: vendorData.state,
-          pincode: vendorData.pincode,
-          website: vendorData.website,
-          description: vendorData.description,
-          gstNumber: vendorData.gstNumber,
-          panNumber: vendorData.panNumber,
-          registeredAt: new Date().toISOString()
-        }),
+      const externalResponse = await apiRequest('/api/magic/companies/vendor', 'POST', {
+        companyName: vendorData.businessName,
+        ownerName: vendorData.ownerName,
+        email: vendorData.email,
+        phone: vendorData.phone,
+        businessType: vendorData.businessType,
+        address: vendorData.address,
+        city: vendorData.city,
+        state: vendorData.state,
+        pincode: vendorData.pincode,
+        website: vendorData.website,
+        description: vendorData.description,
+        gstNumber: vendorData.gstNumber,
+        panNumber: vendorData.panNumber,
+        registeredAt: new Date().toISOString()
       });
 
-      if (externalResponse.ok) {
-        console.log('External vendor API call successful');
-      } else {
-        console.warn('External vendor API call failed, but local registration is complete');
-      }
+      console.log('External vendor API call successful');
+      return externalResponse;
     } catch (error) {
       console.warn('External vendor API call error:', error.message);
+      return null;
     }
   };
 
-  // External API call for deal creation
+  // External API call for deal creation using magic API
   const callExternalDealAPI = async (dealData, vendorId) => {
     try {
-      const externalResponse = await fetch('https://api.instoredealz.com/S0G1IP/Deals/AddDealVendor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          vendorId: vendorId,
-          title: dealData.title,
-          description: dealData.description,
-          category: dealData.category,
-          originalPrice: Number(dealData.originalPrice),
-          discountedPrice: Number(dealData.discountedPrice),
-          discountPercentage: discountPercentage,
-          validUntil: dealData.validUntil,
-          maxRedemptions: dealData.maxRedemptions ? Number(dealData.maxRedemptions) : null,
-          terms: dealData.terms,
-          requiredMembership: dealData.requiredMembership,
-          createdAt: new Date().toISOString()
-        }),
+      const externalResponse = await apiRequest('/api/magic/deals/vendor', 'POST', {
+        vendorId: vendorId,
+        title: dealData.title,
+        description: dealData.description,
+        category: dealData.category,
+        originalPrice: Number(dealData.originalPrice),
+        discountedPrice: Number(dealData.discountedPrice),
+        discountPercentage: discountPercentage,
+        validUntil: dealData.validUntil,
+        maxRedemptions: dealData.maxRedemptions ? Number(dealData.maxRedemptions) : null,
+        requiredMembership: dealData.requiredMembership,
+        createdAt: new Date().toISOString()
       });
 
-      if (externalResponse.ok) {
-        console.log('External deal API call successful');
-      } else {
-        console.warn('External deal API call failed, but local deal creation is complete');
-      }
+      console.log('External deal API call successful');
+      return externalResponse;
     } catch (error) {
       console.warn('External deal API call error:', error.message);
+      return null;
+    }
+  };
+
+  // Vendor subscription mutation
+  const vendorSubscriptionMutation = useMutation({
+    mutationFn: async (subscriptionData) => {
+      const response = await apiRequest('/api/vendor-subscription', 'POST', subscriptionData);
+      return response;
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Vendor Subscription Activated! 🎉",
+        description: "Your vendor subscription is now active with enhanced features.",
+        variant: "default",
+      });
+      
+      // Call external vendor subscription API
+      callExternalVendorSubscriptionAPI(data);
+    },
+    onError: (error) => {
+      toast({
+        title: "Subscription Failed",
+        description: error.message || "Failed to activate vendor subscription.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // External vendor subscription API call
+  const callExternalVendorSubscriptionAPI = async (subscriptionData) => {
+    try {
+      await apiRequest('/api/magic/vendor-subscription', 'POST', {
+        vendorId: user?.id,
+        subscriptionId: subscriptionData.subscriptionId,
+        planType: 'vendor_premium',
+        amount: subscriptionData.amount,
+        currency: 'INR',
+        activatedAt: new Date().toISOString(),
+        expiryDate: subscriptionData.expiryDate
+      });
+    } catch (error) {
+      console.warn('External vendor subscription API error:', error.message);
+    }
+  };
+
+  // Initialize Razorpay for vendor subscription
+  const handleVendorSubscription = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to subscribe to vendor features.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Initialize Razorpay
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_1234567890',
+          amount: 150000, // ₹1500 for vendor subscription
+          currency: 'INR',
+          name: 'Instoredealz Vendor Premium',
+          description: 'Vendor Premium Subscription - Enhanced Tools',
+          handler: async (response) => {
+            try {
+              await vendorSubscriptionMutation.mutateAsync({
+                planId: 'vendor_premium',
+                paymentId: response.razorpay_payment_id,
+                amount: 1500,
+                userId: user?.id,
+              });
+            } catch (error) {
+              console.error('Vendor subscription failed:', error);
+            }
+          },
+          prefill: {
+            name: user?.name || '',
+            email: user?.email || '',
+          },
+          theme: {
+            color: '#8B5CF6',
+          },
+        };
+
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      };
+      document.body.appendChild(script);
+    } catch (error) {
+      toast({
+        title: "Payment Error",
+        description: "Failed to initialize payment. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -351,7 +435,7 @@ const VendorPortal = () => {
 
         {/* Vendor Portal Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="register" className="text-lg py-3">
               <Building className="h-5 w-5 mr-2" />
               Register as Vendor
@@ -359,6 +443,10 @@ const VendorPortal = () => {
             <TabsTrigger value="create-deal" className="text-lg py-3">
               <Plus className="h-5 w-5 mr-2" />
               Create Deal
+            </TabsTrigger>
+            <TabsTrigger value="subscription" className="text-lg py-3">
+              <Crown className="h-5 w-5 mr-2" />
+              Premium Subscription
             </TabsTrigger>
           </TabsList>
 
@@ -921,6 +1009,121 @@ const VendorPortal = () => {
                     )}
                   </form>
                 </Form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Vendor Subscription Tab */}
+          <TabsContent value="subscription">
+            <Card className="border-2 border-dashed border-yellow-300 dark:border-yellow-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl flex items-center justify-center space-x-2">
+                  <Crown className="h-6 w-6 text-yellow-500" />
+                  <span>Vendor Premium Subscription</span>
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Unlock advanced vendor tools and priority support for your business
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Subscription Features */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                        <Star className="h-5 w-5 mr-2 text-yellow-500" />
+                        Premium Features
+                      </h3>
+                      
+                      <div className="space-y-3">
+                        {[
+                          "⚡ Priority Deal Approval",
+                          "📊 Advanced Analytics Dashboard", 
+                          "🎯 Featured Deal Placement",
+                          "📞 Dedicated Support Channel",
+                          "💼 Business Growth Tools",
+                          "🔔 Real-time Notifications"
+                        ].map((feature, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                        <Zap className="h-5 w-5 mr-2 text-blue-500" />
+                        Enhanced Capabilities
+                      </h3>
+                      
+                      <div className="space-y-3">
+                        {[
+                          "🚀 Unlimited Deal Creation",
+                          "📈 Performance Insights", 
+                          "🎨 Custom Branding Options",
+                          "📱 Mobile App Access",
+                          "🔗 API Integration Access",
+                          "🏆 Success Manager Support"
+                        ].map((feature, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <CheckCircle className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                            <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pricing */}
+                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg p-6 border border-yellow-200 dark:border-yellow-800">
+                    <div className="text-center space-y-2">
+                      <div className="flex items-center justify-center space-x-2">
+                        <span className="text-3xl font-bold text-gray-900 dark:text-white">₹1,500</span>
+                        <span className="text-gray-600 dark:text-gray-400">/month</span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Unlock premium vendor features and grow your business faster
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Subscribe Button */}
+                  <Button
+                    onClick={handleVendorSubscription}
+                    disabled={!isAuthenticated || vendorSubscriptionMutation.isPending}
+                    className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white transform transition-all duration-300 hover:scale-105"
+                    size="lg"
+                  >
+                    {vendorSubscriptionMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                        Processing Payment...
+                      </>
+                    ) : (
+                      <>
+                        <Crown className="h-5 w-5 mr-2" />
+                        Subscribe to Premium
+                      </>
+                    )}
+                  </Button>
+
+                  {!isAuthenticated && (
+                    <p className="text-center text-sm text-red-600 dark:text-red-400">
+                      Please log in to subscribe to vendor premium features
+                    </p>
+                  )}
+
+                  {/* Security Badge */}
+                  <div className="flex items-center justify-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mt-4">
+                    <span>🔒 Secure Payment by Razorpay</span>
+                    <span>•</span>
+                    <span>Cancel anytime</span>
+                    <span>•</span>
+                    <span>24/7 Support</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

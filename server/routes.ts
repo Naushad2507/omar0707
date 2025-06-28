@@ -1,8 +1,114 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { storage } from "./storage";
 import { loginSchema, signupSchema, insertVendorSchema, insertDealSchema, insertHelpTicketSchema, insertWishlistSchema } from "@shared/schema";
 import { z } from "zod";
+
+// Configure axios defaults
+const externalAPI = axios.create({
+  baseURL: 'https://api.instoredealz.com',
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${process.env.API_TOKEN || ''}`,
+  },
+});
+
+// Enhanced logging utility
+class Logger {
+  static info(message: string, data?: any) {
+    console.log(`[INFO] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data, null, 2) : '');
+  }
+
+  static error(message: string, error?: any) {
+    console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error);
+  }
+
+  static warn(message: string, data?: any) {
+    console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data, null, 2) : '');
+  }
+
+  static debug(message: string, data?: any) {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[DEBUG] ${new Date().toISOString()} - ${message}`, data ? JSON.stringify(data, null, 2) : '');
+    }
+  }
+}
+
+// Error handling utility
+class ApiError extends Error {
+  constructor(
+    public statusCode: number,
+    public message: string,
+    public details?: any
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+// External API response handler
+const handleExternalApiCall = async <T>(
+  apiCall: () => Promise<AxiosResponse<T>>,
+  operationName: string
+): Promise<{ success: boolean; data?: T; error?: string }> => {
+  try {
+    Logger.debug(`Starting external API call: ${operationName}`);
+    const response = await apiCall();
+    Logger.info(`External API call successful: ${operationName}`, { status: response.status });
+    return { success: true, data: response.data };
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      Logger.error(`External API call failed: ${operationName}`, {
+        status: error.response?.status,
+        message: error.message,
+        data: error.response?.data
+      });
+      return { 
+        success: false, 
+        error: error.response?.data?.message || error.message || 'External API error'
+      };
+    }
+    Logger.error(`Unexpected error in external API call: ${operationName}`, error);
+    return { success: false, error: 'Unexpected error occurred' };
+  }
+};
+
+// Enhanced error handling middleware
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+  Logger.error('Unhandled error occurred', {
+    error: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method,
+    body: req.body,
+    params: req.params,
+    query: req.query
+  });
+
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+      details: err.details
+    });
+  }
+
+  if (err instanceof z.ZodError) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      errors: err.errors
+    });
+  }
+
+  res.status(500).json({
+    success: false,
+    message: 'Internal server error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
+};
 
 // Session interface
 interface AuthenticatedRequest extends Request {
@@ -1377,12 +1483,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         discountPercentage,
         validUntil,
         maxRedemptions,
-        terms,
         requiredMembership
       } = req.body;
 
       // Validate required fields
-      if (!title || !description || !category || !originalPrice || !discountedPrice || !validUntil || !terms || !requiredMembership) {
+      if (!title || !description || !category || !originalPrice || !discountedPrice || !validUntil || !requiredMembership) {
         return res.status(400).json({
           success: false,
           message: "All required fields must be provided"
@@ -1440,7 +1545,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validUntil: validUntilDate,
         maxRedemptions: maxRedemptions ? parseInt(maxRedemptions) : null,
         discountCode,
-        terms,
         requiredMembership,
         isActive: true,
         isApproved: false, // Requires admin approval
@@ -1480,6 +1584,883 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // ===============================
+  // MAGIC API ENDPOINTS - External Integration
+  // ===============================
+
+  // Admin Login Management
+  app.get('/api/magic/admin-login', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching admin login data', { userId: req.user!.id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/AdminLogin'),
+        'GET AdminLogin'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch admin login data');
+      }
+    } catch (error) {
+      Logger.error('Admin login fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch admin login data' });
+    }
+  });
+
+  app.post('/api/magic/admin-login', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating admin login', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/AdminLogin/PostAdminLogin', req.body),
+        'POST AdminLogin'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create admin login');
+      }
+    } catch (error) {
+      Logger.error('Admin login creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create admin login' });
+    }
+  });
+
+  app.get('/api/magic/admin-login/:id', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching admin login by ID', { userId: req.user!.id, adminLoginId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/AdminLogin/GetAdminLoginByid/${id}`),
+        'GET AdminLoginById'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Admin login not found');
+      }
+    } catch (error) {
+      Logger.error('Admin login fetch by ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch admin login' });
+    }
+  });
+
+  app.put('/api/magic/admin-login/:id', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Updating admin login', { userId: req.user!.id, adminLoginId: id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.put(`/S0G1IP/AdminLogin/UpdateAdminLoginByid/${id}`, req.body),
+        'PUT AdminLogin'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to update admin login');
+      }
+    } catch (error) {
+      Logger.error('Admin login update failed', error);
+      res.status(500).json({ success: false, message: 'Failed to update admin login' });
+    }
+  });
+
+  app.put('/api/magic/admin-login/:id/password', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Updating admin password', { userId: req.user!.id, adminLoginId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.put(`/S0G1IP/AdminLogin/UpdateAdminLoginPassword/${id}`, req.body),
+        'PUT AdminPassword'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to update admin password');
+      }
+    } catch (error) {
+      Logger.error('Admin password update failed', error);
+      res.status(500).json({ success: false, message: 'Failed to update admin password' });
+    }
+  });
+
+  // API Generation Management
+  app.get('/api/magic/api-generation', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all API generation data', { userId: req.user!.id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/APIGeneration/GetAllAPI'),
+        'GET AllAPI'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch API generation data');
+      }
+    } catch (error) {
+      Logger.error('API generation fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch API generation data' });
+    }
+  });
+
+  app.get('/api/magic/api-generation/:id', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching API generation by ID', { userId: req.user!.id, apiGenId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/APIGeneration/GeAPIGenById/${id}`),
+        'GET APIGenById'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'API generation not found');
+      }
+    } catch (error) {
+      Logger.error('API generation fetch by ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch API generation' });
+    }
+  });
+
+  app.post('/api/magic/api-generation', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating API generation', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/APIGeneration/SaveAPIGen', req.body),
+        'POST SaveAPIGen'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create API generation');
+      }
+    } catch (error) {
+      Logger.error('API generation creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create API generation' });
+    }
+  });
+
+  // Banner Management
+  app.get('/api/magic/banners', async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all banners');
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/BannerMaster/AllBannerMaster'),
+        'GET AllBanners'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch banners');
+      }
+    } catch (error) {
+      Logger.error('Banner fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch banners' });
+    }
+  });
+
+  app.get('/api/magic/banners/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching banner by ID', { bannerId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/BannerMaster/BannerMasterById/${id}`),
+        'GET BannerById'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Banner not found');
+      }
+    } catch (error) {
+      Logger.error('Banner fetch by ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch banner' });
+    }
+  });
+
+  app.post('/api/magic/banners', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating banner', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/BannerMaster/SaveBanner', req.body),
+        'POST SaveBanner'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create banner');
+      }
+    } catch (error) {
+      Logger.error('Banner creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create banner' });
+    }
+  });
+
+  // Enhanced Blogs Management
+  app.get('/api/magic/blogs', async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all blogs');
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/Blogs/GetAllBlogs'),
+        'GET AllBlogs'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch blogs');
+      }
+    } catch (error) {
+      Logger.error('Blog fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch blogs' });
+    }
+  });
+
+  app.get('/api/magic/blogs/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching blog by ID', { blogId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/Blogs/GetBlogById/${id}`),
+        'GET BlogById'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Blog not found');
+      }
+    } catch (error) {
+      Logger.error('Blog fetch by ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch blog' });
+    }
+  });
+
+  app.post('/api/magic/blogs', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating blog', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/Blogs/SaveBlogAdmin', req.body),
+        'POST SaveBlog'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create blog');
+      }
+    } catch (error) {
+      Logger.error('Blog creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create blog' });
+    }
+  });
+
+  // Enhanced Categories Management
+  app.get('/api/magic/categories', async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all categories');
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/Category/AllCategories'),
+        'GET AllCategories'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch categories');
+      }
+    } catch (error) {
+      Logger.error('Category fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch categories' });
+    }
+  });
+
+  app.get('/api/magic/categories/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching category by ID', { categoryId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/Category/CategoryById/${id}`),
+        'GET CategoryById'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Category not found');
+      }
+    } catch (error) {
+      Logger.error('Category fetch by ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch category' });
+    }
+  });
+
+  app.get('/api/magic/categories/company/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching categories by company ID', { companyId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/Category/CategoryByCompanyId/${id}`),
+        'GET CategoryByCompanyId'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Categories not found for company');
+      }
+    } catch (error) {
+      Logger.error('Category fetch by company ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch company categories' });
+    }
+  });
+
+  app.post('/api/magic/categories', requireAuth, requireRole(['admin', 'superadmin', 'vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating category', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/Category/AddCategory', req.body),
+        'POST AddCategory'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create category');
+      }
+    } catch (error) {
+      Logger.error('Category creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create category' });
+    }
+  });
+
+  app.post('/api/magic/categories/update', requireAuth, requireRole(['admin', 'superadmin', 'vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Updating category', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/Category/UpdateCategory', req.body),
+        'POST UpdateCategory'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to update category');
+      }
+    } catch (error) {
+      Logger.error('Category update failed', error);
+      res.status(500).json({ success: false, message: 'Failed to update category' });
+    }
+  });
+
+  // Enhanced Cities Management
+  app.get('/api/magic/cities', async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all cities');
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/City/AllCities'),
+        'GET AllCities'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch cities');
+      }
+    } catch (error) {
+      Logger.error('City fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch cities' });
+    }
+  });
+
+  app.get('/api/magic/cities/layout', async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching cities layout');
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/City/GetAllCitiesLayouy'),
+        'GET CitiesLayout'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch cities layout');
+      }
+    } catch (error) {
+      Logger.error('Cities layout fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch cities layout' });
+    }
+  });
+
+  app.get('/api/magic/cities/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching city by ID', { cityId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/City/CityById/${id}`),
+        'GET CityById'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'City not found');
+      }
+    } catch (error) {
+      Logger.error('City fetch by ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch city' });
+    }
+  });
+
+  app.get('/api/magic/cities/state/:stateId', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { stateId } = req.params;
+      Logger.info('Fetching cities by state ID', { stateId });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/City/CitiesByStateId/${stateId}`),
+        'GET CitiesByStateId'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Cities not found for state');
+      }
+    } catch (error) {
+      Logger.error('Cities fetch by state ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch cities by state' });
+    }
+  });
+
+  app.post('/api/magic/cities', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating city', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/City/AddCity', req.body),
+        'POST AddCity'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create city');
+      }
+    } catch (error) {
+      Logger.error('City creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create city' });
+    }
+  });
+
+  app.post('/api/magic/cities/update', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Updating city', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/City/UpdateCity', req.body),
+        'POST UpdateCity'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to update city');
+      }
+    } catch (error) {
+      Logger.error('City update failed', error);
+      res.status(500).json({ success: false, message: 'Failed to update city' });
+    }
+  });
+
+  // Enhanced Deals Management with External API Integration
+  app.get('/api/magic/deals', async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all deals from external API');
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/Deals/AllDeals'),
+        'GET AllDeals'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch deals');
+      }
+    } catch (error) {
+      Logger.error('External deals fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch deals' });
+    }
+  });
+
+  app.get('/api/magic/deals/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching deal by ID from external API', { dealId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/Deals/DealById/${id}`),
+        'GET DealById'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Deal not found');
+      }
+    } catch (error) {
+      Logger.error('External deal fetch by ID failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch deal' });
+    }
+  });
+
+  app.get('/api/magic/deals/:dealId/stores', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { dealId } = req.params;
+      Logger.info('Fetching deal stores', { dealId });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/Deals/DealStores/${dealId}`),
+        'GET DealStores'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Deal stores not found');
+      }
+    } catch (error) {
+      Logger.error('Deal stores fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch deal stores' });
+    }
+  });
+
+  app.get('/api/magic/deals/company/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching deals by company ID', { companyId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/Deals/GetDealByCompanyId/${id}`),
+        'GET DealsByCompanyId'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Deals not found for company');
+      }
+    } catch (error) {
+      Logger.error('Company deals fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch company deals' });
+    }
+  });
+
+  app.post('/api/magic/deals', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating deal via external API', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/Deals/AddDeal', req.body),
+        'POST AddDeal'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create deal');
+      }
+    } catch (error) {
+      Logger.error('External deal creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create deal' });
+    }
+  });
+
+  app.post('/api/magic/deals/vendor', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating vendor deal via external API', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/Deals/AddDealVendor', req.body),
+        'POST AddDealVendor'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create vendor deal');
+      }
+    } catch (error) {
+      Logger.error('External vendor deal creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create vendor deal' });
+    }
+  });
+
+  app.put('/api/magic/deals/:id', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Updating deal via external API', { userId: req.user!.id, dealId: id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post(`/S0G1IP/Deals/UpdateDeal/${id}`, req.body),
+        'PUT UpdateDeal'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to update deal');
+      }
+    } catch (error) {
+      Logger.error('External deal update failed', error);
+      res.status(500).json({ success: false, message: 'Failed to update deal' });
+    }
+  });
+
+  app.put('/api/magic/deals/vendor/:id', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Updating vendor deal via external API', { userId: req.user!.id, dealId: id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post(`/S0G1IP/Deals/UpdateDealVendorr/${id}`, req.body),
+        'PUT UpdateDealVendor'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to update vendor deal');
+      }
+    } catch (error) {
+      Logger.error('External vendor deal update failed', error);
+      res.status(500).json({ success: false, message: 'Failed to update vendor deal' });
+    }
+  });
+
+  // Enhanced Claims Management
+  app.get('/api/magic/claim-deals/admin', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching admin wise claim deals', { userId: req.user!.id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/ClaimDeals/GetAdminWiseClaim'),
+        'GET AdminWiseClaim'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch admin wise claims');
+      }
+    } catch (error) {
+      Logger.error('Admin wise claims fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch admin wise claims' });
+    }
+  });
+
+  app.get('/api/magic/claim-deals/store/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching store wise claims', { storeId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/ClaimDeals/GetStoreWiseClaim/${id}`),
+        'GET StoreWiseClaim'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Store claims not found');
+      }
+    } catch (error) {
+      Logger.error('Store wise claims fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch store wise claims' });
+    }
+  });
+
+  app.get('/api/magic/claim-deals/customer/:id', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      Logger.info('Fetching customer wise claims', { userId: req.user!.id, customerId: id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get(`/S0G1IP/ClaimDeals/GetCustomerWiseClaim/${id}`),
+        'GET CustomerWiseClaim'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(404, result.error || 'Customer claims not found');
+      }
+    } catch (error) {
+      Logger.error('Customer wise claims fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch customer wise claims' });
+    }
+  });
+
+  app.post('/api/magic/claim-deals', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Saving deal claim', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/ClaimDeals/SaveDealClaims', req.body),
+        'POST SaveDealClaims'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to save deal claim');
+      }
+    } catch (error) {
+      Logger.error('Deal claim save failed', error);
+      res.status(500).json({ success: false, message: 'Failed to save deal claim' });
+    }
+  });
+
+  // Enhanced Companies Management for Vendors
+  app.get('/api/magic/companies', async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all companies');
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/Company/AllCompanies'),
+        'GET AllCompanies'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch companies');
+      }
+    } catch (error) {
+      Logger.error('Companies fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch companies' });
+    }
+  });
+
+  app.post('/api/magic/companies/vendor', requireAuth, requireRole(['vendor', 'admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Creating vendor company', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/Company/AddCompanyVendor', req.body),
+        'POST AddCompanyVendor'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to create vendor company');
+      }
+    } catch (error) {
+      Logger.error('Vendor company creation failed', error);
+      res.status(500).json({ success: false, message: 'Failed to create vendor company' });
+    }
+  });
+
+  // Enhanced Customer Subscription Management
+  app.get('/api/magic/customer-subscription', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all customer subscriptions', { userId: req.user!.id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/CustomerSubscription/GetAllCustomerSubscriptions'),
+        'GET AllCustomerSubscriptions'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch customer subscriptions');
+      }
+    } catch (error) {
+      Logger.error('Customer subscriptions fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch customer subscriptions' });
+    }
+  });
+
+  app.post('/api/magic/customer-subscription', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Saving customer subscription', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/CustomerSubscription/SaveCustomerSubscription', req.body),
+        'POST SaveCustomerSubscription'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to save customer subscription');
+      }
+    } catch (error) {
+      Logger.error('Customer subscription save failed', error);
+      res.status(500).json({ success: false, message: 'Failed to save customer subscription' });
+    }
+  });
+
+  // Enhanced Vendor Subscription Management
+  app.get('/api/magic/vendor-subscription', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Fetching all vendor subscriptions', { userId: req.user!.id });
+      const result = await handleExternalApiCall(
+        () => externalAPI.get('/S0G1IP/VendorSubscription/GetAllVendorSubscriptions'),
+        'GET AllVendorSubscriptions'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(500, result.error || 'Failed to fetch vendor subscriptions');
+      }
+    } catch (error) {
+      Logger.error('Vendor subscriptions fetch failed', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch vendor subscriptions' });
+    }
+  });
+
+  app.post('/api/magic/vendor-subscription', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      Logger.info('Saving vendor subscription', { userId: req.user!.id, body: req.body });
+      const result = await handleExternalApiCall(
+        () => externalAPI.post('/S0G1IP/VendorSubscription/SaveVendorSubscription', req.body),
+        'POST SaveVendorSubscription'
+      );
+      if (result.success) {
+        res.json(result.data);
+      } else {
+        throw new ApiError(400, result.error || 'Failed to save vendor subscription');
+      }
+    } catch (error) {
+      Logger.error('Vendor subscription save failed', error);
+      res.status(500).json({ success: false, message: 'Failed to save vendor subscription' });
+    }
+  });
+
+  // Local subscription endpoint with external API integration
+  app.post('/api/vendor-subscription', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { planId, paymentId, amount, userId } = req.body;
+      
+      // Validate request data
+      if (!planId || !paymentId || !amount || !userId) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Missing required fields: planId, paymentId, amount, userId" 
+        });
+      }
+
+      // Verify the user matches the authenticated user
+      if (req.user!.id !== userId) {
+        return res.status(403).json({ 
+          success: false,
+          message: "User ID mismatch" 
+        });
+      }
+
+      // Get user to update their vendor subscription
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ 
+          success: false,
+          message: "User not found" 
+        });
+      }
+
+      // Generate subscription ID
+      const subscriptionId = `vendor_sub_${Date.now()}_${userId}`;
+      const membershipExpiry = new Date();
+      membershipExpiry.setMonth(membershipExpiry.getMonth() + 1); // 1 month from now
+
+      // Log the vendor subscription activity
+      await storage.createSystemLog({
+        userId: userId,
+        action: "VENDOR_SUBSCRIPTION_ACTIVATED",
+        details: { 
+          planId,
+          paymentId,
+          amount,
+          subscriptionId,
+          membershipExpiry: membershipExpiry.toISOString()
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+
+      res.json({
+        success: true,
+        subscriptionId,
+        paymentId,
+        message: `Vendor ${planId} subscription activated successfully`,
+        planType: planId,
+        expiryDate: membershipExpiry.toISOString()
+      });
+
+    } catch (error) {
+      Logger.error("Error saving vendor subscription", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to process vendor subscription" 
+      });
+    }
+  });
+
+  // Add the error handling middleware at the end
+  app.use(errorHandler);
 
   const httpServer = createServer(app);
   return httpServer;

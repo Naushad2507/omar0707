@@ -48,6 +48,8 @@ import TestFlows from "@/pages/test-flows";
 import DealList from "@/components/DealList";
 import SubscriptionButton from "@/components/Subscription";
 import VendorPortal from "@/components/VendorPortal";
+import MagicAdminDashboard from "@/components/AdminDashboard";
+import BannerList from "@/components/BannerList";
 
 // Role-based route protection component with TypeScript
 interface RoleProtectedRouteProps {
@@ -111,6 +113,9 @@ function Router() {
       
       {/* Public deal detail route */}
       <Route path="/deals/:id" component={DealDetail} />
+      
+      {/* Public banner listing */}
+      <Route path="/banners" component={BannerList} />
 
       {/* Customer routes with role protection */}
       <Route path="/customer" component={() => 
@@ -205,7 +210,13 @@ function Router() {
       {/* Admin routes with role protection */}
       <Route path="/admin" component={() => 
         <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminDashboard />
+          <MagicAdminDashboard />
+        </RoleProtectedRoute>
+      } />
+      
+      <Route path="/admin/magic" component={() => 
+        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+          <MagicAdminDashboard />
         </RoleProtectedRoute>
       } />
       
