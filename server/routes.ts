@@ -1284,6 +1284,203 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Vendor registration endpoint
+  app.post('/api/register-vendor', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const {
+        businessName,
+        ownerName,
+        email,
+        phone,
+        businessType,
+        address,
+        city,
+        state,
+        pincode,
+        website,
+        description,
+        gstNumber,
+        panNumber
+      } = req.body;
+
+      // Validate required fields
+      if (!businessName || !ownerName || !email || !phone || !businessType || !address || !city || !state || !pincode || !description) {
+        return res.status(400).json({
+          success: false,
+          message: "All required fields must be provided"
+        });
+      }
+
+      // Check if vendor already exists for this user
+      const existingVendor = await storage.getVendorByUserId(req.user!.id);
+      if (existingVendor) {
+        return res.status(400).json({
+          success: false,
+          message: "You have already registered as a vendor"
+        });
+      }
+
+      // Create vendor
+      const vendor = await storage.createVendor({
+        userId: req.user!.id,
+        businessName,
+        address,
+        city,
+        state,
+        description,
+        gstNumber: gstNumber || null,
+        panNumber: panNumber || businessName, // Use business name if no PAN provided
+        isApproved: false, // Requires admin approval
+      });
+
+      // Log the registration
+      await storage.createSystemLog({
+        userId: req.user!.id,
+        action: "VENDOR_REGISTRATION",
+        details: {
+          vendorId: vendor.id,
+          businessName,
+          businessType,
+          city,
+          state
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+
+      res.status(201).json({
+        success: true,
+        id: vendor.id,
+        businessName: vendor.businessName,
+        status: 'pending_approval',
+        message: "Vendor registration successful. Awaiting admin approval."
+      });
+
+    } catch (error) {
+      console.error("Error registering vendor:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to register vendor"
+      });
+    }
+  });
+
+  // Deal creation endpoint
+  app.post('/api/create-deal', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const {
+        title,
+        description,
+        category,
+        originalPrice,
+        discountedPrice,
+        discountPercentage,
+        validUntil,
+        maxRedemptions,
+        terms,
+        requiredMembership
+      } = req.body;
+
+      // Validate required fields
+      if (!title || !description || !category || !originalPrice || !discountedPrice || !validUntil || !terms || !requiredMembership) {
+        return res.status(400).json({
+          success: false,
+          message: "All required fields must be provided"
+        });
+      }
+
+      // Check if user is a vendor
+      const vendor = await storage.getVendorByUserId(req.user!.id);
+      if (!vendor) {
+        return res.status(403).json({
+          success: false,
+          message: "You must be a registered vendor to create deals"
+        });
+      }
+
+      if (!vendor.isApproved) {
+        return res.status(403).json({
+          success: false,
+          message: "Your vendor account is pending approval"
+        });
+      }
+
+      // Validate pricing
+      const original = parseFloat(originalPrice);
+      const discounted = parseFloat(discountedPrice);
+      
+      if (discounted >= original) {
+        return res.status(400).json({
+          success: false,
+          message: "Discounted price must be less than original price"
+        });
+      }
+
+      // Validate date
+      const validUntilDate = new Date(validUntil);
+      if (validUntilDate <= new Date()) {
+        return res.status(400).json({
+          success: false,
+          message: "Valid until date must be in the future"
+        });
+      }
+
+      // Generate discount code
+      const discountCode = `SAVE${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+      // Create deal
+      const deal = await storage.createDeal({
+        vendorId: vendor.id,
+        title,
+        description,
+        category,
+        originalPrice: originalPrice.toString(),
+        discountedPrice: discountedPrice.toString(),
+        discountPercentage: parseInt(discountPercentage.toString()),
+        validUntil: validUntilDate,
+        maxRedemptions: maxRedemptions ? parseInt(maxRedemptions) : null,
+        discountCode,
+        terms,
+        requiredMembership,
+        isActive: true,
+        isApproved: false, // Requires admin approval
+        address: vendor.address || "TBD",
+      });
+
+      // Log the deal creation
+      await storage.createSystemLog({
+        userId: req.user!.id,
+        action: "DEAL_CREATED",
+        details: {
+          dealId: deal.id,
+          vendorId: vendor.id,
+          title,
+          category,
+          originalPrice,
+          discountedPrice,
+          discountPercentage
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+
+      res.status(201).json({
+        success: true,
+        id: deal.id,
+        title: deal.title,
+        status: 'pending_approval',
+        message: "Deal created successfully. Awaiting admin approval."
+      });
+
+    } catch (error) {
+      console.error("Error creating deal:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to create deal"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
