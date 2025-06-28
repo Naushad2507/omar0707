@@ -84,7 +84,7 @@ export interface IStorage {
   getMostClaimedDeals(): Promise<Deal[]>;
   
   // Admin operations for testing
-  getDealsByCategory(): Promise<Record<string, number>>;
+  getDealCategoryCounts(): Promise<Record<string, number>>;
   deleteDealsByCategory(category: string): Promise<boolean>;
   resetAllDeals(): Promise<boolean>;
 }
@@ -437,7 +437,7 @@ export class MemStorage implements IStorage {
     const customers = Array.from(this.users.values()).filter(user => user.role === "customer");
     
     customers.forEach((customer, customerIndex) => {
-      const claimsCount = Math.min(customer.dealsClaimed, activeDeals.length);
+      const claimsCount = Math.min(customer.dealsClaimed || 0, activeDeals.length);
       
       for (let i = 0; i < claimsCount; i++) {
         const deal = activeDeals[i % activeDeals.length];
@@ -768,7 +768,7 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async getDealsByCategory(): Promise<Record<string, number>> {
+  async getDealCategoryCounts(): Promise<Record<string, number>> {
     const categoryCounts: Record<string, number> = {};
     Array.from(this.deals.values()).forEach(deal => {
       categoryCounts[deal.category] = (categoryCounts[deal.category] || 0) + 1;

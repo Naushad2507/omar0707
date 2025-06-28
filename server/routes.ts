@@ -1099,7 +1099,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin deal distribution endpoints
   app.get('/api/admin/deal-distribution', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
-      const distribution = await storage.getDealsByCategory();
+      const distribution = await storage.getDealCategoryCounts();
       res.json(distribution);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch deal distribution" });
