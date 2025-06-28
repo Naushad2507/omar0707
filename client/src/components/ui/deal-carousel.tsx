@@ -147,16 +147,6 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
                         {deal.category}
                       </Badge>
                     )}
-                    <Button 
-                      size="sm" 
-                      className="bg-primary hover:bg-primary/90 text-white px-4 py-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/deals/${deal.id}`);
-                      }}
-                    >
-                      View Deal
-                    </Button>
                   </div>
                 </div>
               </div>

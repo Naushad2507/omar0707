@@ -329,66 +329,9 @@ export default function Home() {
       
       {/* Hero Section */}
       <section className="py-16 relative overflow-hidden">
-        {/* Background Images of Indian Iconic Structures */}
+        {/* Clean background without images */}
         <div className="absolute inset-0">
-          {/* Multiple background images with opacity overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-royal/10 z-10"></div>
-          
-          {/* Taj Mahal Background */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center opacity-20"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')`
-            }}
-          ></div>
-          
-          {/* India Gate Background (layered) */}
-          <div 
-            className="absolute top-0 right-0 w-1/3 h-full bg-cover bg-center opacity-15"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/789750/pexels-photo-789750.jpeg?auto=compress&cs=tinysrgb&w=800&h=1080&fit=crop')`
-            }}
-          ></div>
-          
-          {/* Gateway of India Background (layered) */}
-          <div 
-            className="absolute bottom-0 left-0 w-1/3 h-2/3 bg-cover bg-center opacity-15"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/3881104/pexels-photo-3881104.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop')`
-            }}
-          ></div>
-          
-          {/* Red Fort Background (layered) */}
-          <div 
-            className="absolute top-0 left-1/3 w-1/3 h-1/2 bg-cover bg-center opacity-10"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/6467191/pexels-photo-6467191.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop')`
-            }}
-          ></div>
-          
-          {/* Golden Temple Background (layered) */}
-          <div 
-            className="absolute top-1/3 right-1/4 w-1/4 h-1/3 bg-cover bg-center opacity-12"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/2611810/pexels-photo-2611810.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop')`
-            }}
-          ></div>
-          
-          {/* Charminar Background (layered) */}
-          <div 
-            className="absolute bottom-1/4 right-1/3 w-1/4 h-1/3 bg-cover bg-center opacity-10"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/10752318/pexels-photo-10752318.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop')`
-            }}
-          ></div>
-          
-          {/* Qutb Minar Background (layered) */}
-          <div 
-            className="absolute bottom-0 left-1/2 w-1/5 h-1/2 bg-cover bg-center opacity-8"
-            style={{
-              backgroundImage: `url('https://images.pexels.com/photos/13881271/pexels-photo-13881271.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop')`
-            }}
-          ></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-royal/10"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

@@ -227,16 +227,6 @@ export default function DealCard({
       </CardContent>
 
       <CardFooter className="p-4 pt-0 space-y-2">
-        <Button 
-          className="w-full" 
-          onClick={(e) => {
-            e.stopPropagation();
-            onView?.();
-          }}
-        >
-          <ExternalLink className="h-4 w-4 mr-2" />
-          View Deal Details
-        </Button>
 
         <Dialog open={showModal} onOpenChange={setShowModal}>
           <DialogTrigger asChild>
