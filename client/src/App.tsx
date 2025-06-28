@@ -46,10 +46,10 @@ import SystemLogs from "@/pages/superadmin/logs";
 import NotFound from "@/pages/not-found";
 import TestFlows from "@/pages/test-flows";
 import DealList from "@/components/DealList";
-import Subscription from "@/components/Subscription";
+import SubscriptionButton from "@/components/Subscription";
 import VendorPortal from "@/components/VendorPortal";
 
-// Role-based route protection component
+// Role-based route protection component with TypeScript
 interface RoleProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles: string[];
@@ -121,7 +121,7 @@ function Router() {
       
       <Route path="/customer/subscription" component={() => 
         <RoleProtectedRoute allowedRoles={['customer']}>
-          <Subscription />
+          <SubscriptionButton />
         </RoleProtectedRoute>
       } />
       
@@ -169,12 +169,12 @@ function Router() {
 
       {/* Vendor routes with role protection */}
       <Route path="/vendor" component={() => 
-        <RoleProtectedRoute allowedRoles={['vendor', 'customer']} fallbackPath="/vendor-portal">
+        <RoleProtectedRoute allowedRoles={['vendor', 'customer']} fallbackPath="/vendor/portal">
           <VendorPortal />
         </RoleProtectedRoute>
       } />
       
-      <Route path="/vendor-portal" component={VendorPortal} />
+      <Route path="/vendor/portal" component={VendorPortal} />
       
       <Route path="/vendor/benefits" component={VendorBenefits} />
       
@@ -203,6 +203,12 @@ function Router() {
       } />
 
       {/* Admin routes with role protection */}
+      <Route path="/admin" component={() => 
+        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+          <AdminDashboard />
+        </RoleProtectedRoute>
+      } />
+      
       <Route path="/admin/dashboard" component={() => 
         <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
           <AdminDashboard />
@@ -228,6 +234,12 @@ function Router() {
       } />
 
       {/* Super Admin routes with role protection */}
+      <Route path="/superadmin" component={() => 
+        <RoleProtectedRoute allowedRoles={['superadmin']}>
+          <SuperAdminDashboard />
+        </RoleProtectedRoute>
+      } />
+      
       <Route path="/superadmin/dashboard" component={() => 
         <RoleProtectedRoute allowedRoles={['superadmin']}>
           <SuperAdminDashboard />
