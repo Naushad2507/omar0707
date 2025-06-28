@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "wouter";
 import { Facebook, Twitter, Instagram, Linkedin, Shield } from "lucide-react";
 import InstoredeelzLogo from "@/components/ui/instoredealz-logo";
 
@@ -16,16 +16,16 @@ export default function Footer() {
               Your ultimate destination for discovering amazing deals from local businesses across India.
             </p>
             <div className="flex space-x-4">
-              <a to="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a to="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a to="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a to="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="#" className="text-gray-300 hover:text-white transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -51,9 +51,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a to="#help" className="hover:text-white transition-colors">
+                <Link to="/help" className="hover:text-white transition-colors">
                   Help Center
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -73,12 +73,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a to="#marketing" className="hover:text-white transition-colors">
+                <a href="#marketing" className="hover:text-white transition-colors">
                   Marketing Tools
                 </a>
               </li>
               <li>
-                <a to="#support" className="hover:text-white transition-colors">
+                <a href="#support" className="hover:text-white transition-colors">
                   Business Support
                 </a>
               </li>
@@ -100,14 +100,14 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a to="#cookies" className="hover:text-white transition-colors">
+                <Link to="/privacy" className="hover:text-white transition-colors">
                   Cookie Consent
-                </a>
+                </Link>
               </li>
               <li>
-                <a to="#refund" className="hover:text-white transition-colors">
+                <Link to="/terms" className="hover:text-white transition-colors">
                   Refund Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

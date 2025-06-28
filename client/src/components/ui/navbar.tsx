@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,14 +16,13 @@ interface NavbarProps {
 }
 
 export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [location, setLocation] = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    setLocation("/");
   };
 
   const getDashboardLink = () => {
@@ -117,7 +116,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
       ]
     };
 
-    return baseItems[user.role as keyof typeof baseItems] || [];
+    return user ? (baseItems[user.role as keyof typeof baseItems] || []) : [];
   };
 
   const navigationItems = getNavigationItems();
@@ -143,7 +142,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                     key={item.href}
                     to={item.href}
                     className={`flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors ${
-                      location.pathname === item.href ? "text-primary font-medium" : ""
+                      location === item.href ? "text-primary font-medium" : ""
                     }`}
                   >
                     <Icon className="h-4 w-4" />

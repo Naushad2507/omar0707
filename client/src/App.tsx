@@ -41,15 +41,11 @@ import AdminDealDistribution from "@/pages/admin/deal-distribution";
 
 // Super Admin pages
 import SuperAdminDashboard from "@/pages/superadmin/dashboard";
-import AdminManagement from "@/pages/superadmin/admins";
 import SystemLogs from "@/pages/superadmin/logs";
 
 import NotFound from "@/pages/not-found";
 import TestFlows from "@/pages/test-flows";
 import DealList from "@/components/DealList";
-import CategoryList from "@/components/CategoryList";
-import StoreDeals from "@/components/StoreDeals";
-import BlogList from "@/components/BlogList";
 import Subscription from "@/components/Subscription";
 import VendorPortal from "@/components/VendorPortal";
 
@@ -112,9 +108,6 @@ function Router() {
       
       {/* Public deal browsing */}
       <Route path="/deals" component={DealList} />
-      <Route path="/categories" component={CategoryList} />
-      <Route path="/blogs" component={BlogList} />
-      <Route path="/store-deals" component={() => <StoreDeals storeId="123" dealId="456" pinId="789" />} />
       
       {/* Public deal detail route */}
       <Route path="/deals/:id" component={DealDetail} />

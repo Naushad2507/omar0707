@@ -20,11 +20,13 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<User>;
   signup: (userData: any) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
   updateUser: (userData: Partial<User>) => void;
+  updateToken: (token: string) => void;
 }
 
 export const useAuth = create<AuthState>()(
@@ -33,6 +35,7 @@ export const useAuth = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      isLoading: false,
 
       login: async (email: string, password: string) => {
         try {
@@ -124,6 +127,10 @@ export const useAuth = create<AuthState>()(
             user: { ...currentUser, ...userData }
           });
         }
+      },
+
+      updateToken: (token: string) => {
+        set({ token, isAuthenticated: true });
       },
     }),
     {
