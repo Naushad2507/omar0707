@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Route, Switch, useLocation } from "wouter";
+import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "./lib/auth";
-import { useEffect } from "react";
 
 // Import pages
 import Home from "@/pages/shared/home";
@@ -29,28 +29,22 @@ import UpgradeMembership from "@/pages/customer/upgrade-membership";
 import VendorBenefits from "@/pages/vendor/benefits";
 import VendorRegister from "@/pages/vendor/register-enhanced";
 import VendorDashboard from "@/pages/vendor/dashboard";
-import VendorDeals from "@/pages/vendor/deals-enhanced";
+import VendorDeals from "@/pages/vendor/deals";
 import VendorAnalytics from "@/pages/vendor/analytics";
-
-// Customer wizard
-import DealWizard from "@/pages/customer/deal-wizard";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminUsers from "@/pages/admin/users";
 import AdminVendors from "@/pages/admin/vendors";
 import AdminDeals from "@/pages/admin/deals";
-// import AdminVendorsPending from "@/pages/admin/vendors-pending";
-// import AdminDealsPending from "@/pages/admin/deals-pending";
 import AdminDealDistribution from "@/pages/admin/deal-distribution";
 
 // Super Admin pages
 import SuperAdminDashboard from "@/pages/superadmin/dashboard";
-import AdminManagement from "@/pages/superadmin/admin-management";
+import AdminManagement from "@/pages/superadmin/admins";
 import SystemLogs from "@/pages/superadmin/logs";
 
 import NotFound from "@/pages/not-found";
-import ProtectedRoute from "@/components/ui/protected-route";
 import TestFlows from "@/pages/test-flows";
 import DealList from "@/components/DealList";
 import CategoryList from "@/components/CategoryList";
@@ -59,166 +53,235 @@ import BlogList from "@/components/BlogList";
 import Subscription from "@/components/Subscription";
 import VendorPortal from "@/components/VendorPortal";
 
+// Role-based route protection component
+interface RoleProtectedRouteProps {
+  children: React.ReactNode;
+  allowedRoles: string[];
+  fallbackPath?: string;
+}
+
+const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({ 
+  children, 
+  allowedRoles, 
+  fallbackPath = "/login" 
+}) => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        setLocation(fallbackPath);
+        return;
+      }
+      
+      if (user && !allowedRoles.includes(user.role)) {
+        setLocation("/unauthorized");
+        return;
+      }
+    }
+  }, [isAuthenticated, isLoading, user, allowedRoles, fallbackPath, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || (user && !allowedRoles.includes(user.role))) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
 function Router() {
   return (
-    <Routes>
+    <Switch>
       {/* Public routes */}
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/help" element={<Help />} />
-      <Route path="/test" element={<TestFlows />} />
+      <Route path="/" component={Home} />
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
+      <Route path="/pricing" component={Pricing} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/help" component={Help} />
+      <Route path="/test" component={TestFlows} />
       
-      {/* New external API routes */}
-      <Route path="/deals" element={<DealList />} />
-      <Route path="/categories" element={<CategoryList />} />
-      <Route path="/blogs" element={<BlogList />} />
-      <Route path="/store-deals" element={<StoreDeals storeId="123" dealId="456" pinId="789" />} />
-      <Route path="/subscription" element={<Subscription />} />
-      <Route path="/vendor-portal" element={<VendorPortal />} />
+      {/* Public deal browsing */}
+      <Route path="/deals" component={DealList} />
+      <Route path="/categories" component={CategoryList} />
+      <Route path="/blogs" component={BlogList} />
+      <Route path="/store-deals" component={() => <StoreDeals storeId="123" dealId="456" pinId="789" />} />
       
-      {/* Public deal detail route - accessible to all users */}
-      <Route path="/deals/:id" element={<DealDetail />} />
+      {/* Public deal detail route */}
+      <Route path="/deals/:id" component={DealDetail} />
+
+      {/* Customer routes with role protection */}
+      <Route path="/customer" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
+          <DealList />
+        </RoleProtectedRoute>
+      } />
       
-      {/* Customer routes */}
-      <Route path="/customer/dashboard" element={
-        <ProtectedRoute allowedRoles={['customer']}>
+      <Route path="/customer/subscription" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
+          <Subscription />
+        </RoleProtectedRoute>
+      } />
+      
+      <Route path="/customer/dashboard" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
           <CustomerDashboard />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/customer/deals" element={
-        <ProtectedRoute allowedRoles={['customer']}>
+      
+      <Route path="/customer/deals" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
           <CustomerDeals />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/customer/secure-deals" element={
-        <ProtectedRoute allowedRoles={['customer']}>
+      
+      <Route path="/customer/secure-deals" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
           <SecureDeals />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/customer/claims" element={
-        <ProtectedRoute allowedRoles={['customer']}>
+      
+      <Route path="/customer/claims" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
           <ClaimHistory />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/customer/wishlist" element={
-        <ProtectedRoute allowedRoles={['customer']}>
+      
+      <Route path="/customer/wishlist" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
           <CustomerWishlist />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/customer/membership-card" element={
-        <ProtectedRoute allowedRoles={['customer']}>
+      
+      <Route path="/customer/membership-card" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
           <MembershipCard />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/customer/upgrade" element={
-        <ProtectedRoute allowedRoles={['customer']}>
+      
+      <Route path="/customer/upgrade" component={() => 
+        <RoleProtectedRoute allowedRoles={['customer']}>
           <UpgradeMembership />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/customer/deals/:id" element={
-        <ProtectedRoute allowedRoles={['customer']}>
-          <DealDetail />
-        </ProtectedRoute>
+
+      {/* Vendor routes with role protection */}
+      <Route path="/vendor" component={() => 
+        <RoleProtectedRoute allowedRoles={['vendor', 'customer']} fallbackPath="/vendor-portal">
+          <VendorPortal />
+        </RoleProtectedRoute>
       } />
       
-      {/* Vendor routes */}
-      <Route path="/vendor/benefits" element={<VendorBenefits />} />
-      <Route path="/vendor/register" element={
-        <ProtectedRoute allowedRoles={['vendor']}>
+      <Route path="/vendor-portal" component={VendorPortal} />
+      
+      <Route path="/vendor/benefits" component={VendorBenefits} />
+      
+      <Route path="/vendor/register" component={() => 
+        <RoleProtectedRoute allowedRoles={['vendor']}>
           <VendorRegister />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/vendor/dashboard" element={
-        <ProtectedRoute allowedRoles={['vendor']}>
+      
+      <Route path="/vendor/dashboard" component={() => 
+        <RoleProtectedRoute allowedRoles={['vendor']}>
           <VendorDashboard />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/vendor/deals" element={
-        <ProtectedRoute allowedRoles={['vendor']}>
+      
+      <Route path="/vendor/deals" component={() => 
+        <RoleProtectedRoute allowedRoles={['vendor']}>
           <VendorDeals />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/vendor/analytics" element={
-        <ProtectedRoute allowedRoles={['vendor']}>
+      
+      <Route path="/vendor/analytics" component={() => 
+        <RoleProtectedRoute allowedRoles={['vendor']}>
           <VendorAnalytics />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      
-      {/* Deal Wizard */}
-      <Route path="/customer/deal-wizard" element={
-        <ProtectedRoute allowedRoles={['customer']}>
-          <DealWizard />
-        </ProtectedRoute>
-      } />
-      
-      {/* Admin routes */}
-      <Route path="/admin/dashboard" element={
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
+
+      {/* Admin routes with role protection */}
+      <Route path="/admin/dashboard" component={() => 
+        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
           <AdminDashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/users" element={
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminUsers />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/vendors" element={
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminVendors />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/deals" element={
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminDeals />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/deal-distribution" element={
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminDealDistribution />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
       
-      {/* Super Admin routes */}
-      <Route path="/superadmin/dashboard" element={
-        <ProtectedRoute allowedRoles={['superadmin']}>
+      <Route path="/admin/users" component={() => 
+        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+          <AdminUsers />
+        </RoleProtectedRoute>
+      } />
+      
+      <Route path="/admin/vendors" component={() => 
+        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+          <AdminVendors />
+        </RoleProtectedRoute>
+      } />
+      
+      <Route path="/admin/deals" component={() => 
+        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+          <AdminDeals />
+        </RoleProtectedRoute>
+      } />
+
+      {/* Super Admin routes with role protection */}
+      <Route path="/superadmin/dashboard" component={() => 
+        <RoleProtectedRoute allowedRoles={['superadmin']}>
           <SuperAdminDashboard />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
-      <Route path="/superadmin/admins" element={
-        <ProtectedRoute allowedRoles={['superadmin']}>
-          <AdminManagement />
-        </ProtectedRoute>
-      } />
-      <Route path="/superadmin/logs" element={
-        <ProtectedRoute allowedRoles={['superadmin']}>
+      
+      <Route path="/superadmin/logs" component={() => 
+        <RoleProtectedRoute allowedRoles={['superadmin']}>
           <SystemLogs />
-        </ProtectedRoute>
+        </RoleProtectedRoute>
       } />
+
+      {/* Unauthorized page */}
+      <Route path="/unauthorized" component={() => (
+        <div className="flex flex-col items-center justify-center min-h-screen p-8">
+          <h1 className="text-4xl font-bold text-red-600 mb-4">Access Denied</h1>
+          <p className="text-lg text-gray-600 mb-8">You don't have permission to access this page.</p>
+          <button 
+            onClick={() => window.history.back()} 
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Go Back
+          </button>
+        </div>
+      )} />
       
       {/* Fallback to 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
 function App() {
-  const { checkAuth } = useAuth();
+  const { user, updateToken } = useAuth();
 
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    const token = localStorage.getItem("authToken");
+    if (token && !user) {
+      updateToken(token);
+    }
+  }, [user, updateToken]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
-          <Toaster />
-          <Router />
-        </BrowserRouter>
+        <Router />
+        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );
