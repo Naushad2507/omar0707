@@ -17,12 +17,7 @@ import {
   Star
 } from 'lucide-react';
 
-// Declare Razorpay for TypeScript
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
+// Razorpay will be available on window object
 
 const SubscriptionButton = () => {
   const [isProcessing, setIsProcessing] = useState(false);
