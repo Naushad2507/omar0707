@@ -143,7 +143,8 @@ function Router() {
   // Special routes
   const [matchUnauthorized] = useRoute("/unauthorized");
 
-  // Public routes
+  // Public routes - Deal detail must be checked first to avoid conflicts
+  if (matchDealDetail) return <DealDetail params={dealParams} />;
   if (matchHome) return <Home />;
   if (matchLogin) return <Login />;
   if (matchSignup) return <Signup />;
@@ -153,7 +154,6 @@ function Router() {
   if (matchHelp) return <Help />;
   if (matchTest) return <TestFlows />;
   if (matchDeals) return <DealList />;
-  if (matchDealDetail) return <DealDetail params={dealParams} />;
   if (matchBanners) return <BannerList />;
 
   // Customer routes with role protection
