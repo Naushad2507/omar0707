@@ -67,10 +67,10 @@ export default function AdminUsers() {
       user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (user.city && user.city.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     const matchesRole = roleFilter === "all" || user.role === roleFilter;
     const matchesMembership = membershipFilter === "all" || user.membershipPlan === membershipFilter;
-    
+
     return matchesSearch && matchesRole && matchesMembership;
   }) || [];
 
@@ -81,7 +81,7 @@ export default function AdminUsers() {
       admin: "bg-warning/10 text-warning",
       superadmin: "bg-royal/10 text-royal",
     };
-    
+
     return (
       <Badge className={colors[role as keyof typeof colors] || "bg-gray-100 text-gray-700"}>
         {role.charAt(0).toUpperCase() + role.slice(1)}
@@ -89,17 +89,20 @@ export default function AdminUsers() {
     );
   };
 
-  const getMembershipBadge = (plan: string, isPromotional?: boolean) => {
+  const getMembershipBadge = (plan: string | null | undefined, isPromotional?: boolean) => {
+    // Fallback if plan is null or undefined
+    const safePlan = plan || "Unknown";
     const colors = {
       basic: "bg-gray-100 text-gray-700",
       premium: "bg-primary/10 text-primary",
       ultimate: "bg-royal/10 text-royal",
+      Unknown: "bg-gray-100 text-gray-700", // Fallback color
     };
-    
+
     return (
       <div className="flex items-center space-x-1">
-        <Badge className={colors[plan as keyof typeof colors] || "bg-gray-100 text-gray-700"}>
-          {plan.charAt(0).toUpperCase() + plan.slice(1)}
+        <Badge className={colors[safePlan as keyof typeof colors] || "bg-gray-100 text-gray-700"}>
+          {safePlan.charAt(0).toUpperCase() + safePlan.slice(1)}
         </Badge>
         {isPromotional && (
           <Gift className="h-3 w-3 text-success" title="Promotional Plan" />
@@ -134,7 +137,7 @@ export default function AdminUsers() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -179,7 +182,7 @@ export default function AdminUsers() {
                   />
                 </div>
               </div>
-              
+
               <Select value={roleFilter} onValueChange={setRoleFilter}>
                 <SelectTrigger>
                   <Filter className="h-4 w-4 mr-2" />
