@@ -69,16 +69,10 @@ const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        navigate(fallbackPath);
-        return;
-      }
-
-      if (user && !allowedRoles.includes(user.role)) {
-        navigate("/unauthorized");
-        return;
-      }
+    if (!isLoading && !isAuthenticated) {
+      navigate(fallbackPath, { replace: true });
+    } else if (!isLoading && user && !allowedRoles.includes(user.role)) {
+      navigate("/unauthorized", { replace: true });
     }
   }, [isAuthenticated, isLoading, user, allowedRoles, fallbackPath, navigate]);
 
