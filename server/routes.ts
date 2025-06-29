@@ -1324,6 +1324,271 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // POS endpoints
+  // Start a new POS session
+  app.post('/api/pos/sessions', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const { terminalId } = req.body;
+      
+      if (!terminalId) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Terminal ID is required" 
+        });
+      }
+
+      // Get vendor info
+      const vendor = await storage.getVendorByUserId(req.user!.id);
+      if (!vendor) {
+        return res.status(404).json({ 
+          success: false, 
+          error: "Vendor not found" 
+        });
+      }
+
+      // Check for existing active session
+      const existingSession = await storage.getActivePosSession(vendor.id, terminalId);
+      if (existingSession) {
+        return res.json({ 
+          success: true, 
+          data: existingSession 
+        });
+      }
+
+      // Generate unique session token
+      const sessionToken = `pos_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+
+      const session = await storage.createPosSession({
+        vendorId: vendor.id,
+        terminalId,
+        sessionToken,
+        isActive: true,
+      });
+
+      res.json({ success: true, data: session });
+    } catch (error) {
+      Logger.error('Error starting POS session', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to start POS session' 
+      });
+    }
+  });
+
+  // End POS session
+  app.post('/api/pos/sessions/:sessionId/end', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const sessionId = parseInt(req.params.sessionId);
+      const session = await storage.endPosSession(sessionId);
+      
+      if (!session) {
+        return res.status(404).json({ 
+          success: false, 
+          error: "Session not found" 
+        });
+      }
+
+      res.json({ success: true, data: session });
+    } catch (error) {
+      Logger.error('Error ending POS session', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to end POS session' 
+      });
+    }
+  });
+
+  // Get vendor's POS sessions
+  app.get('/api/pos/sessions', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const vendor = await storage.getVendorByUserId(req.user!.id);
+      if (!vendor) {
+        return res.status(404).json({ 
+          success: false, 
+          error: "Vendor not found" 
+        });
+      }
+
+      const sessions = await storage.getPosSessionsByVendor(vendor.id);
+      res.json({ success: true, data: sessions });
+    } catch (error) {
+      Logger.error('Error fetching POS sessions', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to fetch POS sessions' 
+      });
+    }
+  });
+
+  // Process POS transaction (deal claim/redemption)
+  app.post('/api/pos/transactions', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { sessionId, dealId, customerId, amount, savingsAmount, transactionType, paymentMethod, pin } = req.body;
+
+      // Validate required fields
+      if (!sessionId || !dealId || !amount || !savingsAmount || !transactionType) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Missing required fields" 
+        });
+      }
+
+      // Verify deal exists and is active
+      const deal = await storage.getDeal(dealId);
+      if (!deal || !deal.isActive || !deal.isApproved) {
+        return res.status(404).json({ 
+          success: false, 
+          error: "Deal not found or inactive" 
+        });
+      }
+
+      // Verify PIN if provided
+      let pinVerified = false;
+      if (pin && deal.verificationPin === pin) {
+        pinVerified = true;
+      }
+
+      // Generate receipt number
+      const receiptNumber = `POS${Date.now()}${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+      const transaction = await storage.createPosTransaction({
+        sessionId,
+        dealId,
+        customerId: customerId || null,
+        transactionType,
+        amount,
+        savingsAmount,
+        pinVerified,
+        paymentMethod: paymentMethod || 'cash',
+        status: 'completed',
+        receiptNumber,
+        notes: req.body.notes || null,
+      });
+
+      // Update deal redemption count
+      await storage.incrementDealRedemptions(dealId);
+
+      // Create deal claim record if customer is provided
+      if (customerId && transactionType === 'redeem') {
+        await storage.createDealClaim({
+          userId: customerId,
+          dealId,
+          savingsAmount,
+          status: 'used',
+          usedAt: new Date(),
+        });
+      }
+
+      res.json({ success: true, data: transaction });
+    } catch (error) {
+      Logger.error('Error processing POS transaction', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to process transaction' 
+      });
+    }
+  });
+
+  // Get transactions for a session
+  app.get('/api/pos/sessions/:sessionId/transactions', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const sessionId = parseInt(req.params.sessionId);
+      const transactions = await storage.getPosTransactionsBySession(sessionId);
+      res.json({ success: true, data: transactions });
+    } catch (error) {
+      Logger.error('Error fetching session transactions', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to fetch transactions' 
+      });
+    }
+  });
+
+  // Get all vendor transactions
+  app.get('/api/pos/transactions', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const vendor = await storage.getVendorByUserId(req.user!.id);
+      if (!vendor) {
+        return res.status(404).json({ 
+          success: false, 
+          error: "Vendor not found" 
+        });
+      }
+
+      const transactions = await storage.getPosTransactionsByVendor(vendor.id);
+      res.json({ success: true, data: transactions });
+    } catch (error) {
+      Logger.error('Error fetching vendor transactions', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to fetch transactions' 
+      });
+    }
+  });
+
+  // Get deals available for POS (vendor's deals)
+  app.get('/api/pos/deals', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const vendor = await storage.getVendorByUserId(req.user!.id);
+      if (!vendor) {
+        return res.status(404).json({ 
+          success: false, 
+          error: "Vendor not found" 
+        });
+      }
+
+      const deals = await storage.getDealsByVendor(vendor.id);
+      const activeDeals = deals.filter(deal => deal.isActive && deal.isApproved);
+      
+      res.json({ success: true, data: activeDeals });
+    } catch (error) {
+      Logger.error('Error fetching POS deals', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to fetch deals' 
+      });
+    }
+  });
+
+  // Verify deal PIN (for offline verification)
+  app.post('/api/pos/verify-pin', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { dealId, pin } = req.body;
+
+      if (!dealId || !pin) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Deal ID and PIN are required" 
+        });
+      }
+
+      const deal = await storage.getDeal(dealId);
+      if (!deal) {
+        return res.status(404).json({ 
+          success: false, 
+          error: "Deal not found" 
+        });
+      }
+
+      const isValid = deal.verificationPin === pin.toString();
+      
+      res.json({ 
+        success: true, 
+        data: { 
+          valid: isValid,
+          dealTitle: isValid ? deal.title : null,
+          dealId: dealId
+        } 
+      });
+    } catch (error) {
+      Logger.error('Error verifying PIN', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to verify PIN' 
+      });
+    }
+  });
+
   // Subscription endpoint
   app.post('/api/save-subscription', requireAuth, async (req: AuthenticatedRequest, res) => {
     try {

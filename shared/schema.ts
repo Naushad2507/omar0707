@@ -115,6 +115,47 @@ export const systemLogs = pgTable("system_logs", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// POS Sessions for tracking active POS terminals
+export const posSessions = pgTable("pos_sessions", {
+  id: serial("id").primaryKey(),
+  vendorId: integer("vendor_id").references(() => vendors.id).notNull(),
+  terminalId: text("terminal_id").notNull(), // unique identifier for each POS terminal
+  sessionToken: text("session_token").notNull().unique(),
+  isActive: boolean("is_active").default(true),
+  startedAt: timestamp("started_at").defaultNow(),
+  endedAt: timestamp("ended_at"),
+  totalTransactions: integer("total_transactions").default(0),
+  totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).default("0"),
+});
+
+// POS Transactions for detailed transaction tracking
+export const posTransactions = pgTable("pos_transactions", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("session_id").references(() => posSessions.id).notNull(),
+  dealId: integer("deal_id").references(() => deals.id).notNull(),
+  customerId: integer("customer_id").references(() => users.id),
+  transactionType: text("transaction_type").notNull(), // claim, redeem, refund
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  savingsAmount: decimal("savings_amount", { precision: 10, scale: 2 }).notNull(),
+  pinVerified: boolean("pin_verified").default(false),
+  paymentMethod: text("payment_method"), // cash, card, upi, wallet
+  status: text("status").default("completed"), // pending, completed, failed, refunded
+  receiptNumber: text("receipt_number").unique(),
+  notes: text("notes"),
+  processedAt: timestamp("processed_at").defaultNow(),
+});
+
+// POS Inventory for tracking deal availability at terminals
+export const posInventory = pgTable("pos_inventory", {
+  id: serial("id").primaryKey(),
+  vendorId: integer("vendor_id").references(() => vendors.id).notNull(),
+  dealId: integer("deal_id").references(() => deals.id).notNull(),
+  availableQuantity: integer("available_quantity").notNull(),
+  reservedQuantity: integer("reserved_quantity").default(0),
+  reorderLevel: integer("reorder_level").default(0),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   vendor: one(vendors, { fields: [users.id], references: [vendors.userId] }),
@@ -144,6 +185,22 @@ export const dealClaimsRelations = relations(dealClaims, ({ one }) => ({
 export const wishlistsRelations = relations(wishlists, ({ one }) => ({
   user: one(users, { fields: [wishlists.userId], references: [users.id] }),
   deal: one(deals, { fields: [wishlists.dealId], references: [deals.id] }),
+}));
+
+export const posSessionsRelations = relations(posSessions, ({ one, many }) => ({
+  vendor: one(vendors, { fields: [posSessions.vendorId], references: [vendors.id] }),
+  transactions: many(posTransactions),
+}));
+
+export const posTransactionsRelations = relations(posTransactions, ({ one }) => ({
+  session: one(posSessions, { fields: [posTransactions.sessionId], references: [posSessions.id] }),
+  deal: one(deals, { fields: [posTransactions.dealId], references: [deals.id] }),
+  customer: one(users, { fields: [posTransactions.customerId], references: [users.id] }),
+}));
+
+export const posInventoryRelations = relations(posInventory, ({ one }) => ({
+  vendor: one(vendors, { fields: [posInventory.vendorId], references: [vendors.id] }),
+  deal: one(deals, { fields: [posInventory.dealId], references: [deals.id] }),
 }));
 
 // Insert schemas
@@ -185,6 +242,23 @@ export const insertWishlistSchema = createInsertSchema(wishlists).omit({
   addedAt: true,
 });
 
+export const insertPosSessionSchema = createInsertSchema(posSessions).omit({
+  id: true,
+  startedAt: true,
+  totalTransactions: true,
+  totalAmount: true,
+});
+
+export const insertPosTransactionSchema = createInsertSchema(posTransactions).omit({
+  id: true,
+  processedAt: true,
+});
+
+export const insertPosInventorySchema = createInsertSchema(posInventory).omit({
+  id: true,
+  lastUpdated: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -200,6 +274,12 @@ export type SystemLog = typeof systemLogs.$inferSelect;
 export type InsertSystemLog = z.infer<typeof insertSystemLogSchema>;
 export type Wishlist = typeof wishlists.$inferSelect;
 export type InsertWishlist = z.infer<typeof insertWishlistSchema>;
+export type PosSession = typeof posSessions.$inferSelect;
+export type InsertPosSession = z.infer<typeof insertPosSessionSchema>;
+export type PosTransaction = typeof posTransactions.$inferSelect;
+export type InsertPosTransaction = z.infer<typeof insertPosTransactionSchema>;
+export type PosInventory = typeof posInventory.$inferSelect;
+export type InsertPosInventory = z.infer<typeof insertPosInventorySchema>;
 
 // Auth schemas
 export const loginSchema = z.object({

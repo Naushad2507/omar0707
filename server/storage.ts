@@ -13,6 +13,12 @@ import {
   InsertSystemLog,
   Wishlist,
   InsertWishlist,
+  PosSession,
+  InsertPosSession,
+  PosTransaction,
+  InsertPosTransaction,
+  PosInventory,
+  InsertPosInventory,
 } from "../shared/schema";
 
 export interface IStorage {
@@ -89,6 +95,22 @@ export interface IStorage {
   getDealCategoryCounts(): Promise<Record<string, number>>;
   deleteDealsByCategory(category: string): Promise<boolean>;
   resetAllDeals(): Promise<boolean>;
+
+  // POS operations
+  createPosSession(session: InsertPosSession): Promise<PosSession>;
+  endPosSession(sessionId: number): Promise<PosSession | undefined>;
+  getActivePosSession(vendorId: number, terminalId: string): Promise<PosSession | undefined>;
+  getPosSessionsByVendor(vendorId: number): Promise<PosSession[]>;
+  
+  createPosTransaction(transaction: InsertPosTransaction): Promise<PosTransaction>;
+  getPosTransactionsBySession(sessionId: number): Promise<PosTransaction[]>;
+  getPosTransactionsByVendor(vendorId: number): Promise<PosTransaction[]>;
+  updatePosTransaction(id: number, updates: Partial<PosTransaction>): Promise<PosTransaction | undefined>;
+  
+  createPosInventory(inventory: InsertPosInventory): Promise<PosInventory>;
+  updatePosInventory(id: number, updates: Partial<PosInventory>): Promise<PosInventory | undefined>;
+  getPosInventoryByVendor(vendorId: number): Promise<PosInventory[]>;
+  getPosInventoryByDeal(dealId: number): Promise<PosInventory | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -99,6 +121,9 @@ export class MemStorage implements IStorage {
   private helpTickets: Map<number, HelpTicket> = new Map();
   private systemLogs: Map<number, SystemLog> = new Map();
   private wishlists: Map<number, Wishlist> = new Map();
+  private posSessions: Map<number, PosSession> = new Map();
+  private posTransactions: Map<number, PosTransaction> = new Map();
+  private posInventory: Map<number, PosInventory> = new Map();
 
   private currentUserId = 1;
   private currentVendorId = 1;
@@ -107,6 +132,9 @@ export class MemStorage implements IStorage {
   private currentHelpTicketId = 1;
   private currentSystemLogId = 1;
   private currentWishlistId = 1;
+  private currentPosSessionId = 1;
+  private currentPosTransactionId = 1;
+  private currentPosInventoryId = 1;
 
   constructor() {
     this.initializeWithSampleData();
@@ -868,6 +896,128 @@ export class MemStorage implements IStorage {
       cityStats,
       categoryStats,
     };
+  }
+
+  // POS operations
+  async createPosSession(insertSession: InsertPosSession): Promise<PosSession> {
+    const session: PosSession = {
+      id: this.currentPosSessionId++,
+      vendorId: insertSession.vendorId,
+      terminalId: insertSession.terminalId,
+      sessionToken: insertSession.sessionToken,
+      isActive: insertSession.isActive ?? true,
+      startedAt: new Date(),
+      endedAt: null,
+      totalTransactions: 0,
+      totalAmount: "0",
+    };
+    this.posSessions.set(session.id, session);
+    return session;
+  }
+
+  async endPosSession(sessionId: number): Promise<PosSession | undefined> {
+    const session = this.posSessions.get(sessionId);
+    if (session) {
+      const updatedSession = { ...session, endedAt: new Date(), isActive: false };
+      this.posSessions.set(sessionId, updatedSession);
+      return updatedSession;
+    }
+    return undefined;
+  }
+
+  async getActivePosSession(vendorId: number, terminalId: string): Promise<PosSession | undefined> {
+    return Array.from(this.posSessions.values())
+      .find(session => session.vendorId === vendorId && session.terminalId === terminalId && session.isActive);
+  }
+
+  async getPosSessionsByVendor(vendorId: number): Promise<PosSession[]> {
+    return Array.from(this.posSessions.values())
+      .filter(session => session.vendorId === vendorId);
+  }
+
+  async createPosTransaction(insertTransaction: InsertPosTransaction): Promise<PosTransaction> {
+    const transaction: PosTransaction = {
+      id: this.currentPosTransactionId++,
+      sessionId: insertTransaction.sessionId,
+      dealId: insertTransaction.dealId,
+      customerId: insertTransaction.customerId ?? null,
+      transactionType: insertTransaction.transactionType,
+      amount: insertTransaction.amount,
+      savingsAmount: insertTransaction.savingsAmount,
+      pinVerified: insertTransaction.pinVerified ?? null,
+      paymentMethod: insertTransaction.paymentMethod ?? null,
+      status: insertTransaction.status ?? 'completed',
+      receiptNumber: insertTransaction.receiptNumber ?? null,
+      notes: insertTransaction.notes ?? null,
+      processedAt: new Date(),
+    };
+    this.posTransactions.set(transaction.id, transaction);
+
+    // Update session totals
+    const session = this.posSessions.get(transaction.sessionId);
+    if (session) {
+      session.totalTransactions = (session.totalTransactions || 0) + 1;
+      session.totalAmount = (parseFloat(session.totalAmount || "0") + parseFloat(transaction.amount.toString())).toString();
+      this.posSessions.set(session.id, session);
+    }
+
+    return transaction;
+  }
+
+  async getPosTransactionsBySession(sessionId: number): Promise<PosTransaction[]> {
+    return Array.from(this.posTransactions.values())
+      .filter(transaction => transaction.sessionId === sessionId);
+  }
+
+  async getPosTransactionsByVendor(vendorId: number): Promise<PosTransaction[]> {
+    const vendorSessions = await this.getPosSessionsByVendor(vendorId);
+    const sessionIds = vendorSessions.map(session => session.id);
+    return Array.from(this.posTransactions.values())
+      .filter(transaction => sessionIds.includes(transaction.sessionId));
+  }
+
+  async updatePosTransaction(id: number, updates: Partial<PosTransaction>): Promise<PosTransaction | undefined> {
+    const transaction = this.posTransactions.get(id);
+    if (transaction) {
+      const updatedTransaction = { ...transaction, ...updates };
+      this.posTransactions.set(id, updatedTransaction);
+      return updatedTransaction;
+    }
+    return undefined;
+  }
+
+  async createPosInventory(insertInventory: InsertPosInventory): Promise<PosInventory> {
+    const inventory: PosInventory = {
+      id: this.currentPosInventoryId++,
+      vendorId: insertInventory.vendorId,
+      dealId: insertInventory.dealId,
+      availableQuantity: insertInventory.availableQuantity,
+      reservedQuantity: insertInventory.reservedQuantity ?? 0,
+      reorderLevel: insertInventory.reorderLevel ?? 0,
+      lastUpdated: new Date(),
+    };
+    this.posInventory.set(inventory.id, inventory);
+    return inventory;
+  }
+
+  async updatePosInventory(id: number, updates: Partial<PosInventory>): Promise<PosInventory | undefined> {
+    const inventory = this.posInventory.get(id);
+    if (inventory) {
+      const updatedInventory = { ...inventory, ...updates, lastUpdated: new Date() };
+      this.posInventory.set(id, updatedInventory);
+      return updatedInventory;
+    }
+    return undefined;
+  }
+
+  async getPosInventoryByVendor(vendorId: number): Promise<PosInventory[]> {
+    return Array.from(this.posInventory.values())
+      .filter(inventory => inventory.vendorId === vendorId);
+  }
+
+  async getPosInventoryByDeal(dealId: number): Promise<PosInventory | undefined> {
+    return Array.from(this.posInventory.values())
+      .find(inventory => inventory.dealId === dealId);
   }
 }
 

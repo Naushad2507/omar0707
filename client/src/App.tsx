@@ -31,6 +31,8 @@ import VendorRegister from "@/pages/vendor/register-enhanced";
 import VendorDashboard from "@/pages/vendor/dashboard";
 import VendorDeals from "@/pages/vendor/deals";
 import VendorAnalytics from "@/pages/vendor/analytics";
+import PosDashboard from "@/pages/vendor/pos-dashboard";
+import PosTransactions from "@/pages/vendor/pos-transactions";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/dashboard";
@@ -204,6 +206,18 @@ function Router() {
       <Route path="/vendor/analytics" component={() => 
         <RoleProtectedRoute allowedRoles={['vendor']}>
           <VendorAnalytics />
+        </RoleProtectedRoute>
+      } />
+      
+      <Route path="/vendor/pos" component={() => 
+        <RoleProtectedRoute allowedRoles={['vendor']}>
+          <PosDashboard />
+        </RoleProtectedRoute>
+      } />
+      
+      <Route path="/vendor/pos/transactions" component={() => 
+        <RoleProtectedRoute allowedRoles={['vendor']}>
+          <PosTransactions />
         </RoleProtectedRoute>
       } />
 
