@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { useLocation, useRoute } from "wouter";
 import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -66,13 +66,13 @@ const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
   fallbackPath = "/login" 
 }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      navigate(fallbackPath, { replace: true });
+      navigate(fallbackPath);
     } else if (!isLoading && user && !allowedRoles.includes(user.role)) {
-      navigate("/unauthorized", { replace: true });
+      navigate("/unauthorized");
     }
   }, [isAuthenticated, isLoading, user, allowedRoles, fallbackPath, navigate]);
 
@@ -92,203 +92,273 @@ const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
 };
 
 function Router() {
-  return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/help" element={<Help />} />
-      <Route path="/test" element={<TestFlows />} />
+  // Public routes
+  const [matchHome] = useRoute("/");
+  const [matchLogin] = useRoute("/login");
+  const [matchSignup] = useRoute("/signup");
+  const [matchPricing] = useRoute("/pricing");
+  const [matchTerms] = useRoute("/terms");
+  const [matchPrivacy] = useRoute("/privacy");
+  const [matchHelp] = useRoute("/help");
+  const [matchTest] = useRoute("/test");
+  const [matchDeals] = useRoute("/deals");
+  const [matchDealDetail, dealParams] = useRoute("/deals/:id");
+  const [matchBanners] = useRoute("/banners");
 
-      {/* Public deal browsing */}
-      <Route path="/deals" element={<DealList />} />
+  // Customer routes
+  const [matchCustomer] = useRoute("/customer");
+  const [matchCustomerSubscription] = useRoute("/customer/subscription");
+  const [matchCustomerDashboard] = useRoute("/customer/dashboard");
+  const [matchCustomerDeals] = useRoute("/customer/deals");
+  const [matchCustomerSecureDeals] = useRoute("/customer/secure-deals");
+  const [matchCustomerClaims] = useRoute("/customer/claims");
+  const [matchCustomerWishlist] = useRoute("/customer/wishlist");
+  const [matchCustomerMembershipCard] = useRoute("/customer/membership-card");
+  const [matchCustomerUpgrade] = useRoute("/customer/upgrade");
 
-      {/* Public deal detail route */}
-      <Route path="/deals/:id" element={<DealDetail />} />
+  // Vendor routes
+  const [matchVendor] = useRoute("/vendor");
+  const [matchVendorPortal] = useRoute("/vendor/portal");
+  const [matchVendorBenefits] = useRoute("/vendor/benefits");
+  const [matchVendorRegister] = useRoute("/vendor/register");
+  const [matchVendorDashboard] = useRoute("/vendor/dashboard");
+  const [matchVendorDeals] = useRoute("/vendor/deals");
+  const [matchVendorAnalytics] = useRoute("/vendor/analytics");
+  const [matchVendorPos] = useRoute("/vendor/pos");
+  const [matchVendorPosTransactions] = useRoute("/vendor/pos/transactions");
 
-      {/* Public banner listing */}
-      <Route path="/banners" element={<BannerList />} />
+  // Admin routes
+  const [matchAdmin] = useRoute("/admin");
+  const [matchAdminMagic] = useRoute("/admin/magic");
+  const [matchAdminDashboard] = useRoute("/admin/dashboard");
+  const [matchAdminUsers] = useRoute("/admin/users");
+  const [matchAdminVendors] = useRoute("/admin/vendors");
+  const [matchAdminDeals] = useRoute("/admin/deals");
 
-      {/* Customer routes with role protection */}
-      <Route path="/customer" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <DealList />
-        </RoleProtectedRoute>
-      } />
+  // Super Admin routes
+  const [matchSuperAdmin] = useRoute("/superadmin");
+  const [matchSuperAdminDashboard] = useRoute("/superadmin/dashboard");
+  const [matchSuperAdminLogs] = useRoute("/superadmin/logs");
 
-      <Route path="/customer/subscription" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <SubscriptionButton />
-        </RoleProtectedRoute>
-      } />
+  // Special routes
+  const [matchUnauthorized] = useRoute("/unauthorized");
 
-      <Route path="/customer/dashboard" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <CustomerDashboard />
-        </RoleProtectedRoute>
-      } />
+  // Public routes
+  if (matchHome) return <Home />;
+  if (matchLogin) return <Login />;
+  if (matchSignup) return <Signup />;
+  if (matchPricing) return <Pricing />;
+  if (matchTerms) return <Terms />;
+  if (matchPrivacy) return <Privacy />;
+  if (matchHelp) return <Help />;
+  if (matchTest) return <TestFlows />;
+  if (matchDeals) return <DealList />;
+  if (matchDealDetail) return <DealDetail />;
+  if (matchBanners) return <BannerList />;
 
-      <Route path="/customer/deals" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <CustomerDeals />
-        </RoleProtectedRoute>
-      } />
+  // Customer routes with role protection
+  if (matchCustomer) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <DealList />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerSubscription) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <SubscriptionButton />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerDashboard) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <CustomerDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerDeals) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <CustomerDeals />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerSecureDeals) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <SecureDeals />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerClaims) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <ClaimHistory />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerWishlist) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <CustomerWishlist />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerMembershipCard) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <MembershipCard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerUpgrade) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <UpgradeMembership />
+      </RoleProtectedRoute>
+    );
+  }
 
-      <Route path="/customer/secure-deals" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <SecureDeals />
-        </RoleProtectedRoute>
-      } />
+  // Vendor routes with role protection
+  if (matchVendor) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor', 'customer']} fallbackPath="/vendor/portal">
+        <VendorPortal />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchVendorPortal) return <VendorPortal />;
+  if (matchVendorBenefits) return <VendorBenefits />;
+  if (matchVendorRegister) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor']}>
+        <VendorRegister />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchVendorDashboard) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor']}>
+        <VendorDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchVendorDeals) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor']}>
+        <VendorDeals />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchVendorAnalytics) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor']}>
+        <VendorAnalytics />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchVendorPos) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor']}>
+        <PosDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchVendorPosTransactions) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor']}>
+        <PosTransactions />
+      </RoleProtectedRoute>
+    );
+  }
 
-      <Route path="/customer/claims" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <ClaimHistory />
-        </RoleProtectedRoute>
-      } />
+  // Admin routes with role protection
+  if (matchAdmin) {
+    return (
+      <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+        <MagicAdminDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchAdminMagic) {
+    return (
+      <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+        <MagicAdminDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchAdminDashboard) {
+    return (
+      <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+        <AdminDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchAdminUsers) {
+    return (
+      <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+        <AdminUsers />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchAdminVendors) {
+    return (
+      <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+        <AdminVendors />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchAdminDeals) {
+    return (
+      <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+        <AdminDeals />
+      </RoleProtectedRoute>
+    );
+  }
 
-      <Route path="/customer/wishlist" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <CustomerWishlist />
-        </RoleProtectedRoute>
-      } />
+  // Super Admin routes with role protection
+  if (matchSuperAdmin) {
+    return (
+      <RoleProtectedRoute allowedRoles={['superadmin']}>
+        <SuperAdminDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchSuperAdminDashboard) {
+    return (
+      <RoleProtectedRoute allowedRoles={['superadmin']}>
+        <SuperAdminDashboard />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchSuperAdminLogs) {
+    return (
+      <RoleProtectedRoute allowedRoles={['superadmin']}>
+        <SystemLogs />
+      </RoleProtectedRoute>
+    );
+  }
 
-      <Route path="/customer/membership-card" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <MembershipCard />
-        </RoleProtectedRoute>
-      } />
+  // Unauthorized page
+  if (matchUnauthorized) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-8">
+        <h1 className="text-4xl font-bold text-red-600 mb-4">Access Denied</h1>
+        <p className="text-lg text-gray-600 mb-8">You don't have permission to access this page.</p>
+        <button 
+          onClick={() => window.history.back()} 
+          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
-      <Route path="/customer/upgrade" element={
-        <RoleProtectedRoute allowedRoles={['customer']}>
-          <UpgradeMembership />
-        </RoleProtectedRoute>
-      } />
-
-      {/* Vendor routes with role protection */}
-      <Route path="/vendor" element={
-        <RoleProtectedRoute allowedRoles={['vendor', 'customer']} fallbackPath="/vendor/portal">
-          <VendorPortal />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/vendor/portal" element={<VendorPortal />} />
-
-      <Route path="/vendor/benefits" element={<VendorBenefits />} />
-
-      <Route path="/vendor/register" element={
-        <RoleProtectedRoute allowedRoles={['vendor']}>
-          <VendorRegister />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/vendor/dashboard" element={
-        <RoleProtectedRoute allowedRoles={['vendor']}>
-          <VendorDashboard />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/vendor/deals" element={
-        <RoleProtectedRoute allowedRoles={['vendor']}>
-          <VendorDeals />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/vendor/analytics" element={
-        <RoleProtectedRoute allowedRoles={['vendor']}>
-          <VendorAnalytics />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/vendor/pos" element={
-        <RoleProtectedRoute allowedRoles={['vendor']}>
-          <PosDashboard />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/vendor/pos/transactions" element={
-        <RoleProtectedRoute allowedRoles={['vendor']}>
-          <PosTransactions />
-        </RoleProtectedRoute>
-      } />
-
-      {/* Admin routes with role protection */}
-      <Route path="/admin" element={
-        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <MagicAdminDashboard />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/admin/magic" element={
-        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <MagicAdminDashboard />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/admin/dashboard" element={
-        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminDashboard />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/admin/users" element={
-        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminUsers />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/admin/vendors" element={
-        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminVendors />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/admin/deals" element={
-        <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <AdminDeals />
-        </RoleProtectedRoute>
-      } />
-
-      {/* Super Admin routes with role protection */}
-      <Route path="/superadmin" element={
-        <RoleProtectedRoute allowedRoles={['superadmin']}>
-          <SuperAdminDashboard />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/superadmin/dashboard" element={
-        <RoleProtectedRoute allowedRoles={['superadmin']}>
-          <SuperAdminDashboard />
-        </RoleProtectedRoute>
-      } />
-
-      <Route path="/superadmin/logs" element={
-        <RoleProtectedRoute allowedRoles={['superadmin']}>
-          <SystemLogs />
-        </RoleProtectedRoute>
-      } />
-
-      {/* Unauthorized page */}
-      <Route path="/unauthorized" element={
-        <div className="flex flex-col items-center justify-center min-h-screen p-8">
-          <h1 className="text-4xl font-bold text-red-600 mb-4">Access Denied</h1>
-          <p className="text-lg text-gray-600 mb-8">You don't have permission to access this page.</p>
-          <button 
-            onClick={() => window.history.back()} 
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-          >
-            Go Back
-          </button>
-        </div>
-      } />
-
-      {/* Fallback to 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
+  // Fallback to 404
+  return <NotFound />;
 }
 
 function App() {
@@ -304,10 +374,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter basename="/instoredealz">
-          <Router />
-          <Toaster />
-        </BrowserRouter>
+        <Router />
+        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );
