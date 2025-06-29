@@ -153,7 +153,7 @@ function Router() {
   if (matchHelp) return <Help />;
   if (matchTest) return <TestFlows />;
   if (matchDeals) return <DealList />;
-  if (matchDealDetail) return <DealDetail />;
+  if (matchDealDetail) return <DealDetail params={dealParams} />;
   if (matchBanners) return <BannerList />;
 
   // Customer routes with role protection

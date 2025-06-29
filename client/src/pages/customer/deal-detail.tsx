@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/lib/auth";
@@ -85,8 +85,12 @@ const categoryColors = {
   entertainment: "bg-purple-100 text-purple-800",
 };
 
-export default function DealDetail() {
-  const { id } = useParams<{ id: string }>();
+interface DealDetailProps {
+  params?: { id: string };
+}
+
+export default function DealDetail({ params }: DealDetailProps) {
+  const id = params?.id;
   const [, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();

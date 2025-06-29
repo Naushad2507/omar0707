@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { apiRequest } from '@/lib/queryClient';
 import { generateDealClaimQR } from '../lib/qr-code';
 import { useToast } from '@/hooks/use-toast';
@@ -40,21 +41,19 @@ interface ClaimResponse {
 const DealList = () => {
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Fetch deals using TanStack Query
   const { data: deals = [], isLoading, error } = useQuery<Deal[]>({
     queryKey: ['/api/deals'],
-    queryFn: () => apiRequest('/api/deals'),
   });
 
   // Claim deal mutation
   const claimMutation = useMutation({
     mutationFn: async (dealId: number): Promise<ClaimResponse> => {
-      return apiRequest(`/api/deals/${dealId}/claim`, {
-        method: 'POST',
-      });
+      return apiRequest('POST', `/api/deals/${dealId}/claim`);
     },
     onSuccess: async (claimData, dealId) => {
       // Generate QR code for the claim
@@ -92,6 +91,10 @@ const DealList = () => {
     setSelectedDeal(deal);
     setQrCode(null);
     claimMutation.mutate(deal.id);
+  };
+
+  const handleDealClick = (dealId: number) => {
+    setLocation(`/deals/${dealId}`);
   };
 
   const closeDialog = () => {
@@ -154,7 +157,11 @@ const DealList = () => {
             const canClaim = deal.isActive && !isExpired && !isLimitReached;
             
             return (
-              <Card key={deal.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/20">
+              <Card 
+                key={deal.id} 
+                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/20 cursor-pointer"
+                onClick={() => handleDealClick(deal.id)}
+              >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start mb-2">
                     <Badge variant="secondary" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
@@ -210,7 +217,10 @@ const DealList = () => {
 
                 <CardFooter>
                   <Button
-                    onClick={() => handleClaimDeal(deal)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClaimDeal(deal);
+                    }}
                     disabled={!canClaim || claimMutation.isPending}
                     className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                     size="lg"
