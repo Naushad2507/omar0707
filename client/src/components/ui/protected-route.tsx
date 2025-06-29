@@ -1,5 +1,5 @@
 import { useAuth, hasRole } from "@/lib/auth";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -15,30 +15,29 @@ export default function ProtectedRoute({
   redirectTo = "/login" 
 }: ProtectedRouteProps) {
   const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate(redirectTo);
+      setLocation(redirectTo);
       return;
     }
 
     if (!hasRole(user, allowedRoles)) {
       // Redirect to appropriate dashboard based on user role
       if (user?.role === "customer") {
-        navigate("/customer/dashboard");
+        setLocation("/customer/dashboard");
       } else if (user?.role === "vendor") {
-        navigate("/vendor/dashboard");
+        setLocation("/vendor/dashboard");
       } else if (user?.role === "admin") {
-        navigate("/admin/dashboard");
+        setLocation("/admin/dashboard");
       } else if (user?.role === "superadmin") {
-        navigate("/superadmin/dashboard");
+        setLocation("/superadmin/dashboard");
       } else {
-        navigate("/");
+        setLocation("/");
       }
     }
-  }, [isAuthenticated, user, allowedRoles, navigate, redirectTo]);
+  }, [isAuthenticated, user, allowedRoles, setLocation, redirectTo]);
 
   // Show loading while checking authentication
   if (!isAuthenticated) {

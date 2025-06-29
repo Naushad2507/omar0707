@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "wouter";
 import { z } from "zod";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
@@ -60,7 +60,7 @@ const vendorRegistrationSchema = z.object({
 type VendorRegistrationForm = z.infer<typeof vendorRegistrationSchema>;
 
 export default function VendorRegister() {
-  const [, navigate] = useLocation();
+  const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -100,7 +100,7 @@ export default function VendorRegister() {
         description: "Your application is under review. You'll be notified once approved.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/vendors/me"] });
-      navigate("/vendor/dashboard");
+      setLocation("/vendor/dashboard");
     },
     onError: (error: any) => {
       toast({
