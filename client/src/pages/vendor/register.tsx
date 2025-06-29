@@ -92,7 +92,7 @@ export default function VendorRegister() {
         ...data,
         gstNumber: data.hasGst === "yes" ? data.gstNumber : null,
       };
-      return apiRequest('POST', '/api/vendors/register', payload);
+      return apiRequest('/api/vendors/register', 'POST', payload);
     },
     onSuccess: () => {
       toast({
