@@ -43,7 +43,6 @@ interface Deal {
   originalPrice: string;
   discountedPrice: string;
   discountPercentage: number;
-  discountCode: string;
   validUntil: string;
   isActive: boolean;
   isApproved: boolean;
@@ -60,12 +59,7 @@ interface Deal {
   };
 }
 
-interface DiscountCodeResponse {
-  discountCode: string;
-  requiresClick: boolean;
-  membershipTier: string;
-  category: string;
-}
+
 
 interface DiscountError {
   message: string;
@@ -97,9 +91,7 @@ export default function DealDetail() {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   
-  const [discountCode, setDiscountCode] = useState<string>("");
-  const [showCode, setShowCode] = useState(false);
-  const [codeRevealed, setCodeRevealed] = useState(false);
+
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Fetch deal details (public endpoint)
@@ -141,56 +133,7 @@ export default function DealDetail() {
     }
   }, [deal, id]);
 
-  // Get discount code mutation - secure endpoint
-  const getDiscountCodeMutation = useMutation({
-    mutationFn: async (dealId: number) => {
-      return await apiRequest(`/api/deals/${dealId}/discount-code`, "GET") as unknown as DiscountCodeResponse;
-    },
-    onSuccess: (data) => {
-      setDiscountCode(data.discountCode);
-      
-      // Auto-reveal if not restricted by tier
-      if (!data.requiresClick) {
-        setShowCode(true);
-        setCodeRevealed(true);
-      }
-      
-      toast({
-        title: "Discount Code Retrieved",
-        description: data.requiresClick 
-          ? "Click 'Reveal Code' to view your discount"
-          : "Your discount code is ready to use!",
-      });
-    },
-    onError: (error: any) => {
-      let errorData: DiscountError | null = null;
-      
-      try {
-        if (error.message && error.message.includes('403')) {
-          const jsonStart = error.message.indexOf('{');
-          if (jsonStart !== -1) {
-            errorData = JSON.parse(error.message.substring(jsonStart));
-          }
-        }
-      } catch (e) {
-        // Fallback error handling
-      }
-        
-      if (errorData?.requiresUpgrade) {
-        toast({
-          title: "Upgrade Required",
-          description: `${errorData.message}. You're currently on ${errorData.currentTier} plan.`,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Access Denied",
-          description: "Unable to retrieve discount code",
-          variant: "destructive",
-        });
-      }
-    },
-  });
+
 
   // Claim deal mutation
   const claimDealMutation = useMutation({
@@ -273,39 +216,7 @@ export default function DealDetail() {
     claimDealMutation.mutate(deal!.id);
   };
 
-  const handleGetDiscountCode = () => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please log in to access discount codes",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    getDiscountCodeMutation.mutate(deal!.id);
-  };
 
-  const handleRevealCode = () => {
-    setShowCode(true);
-    setCodeRevealed(true);
-  };
-
-  const copyToClipboard = async (code: string) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      toast({
-        title: "Copied!",
-        description: "Discount code copied to clipboard",
-      });
-    } catch (err) {
-      toast({
-        title: "Copy Failed",
-        description: "Please copy the code manually",
-        variant: "destructive",
-      });
-    }
-  };
 
   const canAccessDeal = () => {
     if (!user || !deal) return false;
@@ -509,122 +420,7 @@ export default function DealDetail() {
                     )}
                   </Button>
 
-                  {/* Discount Code Section */}
-                  <div className="space-y-3">
-                    <h3 className="font-semibold flex items-center">
-                      <Shield className="h-5 w-5 mr-2" />
-                      Discount Code
-                    </h3>
-                    
-                    {!isAuthenticated ? (
-                      <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <Lock className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                        <p className="text-sm text-gray-600 mb-2">Login to access discount codes</p>
-                        <Button size="sm" variant="outline" onClick={() => setLocation("/login")}>
-                          Login Required
-                        </Button>
-                      </div>
-                    ) : membershipError?.requiresUpgrade ? (
-                      <div className="text-center p-6 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-200">
-                        <Crown className="w-12 h-12 mx-auto mb-3 text-red-600" />
-                        <h4 className="font-semibold text-lg text-gray-900 mb-2">Upgrade Required</h4>
-                        <p className="text-sm text-gray-700 mb-2">
-                          {membershipError.message}
-                        </p>
-                        <div className="bg-white/50 rounded-md p-3 mb-4">
-                          <p className="text-xs text-gray-600">
-                            <span className="font-medium">Current Plan:</span> {membershipError.currentTier} 
-                            <span className="mx-2">→</span> 
-                            <span className="font-medium">Suggested:</span> {membershipError.suggestedTier}
-                          </p>
-                        </div>
-                        <Button 
-                          size="lg" 
-                          className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white"
-                          onClick={() => setLocation('/customer/upgrade')}
-                        >
-                          <Zap className="w-4 h-4 mr-2" />
-                          Upgrade Your Plan
-                        </Button>
-                      </div>
-                    ) : !canAccessDeal() ? (
-                      <div className="text-center p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
-                        <Crown className="w-8 h-8 mx-auto mb-2 text-yellow-600" />
-                        <p className="text-sm text-gray-700 mb-2">
-                          Upgrade to access this deal
-                        </p>
-                        <Button 
-                          size="sm" 
-                          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                          onClick={() => setLocation('/customer/upgrade')}
-                        >
-                          <Zap className="w-4 h-4 mr-1" />
-                          Upgrade Plan
-                        </Button>
-                      </div>
-                    ) : !discountCode ? (
-                      <Button
-                        onClick={handleGetDiscountCode}
-                        disabled={getDiscountCodeMutation.isPending || isExpired || !!isFullyRedeemed}
-                        className="w-full"
-                        size="lg"
-                        variant="outline"
-                      >
-                        {getDiscountCodeMutation.isPending ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Getting Code...
-                          </>
-                        ) : isExpired ? (
-                          "Deal Expired"
-                        ) : isFullyRedeemed ? (
-                          "Fully Redeemed"
-                        ) : (
-                          <>
-                            <Eye className="w-4 h-4 mr-2" />
-                            Get Discount Code
-                          </>
-                        )}
-                      </Button>
-                    ) : (
-                      <div className="space-y-2">
-                        {!showCode ? (
-                          <Button
-                            onClick={handleRevealCode}
-                            className="w-full"
-                            size="lg"
-                            variant="outline"
-                          >
-                            <EyeOff className="w-4 h-4 mr-2" />
-                            Click to Reveal Code
-                          </Button>
-                        ) : (
-                          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1">
-                                <p className="text-sm text-green-700 mb-1">Your Discount Code:</p>
-                                <div className="flex items-center space-x-2">
-                                  <code className="text-lg font-mono font-bold text-green-800 bg-white px-3 py-2 rounded border">
-                                    {discountCode}
-                                  </code>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    onClick={() => copyToClipboard(discountCode)}
-                                  >
-                                    <Copy className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                                <p className="text-xs text-green-600 mt-2">
-                                  Present this code at checkout to get your discount
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+
                 </div>
               </CardContent>
             </Card>

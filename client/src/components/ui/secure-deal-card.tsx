@@ -1,16 +1,11 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
+import { PinVerificationDialog } from "@/components/ui/pin-verification-dialog";
 import { useAuth } from "@/lib/auth";
-import { apiRequest } from "@/lib/queryClient";
 import {
-  Eye,
-  EyeOff,
-  Copy,
   Clock,
   MapPin,
   Store,
@@ -20,7 +15,8 @@ import {
   Star,
   ShoppingBag,
   ExternalLink,
-  Navigation
+  Navigation,
+  Shield
 } from "lucide-react";
 
 interface Deal {
@@ -52,106 +48,15 @@ interface SecureDealCardProps {
   onClaim?: (dealId: number) => void;
 }
 
-interface DiscountCodeResponse {
-  discountCode: string;
-  requiresClick: boolean;
-  membershipTier: string;
-  category: string;
-}
 
-interface DiscountError {
-  message: string;
-  requiresUpgrade: boolean;
-  currentTier: string;
-  suggestedTier: string;
-}
 
 export default function SecureDealCard({ deal, className = "", onClaim }: SecureDealCardProps) {
-  const [discountCode, setDiscountCode] = useState<string | null>(null);
-  const [showCode, setShowCode] = useState(false);
-  const [codeRevealed, setCodeRevealed] = useState(false);
   const { user, isAuthenticated } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const [showPinDialog, setShowPinDialog] = useState(false);
 
-  // Get discount code mutation
-  const getDiscountCodeMutation = useMutation({
-    mutationFn: async (dealId: number) => {
-      return await apiRequest(`/api/deals/${dealId}/discount-code`, "GET") as unknown as DiscountCodeResponse;
-    },
-    onSuccess: (data) => {
-      setDiscountCode(data.discountCode);
-      
-      // Auto-reveal if not restricted by tier
-      if (!data.requiresClick) {
-        setShowCode(true);
-        setCodeRevealed(true);
-      }
-      
-      toast({
-        title: "Discount Code Retrieved",
-        description: data.requiresClick 
-          ? "Click 'Reveal Code' to view your discount"
-          : "Your discount code is ready to use!",
-      });
-    },
-    onError: (error: any) => {
-      const errorData = error.message.includes('403') 
-        ? JSON.parse(error.message.split('403: ')[1]) as DiscountError
-        : null;
-        
-      if (errorData?.requiresUpgrade) {
-        toast({
-          title: "Upgrade Required",
-          description: `${errorData.message}. You're currently on ${errorData.currentTier} plan.`,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Access Denied",
-          description: "Unable to retrieve discount code",
-          variant: "destructive",
-        });
-      }
-    },
-  });
 
-  // Copy code to clipboard
-  const copyToClipboard = async (code: string) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      toast({
-        title: "Copied!",
-        description: "Discount code copied to clipboard",
-      });
-    } catch (err) {
-      toast({
-        title: "Copy Failed",
-        description: "Please copy the code manually",
-        variant: "destructive",
-      });
-    }
-  };
 
-  // Handle discount code access
-  const handleGetDiscountCode = () => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please log in to access discount codes",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    getDiscountCodeMutation.mutate(deal.id);
-  };
 
-  // Handle reveal code click (for premium tier restricted categories)
-  const handleRevealCode = () => {
-    setShowCode(true);
-    setCodeRevealed(true);
-  };
 
   // Handle get directions
   const handleGetDirections = () => {
@@ -290,101 +195,19 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
 
         <Separator />
 
-        {/* Discount code section */}
-        <div className="space-y-3">
-          {!isAuthenticated ? (
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <Lock className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm text-gray-600 mb-2">Login to access discount codes</p>
-              <Button size="sm" variant="outline">
-                Login Required
-              </Button>
-            </div>
-          ) : !canAccessDeal() ? (
-            <div className="text-center p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
-              <Crown className="w-8 h-8 mx-auto mb-2 text-yellow-600" />
-              <p className="text-sm text-gray-700 mb-2">
-                Upgrade to access this deal
-              </p>
-              <Button 
-                size="sm" 
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                onClick={() => window.location.href = '/customer/upgrade'}
-              >
-                <Zap className="w-4 h-4 mr-1" />
-                Upgrade Plan
-              </Button>
-            </div>
-          ) : !discountCode ? (
-            <Button
-              onClick={handleGetDiscountCode}
-              disabled={getDiscountCodeMutation.isPending || isExpired || !!isFullyRedeemed}
-              className="w-full"
-              size="lg"
-            >
-              {getDiscountCodeMutation.isPending ? (
-                "Getting Code..."
-              ) : isExpired ? (
-                "Deal Expired"
-              ) : isFullyRedeemed ? (
-                "Fully Redeemed"
-              ) : (
-                <>
-                  <Eye className="w-4 h-4 mr-2" />
-                  Get Discount Code
-                </>
-              )}
-            </Button>
-          ) : (
-            <div className="space-y-2">
-              {!showCode ? (
-                <Button
-                  onClick={handleRevealCode}
-                  className="w-full"
-                  size="lg"
-                  variant="outline"
-                >
-                  <EyeOff className="w-4 h-4 mr-2" />
-                  Click to Reveal Code
-                </Button>
-              ) : (
-                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-green-700 mb-1">Your Discount Code:</p>
-                      <code className="text-lg font-mono font-bold text-green-800 bg-white px-2 py-1 rounded">
-                        {discountCode}
-                      </code>
-                      <p className="text-xs text-green-600 mt-2">
-                        Present your membership card at checkout to get discount on total bill
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => copyToClipboard(discountCode)}
-                    >
-                      <Copy className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+
       </CardContent>
 
       <CardFooter className="gap-2">
-        {codeRevealed && (
-          <Button
-            onClick={() => onClaim?.(deal.id)}
-            className="flex-1"
-            size="lg"
-          >
-            <ShoppingBag className="w-4 h-4 mr-2" />
-            Claim Deal
-          </Button>
-        )}
+        <Button
+          onClick={() => setShowPinDialog(true)}
+          className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+          size="lg"
+          disabled={!isAuthenticated}
+        >
+          <Shield className="w-4 h-4 mr-2" />
+          Redeem Deal
+        </Button>
         
         <div className="flex gap-2 flex-1">
           {deal.vendor && (
@@ -405,6 +228,14 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
           </Button>
         </div>
       </CardFooter>
+
+      <PinVerificationDialog
+        open={showPinDialog}
+        onOpenChange={setShowPinDialog}
+        dealId={deal.id}
+        dealTitle={deal.title}
+        onSuccess={() => onClaim?.(deal.id)}
+      />
     </Card>
   );
 }

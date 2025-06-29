@@ -115,6 +115,19 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### June 29, 2025 - PIN-Based Verification System Implementation
+- **Complete Discount Code Removal**: Successfully removed all discount code functionality from the platform
+- **PIN-Based Verification**: Implemented offline-friendly 4-digit PIN verification system for deal redemption
+- **Database Schema Updates**: Added verificationPin field to deals table with proper schema migration
+- **Enhanced Deal Creation**: Updated vendor forms to include PIN input with validation (4-digit numeric only)
+- **PIN Verification Components**: Created PinInput and PinVerificationDialog components for secure redemption
+- **Offline Capability**: PIN verification works without internet connection for better store usability
+- **Server-Side PIN API**: Added /api/deals/:id/verify-pin endpoint for secure PIN validation
+- **Comprehensive Tutorials**: Created detailed tutorials for both customers and vendors explaining PIN system
+- **Security Enhancement**: PINs are hidden from public API responses and only validated server-side
+- **Real-time Tracking**: PIN redemptions are logged and tracked in user analytics
+- **Storage Layer Updates**: Enhanced storage interface with PIN verification methods
+
 ### June 28, 2025 - Wouter Routing Migration & Enhanced Deal Management
 - **Routing Migration**: Completely migrated from React Router to Wouter for lightweight, TypeScript-safe routing
 - **Role-Based Routing**: Implemented comprehensive role-based path organization (/customer, /vendor, /admin, /superadmin)

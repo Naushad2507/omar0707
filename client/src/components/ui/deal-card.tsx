@@ -32,7 +32,7 @@ interface DealCardProps {
     longitude?: number;
   };
   requiredMembership: string;
-  discountCode?: string;
+
   terms?: string;
   isActive?: boolean;
   isFavorite?: boolean;
@@ -56,7 +56,7 @@ export default function DealCard({
   viewCount,
   vendor,
   requiredMembership,
-  discountCode,
+
   terms,
   isActive = true,
   isFavorite = false,
@@ -325,40 +325,7 @@ export default function DealCard({
 
               <Separator />
 
-              {/* Discount Code Section */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900 flex items-center">
-                  <Shield className="h-5 w-5 mr-2" />
-                  Discount Code
-                </h3>
-                
-                {user?.membershipPlan && user.membershipPlan !== 'basic' ? (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Use code:</span>
-                      <code className="bg-gray-100 px-3 py-1 rounded font-mono text-sm font-bold">
-                        {discountCode || `DEAL${id}`}
-                      </code>
-                    </div>
-                    <p className="text-xs text-green-600 mt-2">
-                      Present your membership card at checkout to get discount on total bill
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-gradient-to-r from-primary/10 to-royal/10 border border-primary/20 rounded-lg p-6 text-center">
-                    <Shield className="h-12 w-12 text-primary mx-auto mb-3" />
-                    <h4 className="font-semibold text-gray-900 mb-2">Upgrade to Access Discount Codes</h4>
-                    <p className="text-sm text-gray-600 mb-4">Subscribe to premium or ultimate plan to view and use discount codes</p>
-                    <Button 
-                      size="sm" 
-                      className="bg-gradient-to-r from-primary to-royal hover:from-primary/90 hover:to-royal/90"
-                      onClick={() => window.location.href = '/customer/upgrade'}
-                    >
-                      Upgrade Plan
-                    </Button>
-                  </div>
-                )}
-              </div>
+
 
               {/* Terms and Conditions */}
               {terms && (

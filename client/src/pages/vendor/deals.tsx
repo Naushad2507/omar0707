@@ -38,7 +38,7 @@ const dealSchema = z.object({
   category: z.string().min(1, "Please select a category"),
   imageUrl: z.string().url().optional().or(z.literal("")),
   discountPercentage: z.number().min(1, "Discount must be at least 1%").max(90, "Discount cannot exceed 90%"),
-  discountCode: z.string().optional(),
+
   originalPrice: z.string().optional(),
   discountedPrice: z.string().optional(),
   validUntil: z.string().min(1, "Please select an end date"),
@@ -81,7 +81,7 @@ export default function VendorDeals() {
       category: "",
       imageUrl: "",
       discountPercentage: 10,
-      discountCode: "",
+
       originalPrice: "",
       discountedPrice: "",
       validUntil: "",
@@ -153,7 +153,7 @@ export default function VendorDeals() {
         originalPrice: data.originalPrice ? data.originalPrice : null,
         discountedPrice: data.discountedPrice ? data.discountedPrice : null,
         maxRedemptions: data.maxRedemptions || null,
-        discountCode: data.discountCode || null,
+
         imageUrl: data.imageUrl || null,
         latitude: data.latitude || null,
         longitude: data.longitude || null,
@@ -234,7 +234,7 @@ export default function VendorDeals() {
       category: deal.category,
       imageUrl: deal.imageUrl || "",
       discountPercentage: deal.discountPercentage,
-      discountCode: deal.discountCode || "",
+
       originalPrice: deal.originalPrice || "",
       discountedPrice: deal.discountedPrice || "",
       validUntil: deal.validUntil.split('T')[0], // Format for date input
@@ -511,21 +511,6 @@ export default function VendorDeals() {
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="discountCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Discount Code</FormLabel>
-                          <FormControl>
-                            <Input placeholder="SAVE20" {...field} />
-                          </FormControl>
-                          <FormDescription>Optional promo code</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
                     <FormField
                       control={form.control}
                       name="requiredMembership"

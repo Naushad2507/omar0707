@@ -49,9 +49,11 @@ export interface IStorage {
 
   // Deal claim operations
   claimDeal(claim: InsertDealClaim): Promise<DealClaim>;
+  createDealClaim(claim: InsertDealClaim): Promise<DealClaim>;
   getUserClaims(userId: number): Promise<DealClaim[]>;
   getDealClaims(dealId: number): Promise<DealClaim[]>;
   updateClaimStatus(id: number, status: string, usedAt?: Date): Promise<DealClaim | undefined>;
+  incrementDealRedemptions(dealId: number): Promise<void>;
 
   // Help ticket operations
   createHelpTicket(ticket: InsertHelpTicket): Promise<HelpTicket>;
@@ -409,7 +411,7 @@ export class MemStorage implements IStorage {
           originalPrice: `${1000 + (i * 200)}.00`,
           discountedPrice: `${500 + (i * 100)}.00`,
           discountPercentage: 30 + (i * 5),
-          discountCode: i % 3 === 0 ? `SAVE${10 + i}` : null,
+          verificationPin: `${1000 + i}`, // 4-digit PIN for offline verification
           validFrom: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
           validUntil: new Date(Date.now() + ((30 - i) * 24 * 60 * 60 * 1000)),
           maxRedemptions: 100 + (i * 10),
@@ -575,7 +577,7 @@ export class MemStorage implements IStorage {
       id: this.currentDealId++,
       ...insertDeal,
       imageUrl: insertDeal.imageUrl || null,
-      discountCode: insertDeal.discountCode || null,
+
       originalPrice: insertDeal.originalPrice || null,
       discountedPrice: insertDeal.discountedPrice || null,
       maxRedemptions: insertDeal.maxRedemptions || null,
@@ -647,6 +649,18 @@ export class MemStorage implements IStorage {
     };
     this.dealClaims.set(claim.id, claim);
     return claim;
+  }
+
+  async createDealClaim(insertClaim: InsertDealClaim): Promise<DealClaim> {
+    return this.claimDeal(insertClaim);
+  }
+
+  async incrementDealRedemptions(dealId: number): Promise<void> {
+    const deal = this.deals.get(dealId);
+    if (deal) {
+      deal.currentRedemptions = (deal.currentRedemptions || 0) + 1;
+      this.deals.set(dealId, deal);
+    }
   }
 
   async getUserClaims(userId: number): Promise<DealClaim[]> {

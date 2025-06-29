@@ -387,8 +387,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get vendor info
       const vendor = await storage.getVendor(deal.vendorId);
       
-      // Remove sensitive data like discount code from public endpoint
-      const { discountCode, ...dealData } = deal;
+      // Remove sensitive data like PIN from public endpoint
+      const { verificationPin, ...dealData } = deal;
       
       res.json({
         ...dealData,
@@ -423,98 +423,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Secure endpoint to get discount code based on user's membership tier
-  app.get('/api/deals/:id/discount-code', requireAuth, async (req: AuthenticatedRequest, res) => {
-    try {
-      const dealId = parseInt(req.params.id);
-      const userId = req.user!.id;
-      
-      const deal = await storage.getDeal(dealId);
-      if (!deal || !deal.isActive || !deal.isApproved) {
-        return res.status(404).json({ message: "Deal not found or not available" });
-      }
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      
-      // Define tier-based access rules
-      const membershipTier = user.membershipPlan || 'basic';
-      const dealCategory = deal.category.toLowerCase();
-      
-      // Business logic for discount code visibility
-      let canAccessCode = false;
-      let requiresClick = false;
-      let upgradeMessage = '';
-      
-      switch (membershipTier) {
-        case 'basic':
-          // Auto-reveal for: restaurants (food), fashion, travel
-          const basicAllowedCategories = ['restaurants', 'fashion', 'travel'];
-          if (basicAllowedCategories.includes(dealCategory)) {
-            canAccessCode = true;
-          } else {
-            upgradeMessage = 'Upgrade to Premium or Ultimate to access this deal';
-          }
-          break;
-          
-        case 'premium':
-          // Auto-reveal for all except health and education
-          const premiumRestrictedCategories = ['health', 'education'];
-          if (premiumRestrictedCategories.includes(dealCategory)) {
-            canAccessCode = true;
-            requiresClick = true;
-          } else {
-            canAccessCode = true;
-          }
-          break;
-          
-        case 'ultimate':
-          // Auto-reveal all discount codes
-          canAccessCode = true;
-          break;
-          
-        default:
-          upgradeMessage = 'Please upgrade your membership to access discount codes';
-      }
-      
-      if (!canAccessCode) {
-        return res.status(403).json({ 
-          message: upgradeMessage,
-          requiresUpgrade: true,
-          currentTier: membershipTier,
-          suggestedTier: 'premium'
-        });
-      }
-      
-      // Log access for security auditing
-      await storage.createSystemLog({
-        userId: userId,
-        action: "DISCOUNT_CODE_ACCESS",
-        details: { 
-          dealId: dealId, 
-          dealTitle: deal.title,
-          category: dealCategory,
-          membershipTier: membershipTier,
-          requiresClick: requiresClick
-        },
-        ipAddress: req.ip,
-        userAgent: req.headers['user-agent'],
-      });
-      
-      res.json({
-        discountCode: deal.discountCode,
-        requiresClick: requiresClick,
-        membershipTier: membershipTier,
-        category: dealCategory
-      });
-      
-    } catch (error) {
-      console.error("Error fetching discount code:", error);
-      res.status(500).json({ message: "Failed to fetch discount code" });
-    }
-  });
+
 
   // Increment deal view count
   app.post('/api/deals/:id/view', async (req: AuthenticatedRequest, res) => {
@@ -579,6 +488,114 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(claim);
     } catch (error) {
       res.status(500).json({ message: "Failed to claim deal" });
+    }
+  });
+
+  // POST /api/deals/:id/verify-pin - Verify PIN and redeem deal
+  app.post('/api/deals/:id/verify-pin', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.id);
+      const { pin } = req.body;
+      const userId = req.user!.id;
+
+      if (!pin || pin.length !== 4) {
+        return res.status(400).json({
+          success: false,
+          error: "Please enter a valid 4-digit PIN"
+        });
+      }
+
+      // Get deal details
+      const deal = await storage.getDeal(dealId);
+      if (!deal) {
+        return res.status(404).json({
+          success: false,
+          error: "Deal not found"
+        });
+      }
+
+      // Check if deal is active and approved
+      if (!deal.isActive || !deal.isApproved) {
+        return res.status(400).json({
+          success: false,
+          error: "This deal is not currently available"
+        });
+      }
+
+      // Check if deal has expired
+      if (new Date() > new Date(deal.validUntil)) {
+        return res.status(400).json({
+          success: false,
+          error: "This deal has expired"
+        });
+      }
+
+      // Verify PIN
+      if (deal.verificationPin !== pin) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid PIN. Please check with the vendor"
+        });
+      }
+
+      // Check if user already claimed this deal
+      const existingClaims = await storage.getUserClaims(userId);
+      const alreadyClaimed = existingClaims.some(claim => claim.dealId === dealId);
+      if (alreadyClaimed) {
+        return res.status(400).json({
+          success: false,
+          error: "You have already redeemed this deal"
+        });
+      }
+
+      // Check redemption limits
+      if (deal.maxRedemptions && (deal.currentRedemptions || 0) >= deal.maxRedemptions) {
+        return res.status(400).json({
+          success: false,
+          error: "This deal has reached its redemption limit"
+        });
+      }
+
+      // Calculate savings
+      const savings = deal.originalPrice ? 
+        parseFloat(deal.originalPrice) - parseFloat(deal.discountedPrice || "0") : 
+        0;
+
+      // Create deal claim
+      const claim = await storage.createDealClaim({
+        userId,
+        dealId,
+        savingsAmount: savings.toString(),
+        status: "used"
+      });
+
+      // Update deal redemption count
+      await storage.incrementDealRedemptions(dealId);
+
+      // Log the redemption
+      await storage.createSystemLog({
+        userId,
+        action: "DEAL_REDEEMED_PIN",
+        details: {
+          dealId,
+          savings,
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      res.json({
+        success: true,
+        message: "Deal successfully redeemed!",
+        savings: savings,
+        claim
+      });
+
+    } catch (error) {
+      Logger.error("PIN verification error:", error);
+      res.status(500).json({
+        success: false,
+        error: "Failed to verify PIN and redeem deal"
+      });
     }
   });
 
@@ -1530,8 +1547,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Generate discount code
-      const discountCode = `SAVE${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      // Generate 4-digit PIN for offline verification
+      const verificationPin = Math.floor(1000 + Math.random() * 9000).toString();
 
       // Create deal
       const deal = await storage.createDeal({
@@ -1544,7 +1561,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         discountPercentage: parseInt(discountPercentage.toString()),
         validUntil: validUntilDate,
         maxRedemptions: maxRedemptions ? parseInt(maxRedemptions) : null,
-        discountCode,
+        verificationPin,
         requiredMembership,
         isActive: true,
         isApproved: false, // Requires admin approval

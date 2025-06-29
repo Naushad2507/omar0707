@@ -53,7 +53,7 @@ export const deals = pgTable("deals", {
   category: text("category").notNull(), // fashion, electronics, travel, food, home, fitness
   imageUrl: text("image_url"),
   discountPercentage: integer("discount_percentage").notNull(),
-  discountCode: text("discount_code"),
+
   originalPrice: decimal("original_price", { precision: 10, scale: 2 }),
   discountedPrice: decimal("discounted_price", { precision: 10, scale: 2 }),
   validFrom: timestamp("valid_from").defaultNow(),
@@ -68,6 +68,7 @@ export const deals = pgTable("deals", {
   address: text("address").notNull(),
   latitude: decimal("latitude", { precision: 10, scale: 8 }),
   longitude: decimal("longitude", { precision: 11, scale: 8 }),
+  verificationPin: text("verification_pin").notNull(), // 4-digit PIN for offline verification
   createdAt: timestamp("created_at").defaultNow(),
 });
 

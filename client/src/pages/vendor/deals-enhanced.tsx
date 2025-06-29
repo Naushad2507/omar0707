@@ -65,8 +65,8 @@ const dealSchema = z.object({
   title: z.string().min(5, "Deal title must be at least 5 characters"),
   description: z.string().min(10, "Deal description must be at least 10 characters"),
   category: z.string().min(1, "Please select a category"),
-  discountCode: z.string().min(3, "Discount code must be at least 3 characters"),
   discountPercentage: z.number().min(1, "Discount must be at least 1%").max(90, "Discount cannot exceed 90%"),
+  verificationPin: z.string().length(4, "PIN must be exactly 4 digits").regex(/^\d+$/, "PIN must contain only numbers"),
   dealAvailability: z.enum(["all-stores", "selected-locations"]),
   selectedCities: z.array(z.string()).optional(),
   imageUrl: z.string().optional(),
@@ -98,8 +98,8 @@ export default function VendorDealsEnhanced() {
       title: "",
       description: "",
       category: "",
-      discountCode: "",
       discountPercentage: 10,
+      verificationPin: "",
       dealAvailability: "all-stores",
       selectedCities: [],
       imageUrl: "",
@@ -251,22 +251,6 @@ export default function VendorDealsEnhanced() {
                           )}
                         />
 
-                        <FormField
-                          control={form.control}
-                          name="discountCode"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Discount Code *</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Enter discount code (e.g., SAVE50)" {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                Unique code customers will use to claim the deal
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
                       </div>
 
                       <FormField
@@ -288,6 +272,37 @@ export default function VendorDealsEnhanced() {
                                 <Percent className="h-4 w-4 text-gray-500" />
                               </div>
                             </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="verificationPin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Verification PIN *</FormLabel>
+                            <FormControl>
+                              <div className="flex items-center space-x-2">
+                                <Input 
+                                  type="text" 
+                                  maxLength={4}
+                                  placeholder="Enter 4-digit PIN"
+                                  {...field}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                    field.onChange(value);
+                                  }}
+                                />
+                                <div className="flex items-center text-blue-600">
+                                  <CheckCircle className="h-4 w-4" />
+                                </div>
+                              </div>
+                            </FormControl>
+                            <FormDescription>
+                              Set a 4-digit PIN that customers will need to enter at your store to redeem this deal. This works offline too!
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
