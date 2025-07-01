@@ -144,7 +144,7 @@ export default function VendorDeals() {
       const finalData = {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
-        validUntil: new Date(data.validUntil),
+        validUntil: data.validUntil ? new Date(data.validUntil).toISOString() : undefined,
         latitude: data.latitude ? data.latitude.toString() : undefined,
         longitude: data.longitude ? data.longitude.toString() : undefined,
       };
@@ -177,7 +177,7 @@ export default function VendorDeals() {
       const finalData = {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
-        validUntil: new Date(data.validUntil),
+        validUntil: data.validUntil ? new Date(data.validUntil).toISOString() : undefined,
         latitude: data.latitude ? data.latitude.toString() : undefined,
         longitude: data.longitude ? data.longitude.toString() : undefined,
       };
@@ -392,7 +392,9 @@ export default function VendorDeals() {
                                     {category.name}
                                   </SelectItem>
                                 ))}
-                                <SelectItem value="others">Others</SelectItem>
+                                {!categories.find((cat: any) => cat.id === "others") && (
+                                  <SelectItem key="others-custom" value="others">Others</SelectItem>
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
