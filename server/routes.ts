@@ -217,6 +217,96 @@ const checkMembershipAccess = async (req: AuthenticatedRequest, res: Response, n
   }
 };
 
+// Helper functions for geolocation
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c; // Distance in kilometers
+  return distance;
+};
+
+const formatDistance = (distance: number): string => {
+  if (distance < 1) {
+    return `${Math.round(distance * 1000)}m`;
+  } else if (distance < 10) {
+    return `${distance.toFixed(1)}km`;
+  } else {
+    return `${Math.round(distance)}km`;
+  }
+};
+
+const generateLocationHint = (userLat: number, userLon: number, dealLat: number, dealLon: number, address: string): string => {
+  const bearing = calculateBearing(userLat, userLon, dealLat, dealLon);
+  const direction = getDirectionFromBearing(bearing);
+  const distance = calculateDistance(userLat, userLon, dealLat, dealLon);
+  
+  // Extract area/landmark from address for better hint
+  const addressParts = address.split(',').map(part => part.trim());
+  const areaHint = addressParts.length > 1 ? addressParts[0] : '';
+  
+  if (distance < 0.5) {
+    return `Very close to you${areaHint ? ` near ${areaHint}` : ''}`;
+  } else if (distance < 2) {
+    return `${direction} of you${areaHint ? ` in ${areaHint}` : ''}`;
+  } else {
+    return `${formatDistance(distance)} ${direction}${areaHint ? ` in ${areaHint}` : ''}`;
+  }
+};
+
+const calculateBearing = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const lat1Rad = lat1 * Math.PI / 180;
+  const lat2Rad = lat2 * Math.PI / 180;
+  
+  const y = Math.sin(dLon) * Math.cos(lat2Rad);
+  const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
+  
+  let bearing = Math.atan2(y, x) * 180 / Math.PI;
+  return (bearing + 360) % 360;
+};
+
+const getDirectionFromBearing = (bearing: number): string => {
+  const directions = [
+    'North', 'Northeast', 'East', 'Southeast',
+    'South', 'Southwest', 'West', 'Northwest'
+  ];
+  const index = Math.round(bearing / 45) % 8;
+  return directions[index];
+};
+
+const calculateRelevanceScore = (deal: any, distance: number, vendor: any): number => {
+  let score = 100;
+  
+  // Distance factor (closer = higher score)
+  score -= Math.min(distance * 5, 50); // Max 50 point deduction for distance
+  
+  // Discount factor
+  if (deal.discountPercentage >= 50) score += 20;
+  else if (deal.discountPercentage >= 30) score += 10;
+  else if (deal.discountPercentage >= 20) score += 5;
+  
+  // View count factor (popular deals get boost)
+  if (deal.viewCount > 100) score += 15;
+  else if (deal.viewCount > 50) score += 10;
+  else if (deal.viewCount > 20) score += 5;
+  
+  // Expiry factor (ending soon gets boost)
+  const daysUntilExpiry = (new Date(deal.validUntil).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+  if (daysUntilExpiry <= 1) score += 10; // Ending soon
+  else if (daysUntilExpiry <= 3) score += 5;
+  
+  // Membership tier factor (basic deals get slight boost for accessibility)
+  if (deal.requiredMembership === 'basic') score += 5;
+  
+  return Math.max(0, Math.min(100, score));
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Mock session middleware - in production, use express-session with proper store
   app.use((req: AuthenticatedRequest, res, next) => {
@@ -1241,6 +1331,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(dealWithVendor);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch deal" });
+    }
+  });
+
+  // Get nearby deals based on user location with geolocation
+  app.post('/api/deals/nearby', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { latitude, longitude, maxDistance = 10, categories = [], limit = 12 } = req.body;
+      
+      if (!latitude || !longitude) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'Latitude and longitude are required' 
+        });
+      }
+      
+      // Get all active deals with their vendor information
+      const allDeals = await storage.getActiveDeals();
+      const vendors = await storage.getAllVendors();
+      
+      // Create vendor lookup map
+      const vendorMap = new Map(vendors.map(v => [v.id, v]));
+      
+      // Calculate distance for each deal and filter by location
+      const nearbyDeals = [];
+      
+      for (const deal of allDeals) {
+        const vendor = vendorMap.get(deal.vendorId);
+        if (!vendor) continue;
+        
+        // Skip if deal doesn't have location data
+        if (!deal.latitude || !deal.longitude) continue;
+        
+        // Calculate distance using Haversine formula
+        const dealLat = parseFloat(deal.latitude);
+        const dealLng = parseFloat(deal.longitude);
+        const distance = calculateDistance(latitude, longitude, dealLat, dealLng);
+        
+        // Skip if outside max distance
+        if (distance > maxDistance) continue;
+        
+        // Filter by categories if specified
+        if (categories.length > 0 && !categories.includes(deal.category)) continue;
+        
+        // Generate location hint based on relative position
+        const locationHint = generateLocationHint(latitude, longitude, dealLat, dealLng, vendor.address || '');
+        
+        // Calculate relevance score based on multiple factors
+        const relevanceScore = calculateRelevanceScore(deal, distance, vendor);
+        
+        nearbyDeals.push({
+          ...deal,
+          vendor: {
+            businessName: vendor.businessName,
+            address: vendor.address,
+            city: vendor.city,
+            state: vendor.state,
+          },
+          distance: Math.round(distance * 100) / 100, // Round to 2 decimal places
+          distanceText: formatDistance(distance),
+          locationHint,
+          relevanceScore: Math.round(relevanceScore),
+        });
+      }
+      
+      // Sort by relevance score (distance + other factors)
+      nearbyDeals.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      
+      // Limit results
+      const limitedDeals = nearbyDeals.slice(0, limit);
+      
+      res.json({
+        success: true,
+        deals: limitedDeals,
+        total: nearbyDeals.length,
+        userLocation: { latitude, longitude },
+        searchRadius: maxDistance,
+      });
+      
+    } catch (error) {
+      console.error('Error fetching nearby deals:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to fetch nearby deals' 
+      });
     }
   });
 

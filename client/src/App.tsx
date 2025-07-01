@@ -18,6 +18,7 @@ import Help from "@/pages/shared/help";
 // Customer pages
 import CustomerDashboard from "@/pages/customer/dashboard";
 import CustomerDeals from "@/pages/customer/deals";
+import NearbyDeals from "@/pages/customer/nearby-deals";
 import SecureDeals from "@/pages/customer/secure-deals";
 import ClaimHistory from "@/pages/customer/claim-history";
 import CustomerWishlist from "@/pages/customer/wishlist";
@@ -110,6 +111,7 @@ function Router() {
   const [matchCustomerSubscription] = useRoute("/customer/subscription");
   const [matchCustomerDashboard] = useRoute("/customer/dashboard");
   const [matchCustomerDeals] = useRoute("/customer/deals");
+  const [matchCustomerNearbyDeals] = useRoute("/customer/nearby-deals");
   const [matchCustomerSecureDeals] = useRoute("/customer/secure-deals");
   const [matchCustomerClaims] = useRoute("/customer/claims");
   const [matchCustomerWishlist] = useRoute("/customer/wishlist");
@@ -182,6 +184,13 @@ function Router() {
     return (
       <RoleProtectedRoute allowedRoles={['customer']}>
         <CustomerDeals />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerNearbyDeals) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <NearbyDeals />
       </RoleProtectedRoute>
     );
   }

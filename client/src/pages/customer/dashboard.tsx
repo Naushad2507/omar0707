@@ -18,7 +18,8 @@ import {
   Clock,
   MapPin,
   Gift,
-  BookOpen
+  BookOpen,
+  Navigation
 } from "lucide-react";
 
 export default function CustomerDashboard() {
@@ -264,7 +265,7 @@ export default function CustomerDashboard() {
         {/* Quick Actions */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/customer/deals")}>
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -272,6 +273,16 @@ export default function CustomerDashboard() {
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Browse Deals</h3>
                 <p className="text-sm text-gray-600">Discover new deals in your city</p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/customer/nearby-deals")}>
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Navigation className="h-6 w-6 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Nearby Deals</h3>
+                <p className="text-sm text-gray-600">Find deals close to your location</p>
               </CardContent>
             </Card>
 
