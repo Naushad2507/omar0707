@@ -44,7 +44,7 @@ export default function AdminVendors() {
 
   const approveVendorMutation = useMutation({
     mutationFn: async (vendorId: number) => {
-      return apiRequest('POST', `/api/admin/vendors/${vendorId}/approve`);
+      return apiRequest(`/api/admin/vendors/${vendorId}/approve`, 'POST');
     },
     onSuccess: () => {
       toast({

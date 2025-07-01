@@ -46,7 +46,7 @@ export default function AdminDeals() {
 
   const approveDealMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return apiRequest('POST', `/api/admin/deals/${dealId}/approve`);
+      return apiRequest(`/api/admin/deals/${dealId}/approve`, 'POST');
     },
     onSuccess: () => {
       toast({

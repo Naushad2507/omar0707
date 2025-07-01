@@ -145,7 +145,7 @@ export default function VendorDeals() {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
       };
-      return apiRequest('POST', '/api/vendors/deals', finalData);
+      return apiRequest('/api/vendors/deals', 'POST', finalData);
     },
     onSuccess: () => {
       toast({
@@ -175,7 +175,7 @@ export default function VendorDeals() {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
       };
-      return apiRequest('PUT', `/api/vendors/deals/${editingDeal.id}`, finalData);
+      return apiRequest(`/api/vendors/deals/${editingDeal.id}`, 'PUT', finalData);
     },
     onSuccess: () => {
       toast({
