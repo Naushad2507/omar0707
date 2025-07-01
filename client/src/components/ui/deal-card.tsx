@@ -267,7 +267,11 @@ export default function DealCard({
             // Show upgrade button for premium/ultimate deals
             <Button 
               onClick={() => navigate('/customer/upgrade')}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              className={`flex-1 ${
+                getSuggestedTier() === 'ultimate' 
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700' 
+                  : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+              }`}
               size="sm"
             >
               <Crown className="h-4 w-4 mr-2" />

@@ -134,11 +134,12 @@ Preferred communication style: Simple, everyday language.
 - **Authentication Bug Fix**: Resolved critical login issue where registered users couldn't log back in after logout - fixed password validation logic in login endpoint
 - **Password Handling Consistency**: Synchronized signup and login password handling to use plain text storage for demo purposes (both endpoints now consistent)
 - **Smart Upgrade Buttons**: Added dynamic upgrade buttons on deal cards that appear when users need higher membership tiers to access premium/ultimate deals
+- **Distinctive Ultimate Button Styling**: "Upgrade to Ultimate" buttons now use amber-to-orange gradient, while "Upgrade to Premium" buttons use purple-to-blue gradient
 - **Visual Membership Indicators**: Enhanced deal cards with crown badges showing premium/ultimate membership requirements
 - **Intelligent Action Logic**: Deal cards now show contextual buttons based on user authentication and membership status:
   - Non-authenticated users: "Login to Claim" button
-  - Basic users viewing premium deals: "Upgrade to Premium" button  
-  - Basic users viewing ultimate deals: "Upgrade to Ultimate" button
+  - Basic users viewing premium deals: "Upgrade to Premium" button (purple-blue gradient)
+  - Basic users viewing ultimate deals: "Upgrade to Ultimate" button (amber-orange gradient)
   - Users with sufficient membership: "Claim Deal" button
 - **Seamless Upgrade Flow**: Upgrade buttons directly navigate to `/customer/upgrade` page for immediate membership upgrades
 
