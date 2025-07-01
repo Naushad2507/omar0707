@@ -245,8 +245,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
-      // In production, use bcrypt to compare passwords
-      // For demo, we'll accept any password for existing users
+      // For demo purposes, compare plain text passwords
+      // In production, use bcrypt to compare hashed passwords
+      if (user.password !== password) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
       const token = `${user.id}|${user.role}|${user.email}`;
       
       res.json({
@@ -284,9 +288,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Create user
+      // For demo purposes, store plain text passwords
+      // In production, hash passwords with bcrypt before storing
       const user = await storage.createUser({
         ...userData,
-        password: `$2a$10$hashed_${userData.password}`, // In production, hash with bcrypt
+        password: userData.password,
       });
       
       const token = `${user.id}|${user.role}|${user.email}`;

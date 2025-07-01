@@ -115,6 +115,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 1, 2025 - Authentication Fix & Enhanced Customer Features
+- **Authentication Bug Fix**: Resolved critical login issue where registered users couldn't log back in after logout - fixed password validation logic in login endpoint
+- **Password Handling Consistency**: Synchronized signup and login password handling to use plain text storage for demo purposes (both endpoints now consistent)
+- **Smart Upgrade Buttons**: Added dynamic upgrade buttons on deal cards that appear when users need higher membership tiers to access premium/ultimate deals
+- **Visual Membership Indicators**: Enhanced deal cards with crown badges showing premium/ultimate membership requirements
+- **Intelligent Action Logic**: Deal cards now show contextual buttons based on user authentication and membership status:
+  - Non-authenticated users: "Login to Claim" button
+  - Basic users viewing premium deals: "Upgrade to Premium" button  
+  - Basic users viewing ultimate deals: "Upgrade to Ultimate" button
+  - Users with sufficient membership: "Claim Deal" button
+- **Seamless Upgrade Flow**: Upgrade buttons directly navigate to `/customer/upgrade` page for immediate membership upgrades
+
 ### July 1, 2025 - Enhanced Customer Features: PIN Verification & Membership Upgrades
 - **PIN Verification Integration**: Added PIN verification functionality to deal detail pages with prominent "Verify with PIN" button
 - **Enhanced Deal Detail UI**: Added information section explaining offline-friendly PIN verification system to customers
