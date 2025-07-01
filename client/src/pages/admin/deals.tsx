@@ -64,6 +64,26 @@ export default function AdminDeals() {
     },
   });
 
+  const updateDealMutation = useMutation({
+    mutationFn: async ({ dealId, updates }: { dealId: number; updates: any }) => {
+      return apiRequest(`/api/admin/deals/${dealId}`, 'PUT', updates);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Deal updated successfully!",
+        description: "The deal's membership requirement has been changed.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/deals/pending"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to update deal",
+        description: error.message || "Please try again later.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Filter deals based on search and filters
   const filteredDeals = pendingDeals?.filter((deal: any) => {
     const matchesSearch = searchQuery === "" || 
@@ -243,6 +263,7 @@ export default function AdminDeals() {
                       <TableHead>Vendor</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead>Discount</TableHead>
+                      <TableHead>Membership</TableHead>
                       <TableHead>Validity</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Actions</TableHead>
@@ -392,6 +413,38 @@ export default function AdminDeals() {
                                               <span className="text-gray-900">{selectedDeal.vendor?.rating || "0.0"}</span>
                                             </div>
                                           </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    {/* Membership Tier Management */}
+                                    <div className="border-t pt-4">
+                                      <h4 className="font-medium text-gray-900 mb-3">Membership Requirements</h4>
+                                      <div className="space-y-3">
+                                        <div>
+                                          <label className="text-sm font-medium text-gray-700">Required Membership Tier</label>
+                                          <Select 
+                                            defaultValue={selectedDeal.requiredMembership || "basic"}
+                                            onValueChange={(value) => {
+                                              updateDealMutation.mutate({
+                                                dealId: selectedDeal.id,
+                                                updates: { requiredMembership: value }
+                                              });
+                                            }}
+                                          >
+                                            <SelectTrigger className="mt-2">
+                                              <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="basic">Basic (Free for all users)</SelectItem>
+                                              <SelectItem value="premium">Premium (₹500/month subscribers)</SelectItem>
+                                              <SelectItem value="ultimate">Ultimate (₹1000/month subscribers)</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                        <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+                                          <p className="font-medium mb-1">Current setting: {selectedDeal.requiredMembership || "basic"}</p>
+                                          <p>Changing this will affect who can access this deal. Premium and Ultimate deals are only visible to subscribers.</p>
                                         </div>
                                       </div>
                                     </div>

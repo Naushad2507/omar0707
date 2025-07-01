@@ -1040,6 +1040,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin deal update endpoint
+  app.put('/api/admin/deals/:id', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.id);
+      const updates = insertDealSchema.partial().parse(req.body);
+      
+      const deal = await storage.updateDeal(dealId, updates);
+      
+      if (!deal) {
+        return res.status(404).json({ message: "Deal not found" });
+      }
+      
+      // Log the admin update
+      await storage.createSystemLog({
+        userId: req.user!.id,
+        action: "DEAL_UPDATED_BY_ADMIN",
+        details: { 
+          dealId, 
+          title: deal.title,
+          changes: updates,
+          adminAction: true
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+      
+      res.json(deal);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update deal" });
+    }
+  });
+
   // Help ticket routes
   app.post('/api/help-tickets', requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
