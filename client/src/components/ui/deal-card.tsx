@@ -4,7 +4,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import NearbyDealsSection from "./nearby-deals";
-import { MapPin, Clock, Eye, Heart, ExternalLink, Shield, Star, Users, Calendar, Tag, Info, Navigation } from "lucide-react";
+import { MapPin, Clock, Eye, Heart, ExternalLink, Shield, Star, Users, Calendar, Tag, Info, Navigation, Crown, Lock } from "lucide-react";
+import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 
@@ -67,6 +68,25 @@ export default function DealCard({
   const [isFlashing, setIsFlashing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth();
+  const [, navigate] = useLocation();
+
+  // Check if user can access this deal based on membership
+  const canAccessDeal = () => {
+    if (!user) return false;
+    
+    const membershipLevels = { basic: 1, premium: 2, ultimate: 3 };
+    const userLevel = membershipLevels[user.membershipPlan as keyof typeof membershipLevels] || 1;
+    const requiredLevel = membershipLevels[requiredMembership as keyof typeof membershipLevels] || 1;
+    
+    return userLevel >= requiredLevel;
+  };
+
+  // Get suggested upgrade tier
+  const getSuggestedTier = () => {
+    if (requiredMembership === 'premium') return 'premium';
+    if (requiredMembership === 'ultimate') return 'ultimate';
+    return 'premium';
+  };
 
   useEffect(() => {
     // Flash effect for high discount percentages
@@ -184,7 +204,21 @@ export default function DealCard({
         <div className="space-y-3">
           {/* Title and Description */}
           <div>
-            <h3 className="font-semibold text-gray-900 line-clamp-2">{title}</h3>
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">{title}</h3>
+              {requiredMembership !== 'basic' && (
+                <Badge 
+                  className={`text-xs ${
+                    requiredMembership === 'premium' 
+                      ? 'bg-blue-100 text-blue-800' 
+                      : 'bg-purple-100 text-purple-800'
+                  }`}
+                >
+                  <Crown className="h-3 w-3 mr-1" />
+                  {requiredMembership}
+                </Badge>
+              )}
+            </div>
             <p className="text-sm text-gray-600 line-clamp-2 mt-1">{description}</p>
           </div>
 
@@ -227,6 +261,48 @@ export default function DealCard({
       </CardContent>
 
       <CardFooter className="p-4 pt-0 space-y-2">
+        {/* Action Buttons */}
+        <div className="flex gap-2 w-full">
+          {user && !canAccessDeal() ? (
+            // Show upgrade button for premium/ultimate deals
+            <Button 
+              onClick={() => navigate('/customer/upgrade')}
+              className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              size="sm"
+            >
+              <Crown className="h-4 w-4 mr-2" />
+              Upgrade to {getSuggestedTier()}
+            </Button>
+          ) : user ? (
+            // Show claim button for accessible deals
+            <Button 
+              onClick={onClaim}
+              className="flex-1"
+              size="sm"
+            >
+              Claim Deal
+            </Button>
+          ) : (
+            // Show login prompt for non-authenticated users
+            <Button 
+              onClick={() => navigate('/login')}
+              variant="outline"
+              className="flex-1"
+              size="sm"
+            >
+              <Lock className="h-4 w-4 mr-2" />
+              Login to Claim
+            </Button>
+          )}
+          
+          <Button 
+            onClick={onView}
+            variant="outline"
+            size="sm"
+          >
+            View
+          </Button>
+        </div>
 
         <Dialog open={showModal} onOpenChange={setShowModal}>
           <DialogTrigger asChild>
