@@ -121,7 +121,7 @@ export default function CustomerDashboard() {
                   </p>
                 </div>
                 <Button variant="secondary" asChild>
-                  <Link to="/pricing">View Plans</Link>
+                  <Link to="/customer/upgrade">Upgrade Now</Link>
                 </Button>
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function CustomerDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/pricing")}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/customer/upgrade")}>
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-royal/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Trophy className="h-6 w-6 text-royal" />

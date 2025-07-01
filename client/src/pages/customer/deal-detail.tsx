@@ -34,6 +34,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Link } from "wouter";
+import { PinVerificationDialog } from "@/components/ui/pin-verification-dialog";
 
 interface Deal {
   id: number;
@@ -97,6 +98,7 @@ export default function DealDetail({ params }: DealDetailProps) {
   
 
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showPinDialog, setShowPinDialog] = useState(false);
 
   // Fetch deal details (public endpoint)
   const { data: deal, isLoading } = useQuery<Deal>({
@@ -396,6 +398,20 @@ export default function DealDetail({ params }: DealDetailProps) {
 
                 <Separator />
 
+                {/* PIN Verification Info */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-5 h-5 text-blue-600" />
+                    <h4 className="font-semibold text-blue-900">Offline-Friendly Verification</h4>
+                  </div>
+                  <p className="text-blue-800 text-sm">
+                    This deal uses a 4-digit PIN verification system. Ask the vendor for their PIN when redeeming in-store. 
+                    Works even without internet connection!
+                  </p>
+                </div>
+
+                <Separator />
+
                 {/* Action Buttons */}
                 <div className="space-y-4">
                   {/* Claim Deal Button */}
@@ -424,6 +440,17 @@ export default function DealDetail({ params }: DealDetailProps) {
                     )}
                   </Button>
 
+                  {/* PIN Verification Button */}
+                  <Button
+                    onClick={() => setShowPinDialog(true)}
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
+                    disabled={!isAuthenticated || isExpired || !deal?.isActive}
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Verify with PIN
+                  </Button>
 
                 </div>
               </CardContent>
@@ -431,6 +458,20 @@ export default function DealDetail({ params }: DealDetailProps) {
           </div>
         </div>
       </div>
+
+      {/* PIN Verification Dialog */}
+      <PinVerificationDialog
+        open={showPinDialog}
+        onOpenChange={setShowPinDialog}
+        dealId={Number(id)}
+        dealTitle={deal?.title || ""}
+        onSuccess={() => {
+          setShowPinDialog(false);
+          // Refresh data after successful PIN verification
+          queryClient.invalidateQueries({ queryKey: ["/api/deals"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
+        }}
+      />
     </div>
   );
 }

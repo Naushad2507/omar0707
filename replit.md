@@ -115,6 +115,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 1, 2025 - Enhanced Customer Features: PIN Verification & Membership Upgrades
+- **PIN Verification Integration**: Added PIN verification functionality to deal detail pages with prominent "Verify with PIN" button
+- **Enhanced Deal Detail UI**: Added information section explaining offline-friendly PIN verification system to customers
+- **Membership Upgrade Access**: Fixed navigation links in customer dashboard to properly route to membership upgrade page (`/customer/upgrade`)
+- **Customer Experience Improvements**: Enhanced quick actions section with correct upgrade membership links
+- **Complete PIN Workflow**: Integrated PinVerificationDialog component with success callbacks and proper error handling
+- **Authentication Flow Fixes**: Resolved "user not found" errors by clarifying authentication requirements for deal claiming
+- **Navigation Corrections**: Fixed customer deal navigation from incorrect `/customer/deals/:id` to proper `/deals/:id` routing
+
 ### July 1, 2025 - Enhanced Vendor Deal Management & Admin Controls
 - **Deactivated Price Fields**: Removed original price and discounted price functionality from vendor deal creation forms to focus on percentage-based discounts only
 - **Custom Category Support**: Added "Others" category option that opens a custom category input field when selected, allowing vendors to create deals in unlisted categories
