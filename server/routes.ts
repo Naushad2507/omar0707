@@ -770,10 +770,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Vendor not approved yet" });
       }
       
-      const dealData = insertDealSchema.parse({
+      // Transform data to match schema expectations
+      const transformedData = {
         ...req.body,
         vendorId: vendor.id,
-      });
+        // Convert ISO string to Date object for timestamp field
+        validUntil: req.body.validUntil ? new Date(req.body.validUntil) : undefined,
+        // Ensure latitude and longitude are strings if provided
+        latitude: req.body.latitude ? String(req.body.latitude) : undefined,
+        longitude: req.body.longitude ? String(req.body.longitude) : undefined,
+      };
+      
+      const dealData = insertDealSchema.parse(transformedData);
       
       const deal = await storage.createDeal(dealData);
       res.status(201).json(deal);
@@ -798,7 +806,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Deal not found" });
       }
       
-      const updates = insertDealSchema.partial().parse(req.body);
+      // Transform data to match schema expectations
+      const transformedData = {
+        ...req.body,
+        // Convert ISO string to Date object for timestamp field
+        validUntil: req.body.validUntil ? new Date(req.body.validUntil) : undefined,
+        // Ensure latitude and longitude are strings if provided
+        latitude: req.body.latitude ? String(req.body.latitude) : undefined,
+        longitude: req.body.longitude ? String(req.body.longitude) : undefined,
+      };
+      
+      const updates = insertDealSchema.partial().parse(transformedData);
       // When vendor edits a deal, it needs admin approval again
       const updatedDeal = await storage.updateDeal(dealId, {
         ...updates,
@@ -1044,7 +1062,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put('/api/admin/deals/:id', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
       const dealId = parseInt(req.params.id);
-      const updates = insertDealSchema.partial().parse(req.body);
+      
+      // Transform data to match schema expectations
+      const transformedData = {
+        ...req.body,
+        // Convert ISO string to Date object for timestamp field
+        validUntil: req.body.validUntil ? new Date(req.body.validUntil) : undefined,
+        // Ensure latitude and longitude are strings if provided
+        latitude: req.body.latitude ? String(req.body.latitude) : undefined,
+        longitude: req.body.longitude ? String(req.body.longitude) : undefined,
+      };
+      
+      const updates = insertDealSchema.partial().parse(transformedData);
       
       const deal = await storage.updateDeal(dealId, updates);
       
