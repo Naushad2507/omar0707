@@ -200,7 +200,12 @@ const DealList = () => {
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4" />
-                      <span>{deal.vendor.name} - {deal.vendor.city}, {deal.vendor.state}</span>
+                      <span>
+                        {deal.vendor ? 
+                          `${deal.vendor.businessName || deal.vendor.name || 'Vendor'} - ${deal.vendor.city}, ${deal.vendor.state}` : 
+                          'Location not available'
+                        }
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4" />

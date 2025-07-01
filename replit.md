@@ -145,6 +145,7 @@ Preferred communication style: Simple, everyday language.
 
 ### July 1, 2025 - Enhanced Customer Features: PIN Verification & Membership Upgrades
 - **PIN Verification Integration**: Added PIN verification functionality to deal detail pages with prominent "Verify with PIN" button
+- **Membership Access Control Fix**: Fixed deal detail pages to properly redirect users to upgrade page instead of allowing PIN verification for premium/ultimate deals they can't access
 - **Enhanced Deal Detail UI**: Added information section explaining offline-friendly PIN verification system to customers
 - **Membership Upgrade Access**: Fixed navigation links in customer dashboard to properly route to membership upgrade page (`/customer/upgrade`)
 - **Customer Experience Improvements**: Enhanced quick actions section with correct upgrade membership links

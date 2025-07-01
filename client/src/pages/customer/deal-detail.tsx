@@ -441,16 +441,31 @@ export default function DealDetail({ params }: DealDetailProps) {
                   </Button>
 
                   {/* PIN Verification Button */}
-                  <Button
-                    onClick={() => setShowPinDialog(true)}
-                    variant="outline"
-                    className="w-full"
-                    size="lg"
-                    disabled={!isAuthenticated || isExpired || !deal?.isActive}
-                  >
-                    <Shield className="w-4 h-4 mr-2" />
-                    Verify with PIN
-                  </Button>
+                  {canAccessDeal() ? (
+                    <Button
+                      onClick={() => setShowPinDialog(true)}
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                      disabled={!isAuthenticated || isExpired || !deal?.isActive}
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      Verify with PIN
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setLocation('/customer/upgrade')}
+                      className={`w-full ${
+                        deal?.requiredMembership === 'ultimate' 
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700' 
+                          : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                      }`}
+                      size="lg"
+                    >
+                      <Crown className="w-4 h-4 mr-2" />
+                      Upgrade to {deal?.requiredMembership || 'Premium'}
+                    </Button>
+                  )}
 
                 </div>
               </CardContent>
