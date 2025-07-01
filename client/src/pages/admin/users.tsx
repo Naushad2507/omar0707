@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -41,7 +41,7 @@ export default function AdminUsers() {
 
   const upgradeUserMutation = useMutation({
     mutationFn: async ({ userId, membershipPlan }: { userId: number; membershipPlan: string }) => {
-      return apiRequest('PUT', `/api/admin/users/${userId}/upgrade`, { membershipPlan });
+      return apiRequest(`/api/admin/users/${userId}/upgrade`, 'PUT', { membershipPlan });
     },
     onSuccess: () => {
       toast({
@@ -327,6 +327,9 @@ export default function AdminUsers() {
                             <DialogContent>
                               <DialogHeader>
                                 <DialogTitle>Manage User: {user.name}</DialogTitle>
+                                <DialogDescription>
+                                  Update the user's membership tier and account settings.
+                                </DialogDescription>
                               </DialogHeader>
                               <div className="space-y-4">
                                 <div>
