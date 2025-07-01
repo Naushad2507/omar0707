@@ -344,7 +344,7 @@ export default function CustomerDeals() {
                     onClaim={() => handleClaimDeal(deal)}
                     onToggleFavorite={() => handleToggleFavorite(deal.id)}
                     onView={() => {
-                      window.location.href = `/customer/deals/${deal.id}`;
+                      window.location.href = `/deals/${deal.id}`;
                     }}
                   />
                 </div>

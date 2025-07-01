@@ -74,8 +74,8 @@ export default function CustomerDashboard() {
     },
   ];
 
-  const handleClaimDeal = (dealId: number) => {
-    navigate(`/customer/deals?highlight=${dealId}`);
+  const handleViewDeal = (dealId: number) => {
+    navigate(`/deals/${dealId}`);
   };
 
   return (
@@ -253,8 +253,8 @@ export default function CustomerDashboard() {
                 <DealCard
                   key={deal.id}
                   {...deal}
-                  onView={() => handleClaimDeal(deal.id)}
-                  onClaim={() => handleClaimDeal(deal.id)}
+                  onView={() => handleViewDeal(deal.id)}
+                  onClaim={() => handleViewDeal(deal.id)}
                 />
               ))}
             </div>
