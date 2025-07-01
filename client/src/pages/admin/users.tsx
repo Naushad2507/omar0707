@@ -314,9 +314,51 @@ export default function AdminUsers() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => setSelectedUser(user)}
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Manage User: {user.name}</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <label className="text-sm font-medium">Change Membership Tier</label>
+                                  <Select 
+                                    defaultValue={user.membershipPlan || "basic"}
+                                    onValueChange={(value) => {
+                                      upgradeUserMutation.mutate({
+                                        userId: user.id,
+                                        membershipPlan: value
+                                      });
+                                    }}
+                                  >
+                                    <SelectTrigger className="mt-2">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="basic">Basic</SelectItem>
+                                      <SelectItem value="premium">Premium</SelectItem>
+                                      <SelectItem value="ultimate">Ultimate</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  <p>Current tier: {user.membershipPlan || "basic"}</p>
+                                  {user.membershipExpiry && (
+                                    <p>Expires: {formatDate(user.membershipExpiry)}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
                         </TableCell>
                       </TableRow>
                     ))}

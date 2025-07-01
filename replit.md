@@ -115,6 +115,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 1, 2025 - Enhanced Vendor Deal Management & Admin Controls
+- **Deactivated Price Fields**: Removed original price and discounted price functionality from vendor deal creation forms to focus on percentage-based discounts only
+- **Custom Category Support**: Added "Others" category option that opens a custom category input field when selected, allowing vendors to create deals in unlisted categories
+- **Edit Approval Workflow**: Modified vendor deal editing to require admin approval - when vendors edit deals, they are automatically marked as unapproved and need admin review
+- **Removed Vendor Delete Rights**: Vendors can no longer delete deals directly - this functionality now requires admin approval through a request system
+- **Admin Membership Management**: Enhanced admin user management with direct membership tier change functionality - admins can now upgrade/downgrade user membership plans directly from the admin panel
+- **Enhanced Deal Status Tracking**: Improved deal status badges and notifications to clearly indicate approval status and requirements
+- **Approval Logging**: Added comprehensive system logging for deal edits and deletion requests to track vendor actions requiring admin review
+
 ### June 29, 2025 - Comprehensive POS (Point of Sale) System Implementation
 - **Complete POS Infrastructure**: Built comprehensive Point of Sale system for vendors with session management, transaction processing, and inventory tracking
 - **POS Database Schema**: Added posSessions, posTransactions, and posInventory tables with full relational support

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,13 +13,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Plus, 
   Edit, 
-  Trash2, 
   Eye, 
   Calendar,
   Target,
@@ -36,15 +34,13 @@ const dealSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   category: z.string().min(1, "Please select a category"),
+  customCategory: z.string().optional(),
   imageUrl: z.string().url().optional().or(z.literal("")),
   discountPercentage: z.number().min(1, "Discount must be at least 1%").max(90, "Discount cannot exceed 90%"),
-
-  originalPrice: z.string().optional(),
-  discountedPrice: z.string().optional(),
+  verificationPin: z.string().min(4, "PIN must be 4 digits").max(4, "PIN must be 4 digits"),
   validUntil: z.string().min(1, "Please select an end date"),
   maxRedemptions: z.number().optional(),
   requiredMembership: z.enum(["basic", "premium", "ultimate"]),
-  // Location fields
   address: z.string().min(1, "Address is required"),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
@@ -58,6 +54,7 @@ export default function VendorDeals() {
   const [editingDeal, setEditingDeal] = useState<any>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationError, setLocationError] = useState<string>("");
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -65,11 +62,11 @@ export default function VendorDeals() {
     queryKey: ["/api/vendors/me"],
   });
 
-  const { data: deals, isLoading } = useQuery({
+  const { data: deals = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/vendors/deals"],
   });
 
-  const { data: categories } = useQuery({
+  const { data: categories = [] } = useQuery<any[]>({
     queryKey: ["/api/categories"],
   });
 
@@ -79,11 +76,10 @@ export default function VendorDeals() {
       title: "",
       description: "",
       category: "",
+      customCategory: "",
       imageUrl: "",
       discountPercentage: 10,
-
-      originalPrice: "",
-      discountedPrice: "",
+      verificationPin: "",
       validUntil: "",
       maxRedemptions: undefined,
       requiredMembership: "basic",
@@ -93,6 +89,14 @@ export default function VendorDeals() {
       useCurrentLocation: false,
     },
   });
+
+  // Watch category selection to show/hide custom category field
+  const watchedCategory = form.watch("category");
+  
+  // Show custom category field when "others" is selected
+  React.useEffect(() => {
+    setShowCustomCategory(watchedCategory === "others");
+  }, [watchedCategory]);
 
   // Geolocation function
   const getCurrentLocation = () => {
@@ -113,60 +117,45 @@ export default function VendorDeals() {
         form.setValue("useCurrentLocation", true);
         setIsGettingLocation(false);
         toast({
-          title: "Location captured!",
-          description: `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`,
+          title: "Location updated",
+          description: "Your current location has been set for this deal.",
         });
       },
       (error) => {
-        let errorMessage = "Failed to get location.";
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = "Location access denied by user.";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = "Location information is unavailable.";
-            break;
-          case error.TIMEOUT:
-            errorMessage = "Location request timed out.";
-            break;
-        }
-        setLocationError(errorMessage);
+        setLocationError(error.message);
         setIsGettingLocation(false);
         toast({
           title: "Location Error",
-          description: errorMessage,
+          description: "Could not get your current location.",
           variant: "destructive",
         });
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 300000, // 5 minutes
+        maximumAge: 0
       }
     );
   };
 
   const createDealMutation = useMutation({
     mutationFn: async (data: DealForm) => {
-      return apiRequest('POST', '/api/vendors/deals', {
+      // Use custom category if "others" is selected
+      const finalData = {
         ...data,
-        originalPrice: data.originalPrice ? data.originalPrice : null,
-        discountedPrice: data.discountedPrice ? data.discountedPrice : null,
-        maxRedemptions: data.maxRedemptions || null,
-
-        imageUrl: data.imageUrl || null,
-        latitude: data.latitude || null,
-        longitude: data.longitude || null,
-      });
+        category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
+      };
+      return apiRequest('POST', '/api/vendors/deals', finalData);
     },
     onSuccess: () => {
       toast({
         title: "Deal created successfully!",
-        description: "Your deal has been submitted for approval.",
+        description: "Your deal has been submitted for admin approval.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/vendors/deals"] });
       setIsCreateOpen(false);
       form.reset();
+      setShowCustomCategory(false);
     },
     onError: (error: any) => {
       toast({
@@ -178,16 +167,25 @@ export default function VendorDeals() {
   });
 
   const updateDealMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<DealForm> }) => {
-      return apiRequest('PUT', `/api/vendors/deals/${id}`, data);
+    mutationFn: async (data: DealForm) => {
+      if (!editingDeal) throw new Error("No deal selected for editing");
+      
+      // Use custom category if "others" is selected
+      const finalData = {
+        ...data,
+        category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
+      };
+      return apiRequest('PUT', `/api/vendors/deals/${editingDeal.id}`, finalData);
     },
     onSuccess: () => {
       toast({
         title: "Deal updated successfully!",
-        description: "Your changes have been saved.",
+        description: "Your changes have been submitted and require admin approval before going live.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/vendors/deals"] });
       setEditingDeal(null);
+      form.reset();
+      setShowCustomCategory(false);
     },
     onError: (error: any) => {
       toast({
@@ -198,49 +196,43 @@ export default function VendorDeals() {
     },
   });
 
-  const deleteDealMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest('DELETE', `/api/vendors/deals/${id}`);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Deal deleted successfully!",
-        description: "The deal has been removed.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/vendors/deals"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Failed to delete deal",
-        description: error.message || "Please try again later.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onSubmit = (data: DealForm) => {
+  const handleSubmit = (data: DealForm) => {
     if (editingDeal) {
-      updateDealMutation.mutate({ id: editingDeal.id, data });
+      updateDealMutation.mutate(data);
     } else {
       createDealMutation.mutate(data);
     }
   };
 
   const handleEdit = (deal: any) => {
-    setEditingDeal(deal);
+    const isOthersCategory = !categories.find((cat: any) => cat.id === deal.category);
+    
     form.reset({
       title: deal.title,
       description: deal.description,
-      category: deal.category,
+      category: isOthersCategory ? "others" : deal.category,
+      customCategory: isOthersCategory ? deal.category : "",
       imageUrl: deal.imageUrl || "",
       discountPercentage: deal.discountPercentage,
-
-      originalPrice: deal.originalPrice || "",
-      discountedPrice: deal.discountedPrice || "",
-      validUntil: deal.validUntil.split('T')[0], // Format for date input
-      maxRedemptions: deal.maxRedemptions || undefined,
+      verificationPin: deal.verificationPin || "",
+      validUntil: new Date(deal.validUntil).toISOString().split('T')[0],
+      maxRedemptions: deal.maxRedemptions,
       requiredMembership: deal.requiredMembership,
+      address: deal.address,
+      latitude: deal.latitude ? parseFloat(deal.latitude) : undefined,
+      longitude: deal.longitude ? parseFloat(deal.longitude) : undefined,
+      useCurrentLocation: false,
     });
+    
+    setShowCustomCategory(isOthersCategory);
+    setEditingDeal(deal);
+  };
+
+  const handleCloseDialog = () => {
+    setIsCreateOpen(false);
+    setEditingDeal(null);
+    form.reset();
+    setShowCustomCategory(false);
   };
 
   const getDealStatusBadge = (deal: any) => {
@@ -256,61 +248,36 @@ export default function VendorDeals() {
     return <Badge className="bg-success text-white">Active</Badge>;
   };
 
-  const activeDeals = deals?.filter((deal: any) => deal.isActive && deal.isApproved).length || 0;
-  const pendingDeals = deals?.filter((deal: any) => !deal.isApproved).length || 0;
-  const totalViews = deals?.reduce((sum: number, deal: any) => sum + (deal.viewCount || 0), 0) || 0;
-  const totalClaims = deals?.reduce((sum: number, deal: any) => sum + (deal.currentRedemptions || 0), 0) || 0;
-
   const stats = [
-    { label: "Active Deals", value: activeDeals, icon: Target, color: "text-success" },
-    { label: "Pending Approval", value: pendingDeals, icon: Clock, color: "text-warning" },
-    { label: "Total Views", value: totalViews, icon: Eye, color: "text-primary" },
-    { label: "Total Claims", value: totalClaims, icon: TrendingUp, color: "text-royal" },
+    {
+      title: "Total Deals",
+      value: deals.length,
+      icon: Target,
+      change: "+12%",
+      changeType: "increase" as const,
+    },
+    {
+      title: "Active Deals",
+      value: deals.filter((deal: any) => deal.isActive && deal.isApproved).length,
+      icon: TrendingUp,
+      change: "+8%",
+      changeType: "increase" as const,
+    },
+    {
+      title: "Total Views",
+      value: deals.reduce((acc: number, deal: any) => acc + (deal.viewCount || 0), 0),
+      icon: Eye,
+      change: "+15%",
+      changeType: "increase" as const,
+    },
+    {
+      title: "Total Claims",
+      value: deals.reduce((acc: number, deal: any) => acc + (deal.currentRedemptions || 0), 0),
+      icon: Calendar,
+      change: "+22%",
+      changeType: "increase" as const,
+    },
   ];
-
-  if (!vendor) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <Card>
-            <CardContent className="p-12 text-center">
-              <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Vendor Registration Required</h3>
-              <p className="text-gray-600 mb-4">Please complete your vendor registration to manage deals</p>
-              <Button onClick={() => window.location.href = "/vendor/register"}>
-                Register Now
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (!vendor.isApproved) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <Card className="border-warning bg-warning/5">
-            <CardContent className="p-12 text-center">
-              <Clock className="h-12 w-12 text-warning mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Account Under Review</h3>
-              <p className="text-gray-600 mb-4">
-                Your vendor account is currently being reviewed. You'll be able to create deals once approved.
-              </p>
-              <Button variant="outline" onClick={() => window.location.href = "/vendor/dashboard"}>
-                Back to Dashboard
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -318,205 +285,196 @@ export default function VendorDeals() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Manage Deals</h1>
-            <p className="text-gray-600 mt-1">Create and manage your business deals</p>
-          </div>
-          
-          <Dialog open={isCreateOpen || !!editingDeal} onOpenChange={(open) => {
-            if (!open) {
-              setIsCreateOpen(false);
-              setEditingDeal(null);
-              form.reset();
-            }
-          }}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setIsCreateOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Deal
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingDeal ? "Edit Deal" : "Create New Deal"}
-                </DialogTitle>
-              </DialogHeader>
-              
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Deal Title *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter an attractive deal title" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description *</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Describe your deal in detail..."
-                            className="min-h-[100px]"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Category *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">My Deals</h1>
+              <p className="text-gray-600 mt-1">
+                Create and manage your deals
+              </p>
+            </div>
+            <Dialog open={isCreateOpen || !!editingDeal} onOpenChange={(open) => {
+              if (!open) handleCloseDialog();
+              else setIsCreateOpen(true);
+            }}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Deal
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingDeal ? "Edit Deal" : "Create New Deal"}
+                  </DialogTitle>
+                </DialogHeader>
+                
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Deal Title</FormLabel>
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
+                              <Input {...field} placeholder="Enter deal title" />
                             </FormControl>
-                            <SelectContent>
-                              {categories?.map((category: any) => (
-                                <SelectItem key={category.id} value={category.id}>
-                                  {category.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="discountPercentage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Discount Percentage</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                placeholder="10"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
 
                     <FormField
                       control={form.control}
-                      name="discountPercentage"
+                      name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Discount Percentage *</FormLabel>
+                          <FormLabel>Description</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="number" 
-                              min="1" 
-                              max="90"
-                              placeholder="10"
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                            />
+                            <Textarea {...field} placeholder="Describe your deal" rows={3} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Deal Image URL</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://example.com/image.jpg" {...field} />
-                        </FormControl>
-                        <FormDescription>
-                          Provide a URL to an image that represents your deal
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Category</FormLabel>
+                            <Select 
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setShowCustomCategory(value === "others");
+                              }} 
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {categories.map((category: any) => (
+                                  <SelectItem key={category.id} value={category.id}>
+                                    {category.name}
+                                  </SelectItem>
+                                ))}
+                                <SelectItem value="others">Others</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="verificationPin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Verification PIN</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                type="number"
+                                placeholder="4-digit PIN"
+                                maxLength={4}
+                                pattern="[0-9]{4}"
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              4-digit PIN for offline verification
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {showCustomCategory && (
+                      <FormField
+                        control={form.control}
+                        name="customCategory"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Custom Category</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Enter custom category name" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     )}
-                  />
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="originalPrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Original Price (₹)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="1000" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="validUntil"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Valid Until</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name="discountedPrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Discounted Price (₹)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="900" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                      <FormField
+                        control={form.control}
+                        name="maxRedemptions"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Max Redemptions (Optional)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                {...field}
+                                onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                                placeholder="Unlimited"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="validUntil"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Valid Until *</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="maxRedemptions"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Max Redemptions</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              min="1"
-                              placeholder="100"
-                              {...field}
-                              onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                            />
-                          </FormControl>
-                          <FormDescription>Leave empty for unlimited</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="requiredMembership"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Required Membership *</FormLabel>
+                          <FormLabel>Required Membership</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
@@ -524,7 +482,7 @@ export default function VendorDeals() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="basic">Basic (Free)</SelectItem>
+                              <SelectItem value="basic">Basic</SelectItem>
                               <SelectItem value="premium">Premium</SelectItem>
                               <SelectItem value="ultimate">Ultimate</SelectItem>
                             </SelectContent>
@@ -533,110 +491,93 @@ export default function VendorDeals() {
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  {/* Location Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Navigation className="h-5 w-5 text-blue-600" />
-                      <h3 className="text-lg font-medium">Location Information</h3>
-                    </div>
-                    
                     <FormField
                       control={form.control}
                       name="address"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Business Address *</FormLabel>
+                          <FormLabel>Address</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="Enter your business address"
-                              {...field} 
-                            />
+                            <Textarea {...field} placeholder="Enter full address" rows={2} />
                           </FormControl>
-                          <FormDescription>Full address where customers can find your deal</FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <Crosshair className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-medium">GPS Coordinates</span>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-1">
-                          Add precise location for better nearby deal discovery
-                        </p>
-                        {form.watch("latitude") && form.watch("longitude") && (
-                          <p className="text-xs text-green-600 mt-1">
-                            Location captured: {form.watch("latitude")?.toFixed(6)}, {form.watch("longitude")?.toFixed(6)}
-                          </p>
-                        )}
-                        {locationError && (
-                          <p className="text-xs text-red-600 mt-1">{locationError}</p>
-                        )}
-                      </div>
+                    <div className="flex justify-between items-center">
                       <Button
                         type="button"
                         variant="outline"
-                        size="sm"
                         onClick={getCurrentLocation}
                         disabled={isGettingLocation}
-                        className="flex items-center space-x-2"
                       >
                         {isGettingLocation ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
                         ) : (
-                          <Crosshair className="h-4 w-4" />
+                          <Navigation className="h-4 w-4 mr-2" />
                         )}
-                        <span>{isGettingLocation ? "Getting..." : "Get Location"}</span>
+                        Use Current Location
+                      </Button>
+                      
+                      {locationError && (
+                        <p className="text-sm text-red-600">{locationError}</p>
+                      )}
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="imageUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Image URL (Optional)</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://example.com/image.jpg" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex justify-end space-x-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCloseDialog}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={createDealMutation.isPending || updateDealMutation.isPending}
+                      >
+                        {(createDealMutation.isPending || updateDealMutation.isPending) ? (
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        ) : null}
+                        {editingDeal ? "Update Deal" : "Create Deal"}
                       </Button>
                     </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-4">
-                    <Button 
-                      type="button" 
-                      variant="outline"
-                      onClick={() => {
-                        setIsCreateOpen(false);
-                        setEditingDeal(null);
-                        form.reset();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={createDealMutation.isPending || updateDealMutation.isPending}
-                    >
-                      {(createDealMutation.isPending || updateDealMutation.isPending) && 
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      }
-                      {editingDeal ? "Update Deal" : "Create Deal"}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat) => {
+          {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <Card key={stat.label}>
+              <Card key={stat.title}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gray-500 text-sm">{stat.label}</p>
+                      <p className="text-gray-500 text-sm">{stat.title}</p>
                       <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                     </div>
-                    <Icon className={`h-6 w-6 ${stat.color}`} />
+                    <Icon className="h-6 w-6 text-primary" />
                   </div>
                 </CardContent>
               </Card>
@@ -647,93 +588,62 @@ export default function VendorDeals() {
         {/* Deals List */}
         <Card>
           <CardHeader>
-            <CardTitle>Your Deals ({deals?.length || 0})</CardTitle>
+            <CardTitle>Your Deals</CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="text-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
                 <p className="text-gray-600">Loading deals...</p>
               </div>
-            ) : deals && deals.length > 0 ? (
+            ) : deals.length > 0 ? (
               <div className="space-y-4">
                 {deals.map((deal: any) => (
                   <div key={deal.id} className="border border-gray-200 rounded-lg p-6">
-                    <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-semibold text-gray-900">{deal.title}</h3>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {deal.title}
+                          </h3>
                           {getDealStatusBadge(deal)}
                         </div>
-                        <p className="text-gray-600 text-sm line-clamp-2 mb-3">{deal.description}</p>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <span className="text-gray-500">Category:</span>
-                            <p className="font-medium text-gray-900 capitalize">{deal.category}</p>
+                        <p className="text-gray-600 mb-3">{deal.description}</p>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                          <div className="flex items-center space-x-1">
+                            <Target className="h-4 w-4 text-gray-400" />
+                            <span>Category: {deal.category}</span>
                           </div>
-                          <div>
-                            <span className="text-gray-500">Discount:</span>
-                            <p className="font-medium text-gray-900">{deal.discountPercentage}%</p>
+                          <div className="flex items-center space-x-1">
+                            <TrendingUp className="h-4 w-4 text-gray-400" />
+                            <span>Discount: {deal.discountPercentage}%</span>
                           </div>
-                          <div>
-                            <span className="text-gray-500">Views:</span>
-                            <p className="font-medium text-gray-900">{deal.viewCount || 0}</p>
+                          <div className="flex items-center space-x-1">
+                            <Eye className="h-4 w-4 text-gray-400" />
+                            <span>Views: {deal.viewCount || 0}</span>
                           </div>
-                          <div>
-                            <span className="text-gray-500">Claims:</span>
-                            <p className="font-medium text-gray-900">
-                              {deal.currentRedemptions || 0}
-                              {deal.maxRedemptions && `/${deal.maxRedemptions}`}
-                            </p>
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="h-4 w-4 text-gray-400" />
+                            <span>Claims: {deal.currentRedemptions || 0}</span>
+                          </div>
+                        </div>
+                        <div className="mt-2">
+                          <div className="flex items-center space-x-1 text-sm text-gray-500">
+                            <Clock className="h-4 w-4" />
+                            <span>Valid until: {new Date(deal.validUntil).toLocaleDateString()}</span>
                           </div>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center space-x-2 ml-4">
+                      <div className="flex space-x-2">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleEdit(deal)}
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
                         </Button>
-                        
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="sm">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Deal</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to delete "{deal.title}"? This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => deleteDealMutation.mutate(deal.id)}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                              >
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <span className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        Valid until {new Date(deal.validUntil).toLocaleDateString('en-IN')}
-                      </span>
-                      <span className="capitalize">
-                        Requires {deal.requiredMembership} membership
-                      </span>
                     </div>
                   </div>
                 ))}
@@ -741,8 +651,10 @@ export default function VendorDeals() {
             ) : (
               <div className="text-center py-12">
                 <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No deals created yet</h3>
-                <p className="text-gray-600 mb-4">Create your first deal to start attracting customers</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No deals yet</h3>
+                <p className="text-gray-600 mb-4">
+                  Create your first deal to start attracting customers
+                </p>
                 <Button onClick={() => setIsCreateOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
                   Create Your First Deal

@@ -799,7 +799,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updates = insertDealSchema.partial().parse(req.body);
-      const updatedDeal = await storage.updateDeal(dealId, updates);
+      // When vendor edits a deal, it needs admin approval again
+      const updatedDeal = await storage.updateDeal(dealId, {
+        ...updates,
+        isApproved: false, // Reset approval status
+        approvedBy: null   // Clear previous approver
+      });
+      
+      // Log the edit for admin review
+      if (updatedDeal) {
+        await storage.createSystemLog({
+          userId: req.user!.id,
+          action: "DEAL_EDITED",
+          details: { 
+            dealId, 
+            title: updatedDeal.title,
+            changes: updates,
+            requiresApproval: true
+          },
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent'],
+        });
+      }
       
       res.json(updatedDeal);
     } catch (error) {
@@ -810,7 +831,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/vendors/deals/:id', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+  // Vendors can no longer delete deals directly - must request admin approval
+  app.post('/api/vendors/deals/:id/request-delete', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
     try {
       const dealId = parseInt(req.params.id);
       const vendor = await storage.getVendorByUserId(req.user!.id);
@@ -823,10 +845,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Deal not found" });
       }
       
-      await storage.deleteDeal(dealId);
-      res.status(204).send();
+      // Log deletion request for admin review
+      await storage.createSystemLog({
+        userId: req.user!.id,
+        action: "DEAL_DELETE_REQUESTED",
+        details: { 
+          dealId, 
+          title: existingDeal.title,
+          reason: req.body.reason || 'No reason provided',
+          requiresApproval: true
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+      
+      res.json({ 
+        message: "Delete request submitted",
+        description: "Your request to delete this deal has been sent to administrators for approval."
+      });
     } catch (error) {
-      res.status(500).json({ message: "Failed to delete deal" });
+      res.status(500).json({ message: "Failed to submit delete request" });
     }
   });
 
