@@ -140,10 +140,13 @@ export default function VendorDeals() {
 
   const createDealMutation = useMutation({
     mutationFn: async (data: DealForm) => {
-      // Use custom category if "others" is selected
+      // Use custom category if "others" is selected and transform data types
       const finalData = {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
+        validUntil: new Date(data.validUntil),
+        latitude: data.latitude ? data.latitude.toString() : undefined,
+        longitude: data.longitude ? data.longitude.toString() : undefined,
       };
       return apiRequest('/api/vendors/deals', 'POST', finalData);
     },
@@ -170,10 +173,13 @@ export default function VendorDeals() {
     mutationFn: async (data: DealForm) => {
       if (!editingDeal) throw new Error("No deal selected for editing");
       
-      // Use custom category if "others" is selected
+      // Use custom category if "others" is selected and transform data types
       const finalData = {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
+        validUntil: new Date(data.validUntil),
+        latitude: data.latitude ? data.latitude.toString() : undefined,
+        longitude: data.longitude ? data.longitude.toString() : undefined,
       };
       return apiRequest(`/api/vendors/deals/${editingDeal.id}`, 'PUT', finalData);
     },
