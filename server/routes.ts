@@ -2,8 +2,9 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { storage } from "./storage";
-import { loginSchema, signupSchema, insertVendorSchema, insertDealSchema, insertHelpTicketSchema, insertWishlistSchema } from "@shared/schema";
+import { loginSchema, signupSchema, insertVendorSchema, insertDealSchema, insertHelpTicketSchema, insertWishlistSchema, updateUserProfileSchema, updateVendorProfileSchema } from "@shared/schema";
 import { z } from "zod";
+import { sendEmail, getWelcomeCustomerEmail, getVendorRegistrationEmail } from "./email";
 
 // Configure axios defaults
 const externalAPI = axios.create({
@@ -395,6 +396,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ipAddress: req.ip,
         userAgent: req.headers['user-agent'],
       });
+
+      // Send welcome email for customers
+      if (user.role === 'customer') {
+        try {
+          const emailData = getWelcomeCustomerEmail(user.name, user.email);
+          await sendEmail(emailData);
+          Logger.info('Welcome email sent successfully', { userId: user.id, email: user.email });
+        } catch (emailError) {
+          Logger.error('Failed to send welcome email', { userId: user.id, email: user.email, error: emailError });
+          // Don't fail the signup if email fails
+        }
+      }
       
       res.status(201).json({
         user: {
@@ -433,7 +446,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       dealsClaimed: user.dealsClaimed,
       city: user.city,
       state: user.state,
+      phone: user.phone,
+      username: user.username,
     });
+  });
+
+  // User profile update endpoint
+  app.put('/api/users/profile', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const profileData = updateUserProfileSchema.parse(req.body);
+      const userId = req.user!.id;
+      
+      const updatedUser = await storage.updateUser(userId, profileData);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Log profile update
+      await storage.createSystemLog({
+        userId,
+        action: "USER_PROFILE_UPDATED",
+        details: { updatedFields: Object.keys(profileData) },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+      
+      // Return safe user data (without password)
+      const { password, ...safeUser } = updatedUser;
+      res.json(safeUser);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update profile" });
+    }
   });
 
   // Deal routes
@@ -854,6 +900,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ipAddress: req.ip,
         userAgent: req.headers['user-agent'],
       });
+
+      // Send business registration email
+      try {
+        const user = await storage.getUser(req.user!.id);
+        if (user) {
+          const emailData = getVendorRegistrationEmail(
+            vendor.businessName,
+            user.name,
+            user.email
+          );
+          await sendEmail(emailData);
+          Logger.info('Vendor registration email sent successfully', { 
+            vendorId: vendor.id, 
+            businessName: vendor.businessName,
+            email: user.email 
+          });
+        }
+      } catch (emailError) {
+        Logger.error('Failed to send vendor registration email', { 
+          vendorId: vendor.id, 
+          businessName: vendor.businessName,
+          error: emailError 
+        });
+        // Don't fail the registration if email fails
+      }
       
       res.status(201).json({
         ...vendor,
@@ -877,6 +948,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(vendor);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch vendor profile" });
+    }
+  });
+
+  // Vendor profile update endpoint
+  app.put('/api/vendors/profile', requireAuth, requireRole(['vendor']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const profileData = updateVendorProfileSchema.parse(req.body);
+      const userId = req.user!.id;
+      
+      // Get vendor by user ID to find vendor ID
+      const vendor = await storage.getVendorByUserId(userId);
+      if (!vendor) {
+        return res.status(404).json({ message: "Vendor profile not found" });
+      }
+      
+      const updatedVendor = await storage.updateVendor(vendor.id, profileData);
+      if (!updatedVendor) {
+        return res.status(404).json({ message: "Failed to update vendor profile" });
+      }
+      
+      // Log profile update
+      await storage.createSystemLog({
+        userId,
+        action: "VENDOR_PROFILE_UPDATED",
+        details: { 
+          vendorId: vendor.id,
+          businessName: vendor.businessName,
+          updatedFields: Object.keys(profileData) 
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+      
+      res.json(updatedVendor);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update vendor profile" });
     }
   });
 

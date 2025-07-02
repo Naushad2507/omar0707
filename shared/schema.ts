@@ -300,3 +300,27 @@ export const signupSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type SignupInput = z.infer<typeof signupSchema>;
+
+// Profile update schemas
+export const updateUserProfileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").optional(),
+  phone: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+});
+
+export const updateVendorProfileSchema = z.object({
+  businessName: z.string().min(2, "Business name must be at least 2 characters").optional(),
+  gstNumber: z.string().optional(),
+  panNumber: z.string().optional(),
+  logoUrl: z.string().url("Invalid URL").optional(),
+  description: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  latitude: z.string().optional(),
+  longitude: z.string().optional(),
+});
+
+export type UpdateUserProfile = z.infer<typeof updateUserProfileSchema>;
+export type UpdateVendorProfile = z.infer<typeof updateVendorProfileSchema>;

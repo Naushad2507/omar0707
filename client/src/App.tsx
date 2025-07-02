@@ -25,6 +25,7 @@ import CustomerWishlist from "@/pages/customer/wishlist";
 import MembershipCard from "@/pages/customer/membership-card";
 import DealDetail from "@/pages/customer/deal-detail";
 import UpgradeMembership from "@/pages/customer/upgrade-membership";
+import CustomerProfile from "@/pages/customer/profile";
 
 // Vendor pages
 import VendorBenefits from "@/pages/vendor/benefits";
@@ -34,6 +35,7 @@ import VendorDeals from "@/pages/vendor/deals";
 import VendorAnalytics from "@/pages/vendor/analytics";
 import PosDashboard from "@/pages/vendor/pos-dashboard";
 import PosTransactions from "@/pages/vendor/pos-transactions";
+import VendorProfile from "@/pages/vendor/profile";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/dashboard";
@@ -117,6 +119,7 @@ function Router() {
   const [matchCustomerWishlist] = useRoute("/customer/wishlist");
   const [matchCustomerMembershipCard] = useRoute("/customer/membership-card");
   const [matchCustomerUpgrade] = useRoute("/customer/upgrade");
+  const [matchCustomerProfile] = useRoute("/customer/profile");
 
   // Vendor routes
   const [matchVendor] = useRoute("/vendor");
@@ -128,6 +131,7 @@ function Router() {
   const [matchVendorAnalytics] = useRoute("/vendor/analytics");
   const [matchVendorPos] = useRoute("/vendor/pos");
   const [matchVendorPosTransactions] = useRoute("/vendor/pos/transactions");
+  const [matchVendorProfile] = useRoute("/vendor/profile");
 
   // Admin routes
   const [matchAdmin] = useRoute("/admin");
@@ -229,6 +233,13 @@ function Router() {
       </RoleProtectedRoute>
     );
   }
+  if (matchCustomerProfile) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <CustomerProfile />
+      </RoleProtectedRoute>
+    );
+  }
 
   // Vendor routes with role protection
   if (matchVendor) {
@@ -279,6 +290,13 @@ function Router() {
     return (
       <RoleProtectedRoute allowedRoles={['vendor']}>
         <PosTransactions />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchVendorProfile) {
+    return (
+      <RoleProtectedRoute allowedRoles={['vendor']}>
+        <VendorProfile />
       </RoleProtectedRoute>
     );
   }
