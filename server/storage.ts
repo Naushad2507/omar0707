@@ -529,11 +529,14 @@ export class MemStorage implements IStorage {
   }
 
   async getAllUsers(): Promise<User[]> {
-    return Array.from(this.users.values());
+    return Array.from(this.users.values())
+      .sort((a, b) => new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime());
   }
 
   async getUsersByRole(role: string): Promise<User[]> {
-    return Array.from(this.users.values()).filter(user => user.role === role);
+    return Array.from(this.users.values())
+      .filter(user => user.role === role)
+      .sort((a, b) => new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime());
   }
 
   // Vendor operations
@@ -576,11 +579,14 @@ export class MemStorage implements IStorage {
   }
 
   async getAllVendors(): Promise<Vendor[]> {
-    return Array.from(this.vendors.values());
+    return Array.from(this.vendors.values())
+      .sort((a, b) => new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime());
   }
 
   async getPendingVendors(): Promise<Vendor[]> {
-    return Array.from(this.vendors.values()).filter(vendor => !vendor.isApproved);
+    return Array.from(this.vendors.values())
+      .filter(vendor => !vendor.isApproved)
+      .sort((a, b) => new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime());
   }
 
   async approveVendor(id: number): Promise<Vendor | undefined> {

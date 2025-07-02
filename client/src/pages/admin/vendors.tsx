@@ -187,7 +187,13 @@ export default function AdminVendors() {
         {/* Vendors Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Vendors ({filteredVendors.length})</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Vendors ({filteredVendors.length})</CardTitle>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <Calendar className="h-4 w-4" />
+                <span>Sorted by registration date (newest first)</span>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (

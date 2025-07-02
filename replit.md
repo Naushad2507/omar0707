@@ -115,6 +115,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 2, 2025 - Admin Interface: Sort Users & Vendors by Join Date (Newest First)
+- **Backend Sorting Enhancement**: Modified storage layer methods (getAllUsers, getAllVendors, getPendingVendors, getUsersByRole) to sort by creation date in descending order
+- **Visual Sort Indicators**: Added clear sorting indicators in admin interface showing "Sorted by join date (newest first)" and "Sorted by registration date (newest first)"
+- **Consistent Data Ordering**: All admin lists now display most recent registrations at the top for better visibility of new users and vendor applications
+- **Real-Time Verification**: Tested with new user and vendor registrations to confirm newest entries appear at top of respective lists
+- **Enhanced Admin Experience**: Admins can now quickly identify and prioritize the latest user registrations and vendor applications without scrolling
+
 ### July 2, 2025 - Enhanced Deal Claiming with Comprehensive User Data Refresh
 - **Comprehensive Data Refresh**: Updated all claim deal mutations across components to properly refresh user data after successful deal claims
 - **Enhanced Success Messaging**: Improved success toast messages to show specific savings amounts and total user savings when available

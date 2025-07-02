@@ -227,7 +227,13 @@ export default function AdminUsers() {
         {/* Users Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Users ({filteredUsers.length})</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Users ({filteredUsers.length})</CardTitle>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <Calendar className="h-4 w-4" />
+                <span>Sorted by join date (newest first)</span>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (
