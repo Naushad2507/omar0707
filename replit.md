@@ -115,6 +115,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 2, 2025 - Profile Editing & Email Notifications System
+- **User Profile Management**: Added comprehensive profile editing for customers at `/customer/profile` with fields for name, phone, location
+- **Vendor Profile Management**: Added business profile editing for vendors at `/vendor/profile` with business details, legal info, and location
+- **API Endpoints**: Created `PUT /api/users/profile` and `PUT /api/vendors/profile` for profile updates with proper validation
+- **SendGrid Integration**: Implemented professional email service using SendGrid for automated notifications
+- **Customer Welcome Emails**: Automatic welcome emails sent to new customers upon registration with branded templates
+- **Business Registration Emails**: Confirmation emails sent to vendors after completing business registration with approval workflow details
+- **Profile Security**: All profile updates require authentication and include comprehensive logging for audit trails
+- **Form Validation**: Client-side and server-side validation for all profile fields with proper error handling
+- **Email Templates**: Professional HTML email templates with gradient designs and comprehensive user guidance
+- **Error Handling**: Graceful email failure handling that doesn't interrupt user registration processes
+
 ### July 2, 2025 - Admin Interface: Sort Users & Vendors by Join Date (Newest First)
 - **Backend Sorting Enhancement**: Modified storage layer methods (getAllUsers, getAllVendors, getPendingVendors, getUsersByRole) to sort by creation date in descending order
 - **Visual Sort Indicators**: Added clear sorting indicators in admin interface showing "Sorted by join date (newest first)" and "Sorted by registration date (newest first)"
