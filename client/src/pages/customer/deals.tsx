@@ -153,14 +153,24 @@ export default function CustomerDeals() {
     mutationFn: async (dealId: number) => {
       return apiRequest(`/api/deals/${dealId}/claim`, 'POST');
     },
-    onSuccess: () => {
+    onSuccess: async (data: any) => {
       toast({
-        title: "Deal claimed successfully!",
-        description: "You can view your claimed deals in your dashboard.",
+        title: "Deal Claimed Successfully!",
+        description: data?.savingsAmount 
+          ? `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}` 
+          : "You can view your claimed deals in your dashboard.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/deals"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      
+      // Comprehensive data refresh to update user profile and deal listings
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/deals"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
+      ]);
+      
+      // Force refetch user data to update dashboard statistics
+      queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
     },
     onError: (error: any) => {
       toast({

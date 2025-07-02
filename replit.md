@@ -115,6 +115,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 2, 2025 - Enhanced Deal Claiming with Comprehensive User Data Refresh
+- **Comprehensive Data Refresh**: Updated all claim deal mutations across components to properly refresh user data after successful deal claims
+- **Enhanced Success Messaging**: Improved success toast messages to show specific savings amounts and total user savings when available
+- **User Profile Updates**: Added automatic user profile refreshes (`/api/auth/me`) to update dashboard statistics and membership status
+- **Multi-Component Updates**: Enhanced claim mutations in deal detail page, customer deals, nearby deals, secure deals, and DealList components
+- **PIN Verification Refresh**: Updated PIN verification success callbacks to refresh all relevant user and deal data
+- **Parallel Query Invalidation**: Implemented Promise.all() for efficient parallel data refresh across multiple API endpoints
+- **Force Refetch Strategy**: Added explicit refetchQueries calls to ensure user dashboard statistics update immediately
+- **Wishlist Integration**: Included wishlist data refresh in all claim operations for consistent UI state
+- **Deal Tracking**: Enhanced deal view count and redemption tracking with proper data synchronization
+
 ### July 1, 2025 - Dynamic Location-Based Deal Discovery with Geolocation Hints
 - **Complete Geolocation System**: Built comprehensive location-based deal discovery using HTML5 Geolocation API with smart distance calculations
 - **Nearby Deals API**: Created new `/api/deals/nearby` POST endpoint with Haversine formula for accurate distance calculations up to 25km radius

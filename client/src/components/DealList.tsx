@@ -62,13 +62,21 @@ const DealList = () => {
         setQrCode(qrCodeImage);
         
         toast({
-          title: "Deal Claimed Successfully! 🎉",
-          description: `You saved ₹${claimData.savingsAmount}! Your QR code is ready.`,
+          title: "Deal Claimed Successfully!",
+          description: `You saved ₹${claimData.savingsAmount}! Total savings: ₹${claimData.newTotalSavings}`,
           variant: "default",
         });
         
-        // Invalidate and refetch deals to update claim counts
-        queryClient.invalidateQueries({ queryKey: ['/api/deals'] });
+        // Comprehensive data refresh to update user profile and deal listings
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['/api/deals'] }),
+          queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
+          queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+          queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
+        ]);
+        
+        // Force refetch user data to update dashboard statistics
+        queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
       } catch (qrError) {
         console.error('Error generating QR code:', qrError);
         toast({
@@ -76,6 +84,16 @@ const DealList = () => {
           description: `You saved ₹${claimData.savingsAmount}! (QR code generation failed)`,
           variant: "default",
         });
+        
+        // Comprehensive data refresh even if QR generation fails
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['/api/deals'] }),
+          queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
+          queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+          queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
+        ]);
+        
+        queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
       }
     },
     onError: (error: any) => {

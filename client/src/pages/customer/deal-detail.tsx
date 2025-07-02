@@ -146,16 +146,24 @@ export default function DealDetail({ params }: DealDetailProps) {
     mutationFn: async (dealId: number) => {
       return await apiRequest(`/api/deals/${dealId}/claim`, "POST", {});
     },
-    onSuccess: (data: any) => {
+    onSuccess: async (data: any) => {
       toast({
         title: "Deal Claimed Successfully!",
         description: `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}`,
       });
       
-      // Refresh all relevant data
-      queryClient.invalidateQueries({ queryKey: ["/api/deals"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      // Comprehensive data refresh to update user profile and deal information
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/deals"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+        queryClient.invalidateQueries({ queryKey: [`/api/deals/${id}`] }),
+        queryClient.invalidateQueries({ queryKey: [`/api/deals/${id}/secure`] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
+      ]);
+      
+      // Force refetch user data to update dashboard statistics
+      queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
     },
     onError: (error: any) => {
       toast({
@@ -494,11 +502,19 @@ export default function DealDetail({ params }: DealDetailProps) {
         onOpenChange={setShowPinDialog}
         dealId={Number(id)}
         dealTitle={deal?.title || ""}
-        onSuccess={() => {
+        onSuccess={async () => {
           setShowPinDialog(false);
-          // Refresh data after successful PIN verification
-          queryClient.invalidateQueries({ queryKey: ["/api/deals"] });
-          queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
+          // Comprehensive data refresh after successful PIN verification
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ["/api/deals"] }),
+            queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
+            queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+            queryClient.invalidateQueries({ queryKey: [`/api/deals/${id}`] }),
+            queryClient.invalidateQueries({ queryKey: [`/api/deals/${id}/secure`] }),
+          ]);
+          
+          // Force refetch user data to update dashboard statistics
+          queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
         }}
       />
     </div>
