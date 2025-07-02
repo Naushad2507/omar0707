@@ -146,15 +146,16 @@ export default function DealDetail({ params }: DealDetailProps) {
     mutationFn: async (dealId: number) => {
       return await apiRequest(`/api/deals/${dealId}/claim`, "POST", {});
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       toast({
         title: "Deal Claimed Successfully!",
-        description: "Your discount has been saved to your account. You can claim this deal multiple times.",
+        description: `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}`,
       });
       
-      // Refresh data
+      // Refresh all relevant data
       queryClient.invalidateQueries({ queryKey: ["/api/deals"] });
       queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
     },
     onError: (error: any) => {
       toast({
@@ -415,30 +416,43 @@ export default function DealDetail({ params }: DealDetailProps) {
                 {/* Action Buttons */}
                 <div className="space-y-4">
                   {/* Claim Deal Button */}
-                  <Button
-                    onClick={handleClaimDeal}
-                    disabled={claimDealMutation.isPending || isExpired || !!isFullyRedeemed || !canAccessDeal()}
-                    className="w-full"
-                    size="lg"
-                  >
-                    {claimDealMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Claiming Deal...
-                      </>
-                    ) : isExpired ? (
-                      "Deal Expired"
-                    ) : isFullyRedeemed ? (
-                      "Fully Redeemed"
-                    ) : !canAccessDeal() ? (
-                      "Upgrade Required"
-                    ) : (
-                      <>
-                        <CheckCircle2 className="w-4 h-4 mr-2" />
-                        Claim Deal
-                      </>
-                    )}
-                  </Button>
+                  {canAccessDeal() ? (
+                    <Button
+                      onClick={handleClaimDeal}
+                      disabled={claimDealMutation.isPending || isExpired || !!isFullyRedeemed}
+                      className="w-full"
+                      size="lg"
+                    >
+                      {claimDealMutation.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Claiming Deal...
+                        </>
+                      ) : isExpired ? (
+                        "Deal Expired"
+                      ) : isFullyRedeemed ? (
+                        "Fully Redeemed"
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          Claim Deal
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setLocation('/customer/upgrade')}
+                      className={`w-full ${
+                        deal?.requiredMembership === 'ultimate' 
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700' 
+                          : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                      }`}
+                      size="lg"
+                    >
+                      <Crown className="w-4 h-4 mr-2" />
+                      Upgrade to {deal?.requiredMembership || 'Premium'}
+                    </Button>
+                  )}
 
                   {/* PIN Verification Button */}
                   {canAccessDeal() ? (

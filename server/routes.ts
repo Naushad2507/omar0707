@@ -572,16 +572,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate savings
       const originalPrice = parseFloat(deal.originalPrice || "0");
       const discountedPrice = parseFloat(deal.discountedPrice || "0");
-      const savingsAmount = (originalPrice - discountedPrice).toString();
+      const savingsAmount = originalPrice - discountedPrice;
       
       // Create claim
       const claim = await storage.claimDeal({
         userId,
         dealId,
-        savingsAmount,
+        savingsAmount: savingsAmount.toString(),
+      });
+
+      // Update user's total savings and deals claimed count
+      const currentTotalSavings = parseFloat(user.totalSavings || "0");
+      const newTotalSavings = currentTotalSavings + savingsAmount;
+      const newDealsClaimedCount = (user.dealsClaimed || 0) + 1;
+
+      await storage.updateUser(userId, {
+        totalSavings: newTotalSavings.toString(),
+        dealsClaimed: newDealsClaimedCount,
+      });
+
+      // Log the claim activity
+      await storage.createSystemLog({
+        userId,
+        action: "DEAL_CLAIMED",
+        details: {
+          dealId,
+          dealTitle: deal.title,
+          savingsAmount,
+          totalSavings: newTotalSavings
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
       });
       
-      res.status(201).json(claim);
+      res.status(201).json({
+        ...claim,
+        savingsAmount: savingsAmount,
+        newTotalSavings: newTotalSavings,
+        dealsClaimedCount: newDealsClaimedCount
+      });
     } catch (error) {
       res.status(500).json({ message: "Failed to claim deal" });
     }
