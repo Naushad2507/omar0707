@@ -112,10 +112,10 @@ export default function Login() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <p className="text-sm font-medium text-blue-900 mb-2">Demo Accounts:</p>
                 <div className="text-xs text-blue-800 space-y-1">
-                  <p><strong>Customer:</strong> basic@example.com</p>
-                  <p><strong>Vendor:</strong> vendor@example.com</p>
-                  <p><strong>Admin:</strong> admin@instoredealz.com</p>
-                  <p className="text-blue-600">Password: any password</p>
+                  <p><strong>Customer:</strong> basic@example.com | customer123</p>
+                  <p><strong>Vendor:</strong> vendor@example.com | vendor123</p>
+                  <p><strong>Admin:</strong> admin@instoredealz.com | admin123</p>
+                  <p className="text-blue-600 text-center mt-2">Email | Password</p>
                 </div>
               </div>
             </CardContent>
