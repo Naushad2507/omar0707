@@ -830,6 +830,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const vendorData = insertVendorSchema.parse({
         ...req.body,
         userId: req.user!.id,
+        isApproved: false, // Requires admin approval
       });
       
       // Check if user already has a vendor profile
@@ -844,12 +845,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createSystemLog({
         userId: req.user!.id,
         action: "VENDOR_REGISTRATION",
-        details: { businessName: vendor.businessName, city: vendor.city },
+        details: { 
+          vendorId: vendor.id,
+          businessName: vendor.businessName, 
+          city: vendor.city,
+          status: 'pending_approval'
+        },
         ipAddress: req.ip,
         userAgent: req.headers['user-agent'],
       });
       
-      res.status(201).json(vendor);
+      res.status(201).json({
+        ...vendor,
+        status: 'pending_approval',
+        message: "Vendor registration successful. Awaiting admin approval."
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Validation error", errors: error.errors });
