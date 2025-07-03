@@ -81,7 +81,9 @@ export const dealClaims = pgTable("deal_claims", {
   claimedAt: timestamp("claimed_at").defaultNow(),
   usedAt: timestamp("used_at"),
   savingsAmount: decimal("savings_amount", { precision: 10, scale: 2 }).notNull(),
-  status: text("status").default("claimed"), // claimed, used, expired
+  status: text("status").default("claimed"), // claimed, used, expired, pending, completed
+  billAmount: decimal("bill_amount", { precision: 10, scale: 2 }), // Total bill amount entered by customer
+  actualSavings: decimal("actual_savings", { precision: 10, scale: 2 }), // Calculated savings based on bill amount
 });
 
 // Help tickets

@@ -789,6 +789,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update bill amount for deal claim
+  app.post('/api/deals/:id/update-bill', requireAuth, async (req: AuthenticatedRequest, res) => {
+    try {
+      const dealId = parseInt(req.params.id);
+      const { billAmount, actualSavings } = req.body;
+      const userId = req.user!.id;
+
+      if (!billAmount || !actualSavings || billAmount <= 0 || actualSavings <= 0) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Valid bill amount and savings are required" 
+        });
+      }
+
+      // Get deal details
+      const deal = await storage.getDeal(dealId);
+      if (!deal) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Deal not found" 
+        });
+      }
+
+      // Check if user has a claim for this deal
+      const existingClaims = await storage.getUserClaims(userId);
+      const dealClaim = existingClaims.find(claim => claim.dealId === dealId);
+      
+      if (!dealClaim) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "No claim found for this deal" 
+        });
+      }
+
+      // Update user's total savings
+      const user = await storage.getUser(userId);
+      const currentTotalSavings = parseFloat(user?.totalSavings || "0");
+      const newTotalSavings = currentTotalSavings + actualSavings;
+
+      await storage.updateUser(userId, {
+        totalSavings: newTotalSavings.toString(),
+      });
+
+      // Update the claim with bill amount and actual savings
+      await storage.updateDealClaim(dealClaim.id, {
+        billAmount: billAmount.toString(),
+        actualSavings: actualSavings.toString(),
+        status: "completed"
+      });
+
+      // Log the bill update
+      await storage.createSystemLog({
+        userId,
+        action: "BILL_AMOUNT_UPDATED",
+        details: {
+          dealId,
+          dealTitle: deal.title,
+          billAmount,
+          actualSavings,
+          newTotalSavings,
+          timestamp: new Date().toISOString()
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent']
+      });
+
+      res.json({
+        success: true,
+        message: "Bill amount updated successfully!",
+        billAmount,
+        actualSavings,
+        newTotalSavings
+      });
+
+    } catch (error) {
+      Logger.error("Bill amount update error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update bill amount"
+      });
+    }
+  });
+
   // User claim history
   app.get('/api/users/claims', requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
