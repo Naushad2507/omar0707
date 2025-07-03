@@ -341,19 +341,187 @@ export default function Help() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Help Topics</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {[
-              "How to claim your first deal",
-              "Understanding membership benefits",
-              "Vendor registration process",
-              "Payment and billing questions",
-              "Account security settings",
-              "Managing your wishlist"
+              { title: "How to claim your first deal", anchor: "claiming-deals" },
+              { title: "Understanding membership benefits", anchor: "membership" },
+              { title: "Vendor registration process", anchor: "vendor-registration" },
+              { title: "Payment and billing questions", anchor: "payment" },
+              { title: "Account security settings", anchor: "security" },
+              { title: "Managing your wishlist", anchor: "wishlist" }
             ].map((topic, index) => (
-              <div key={index} className="flex items-center space-x-3 p-3 bg-white rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+              <div 
+                key={index} 
+                className="flex items-center space-x-3 p-3 bg-white rounded-lg hover:shadow-md hover:bg-gray-50 transition-all cursor-pointer"
+                onClick={() => {
+                  const element = document.getElementById(topic.anchor);
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
                 <CheckCircle className="h-5 w-5 text-primary" />
-                <span className="text-gray-700">{topic}</span>
+                <span className="text-gray-700">{topic.title}</span>
                 <ChevronRight className="h-4 w-4 text-gray-400 ml-auto" />
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Detailed Help Sections */}
+        <div className="space-y-12 mt-16">
+          {/* Claiming Deals */}
+          <div id="claiming-deals" className="bg-white rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+              <Store className="h-8 w-8 mr-3 text-primary" />
+              How to Claim Your First Deal
+            </h2>
+            <div className="prose prose-lg max-w-none">
+              <p className="text-gray-600 mb-4">
+                Getting started with Instoredealz is easy! Follow these simple steps to claim your first deal:
+              </p>
+              <ol className="space-y-3">
+                <li className="flex items-start">
+                  <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-1">1</span>
+                  <span>Browse available deals on our homepage or use the search function</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-1">2</span>
+                  <span>Click on a deal you're interested in to view full details</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-1">3</span>
+                  <span>Click "Claim Deal" button (requires login)</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-1">4</span>
+                  <span>Visit the store and verify your PIN to complete the redemption</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          {/* Membership Benefits */}
+          <div id="membership" className="bg-white rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+              <Users className="h-8 w-8 mr-3 text-primary" />
+              Understanding Membership Benefits
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="bg-gray-100 rounded-lg p-6">
+                  <h3 className="font-bold text-lg mb-2">Basic</h3>
+                  <p className="text-gray-600">Free access to standard deals</p>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="bg-purple-50 rounded-lg p-6">
+                  <h3 className="font-bold text-lg mb-2">Premium</h3>
+                  <p className="text-gray-600">Access to exclusive premium deals and early access</p>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="bg-amber-50 rounded-lg p-6">
+                  <h3 className="font-bold text-lg mb-2">Ultimate</h3>
+                  <p className="text-gray-600">All premium features plus VIP support and special offers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Vendor Registration */}
+          <div id="vendor-registration" className="bg-white rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+              <Store className="h-8 w-8 mr-3 text-primary" />
+              Vendor Registration Process
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Join our vendor network and start promoting your business to thousands of customers:
+            </p>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="font-semibold text-lg mb-3">Registration Steps:</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Create vendor account</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Submit business details</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Wait for approval</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Start creating deals</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-lg mb-3">Required Documents:</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-center"><HelpCircle className="h-4 w-4 text-blue-500 mr-2" />Business license</li>
+                  <li className="flex items-center"><HelpCircle className="h-4 w-4 text-blue-500 mr-2" />GST registration</li>
+                  <li className="flex items-center"><HelpCircle className="h-4 w-4 text-blue-500 mr-2" />PAN card</li>
+                  <li className="flex items-center"><HelpCircle className="h-4 w-4 text-blue-500 mr-2" />Address proof</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment & Billing */}
+          <div id="payment" className="bg-white rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+              <CreditCard className="h-8 w-8 mr-3 text-primary" />
+              Payment and Billing Questions
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold">How do I upgrade my membership?</h4>
+                <p className="text-gray-600">Visit your profile page and click on "Upgrade Membership" to choose from Premium or Ultimate plans.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">What payment methods are accepted?</h4>
+                <p className="text-gray-600">We accept all major credit cards, debit cards, UPI, and digital wallets through our secure payment gateway.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Can I cancel my subscription?</h4>
+                <p className="text-gray-600">Yes, you can cancel anytime from your account settings. Your membership will remain active until the billing period ends.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Security */}
+          <div id="security" className="bg-white rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+              <Shield className="h-8 w-8 mr-3 text-primary" />
+              Account Security Settings
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold">Password Security</h4>
+                <p className="text-gray-600">Use a strong password with at least 8 characters, including numbers and special characters.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Account Protection</h4>
+                <p className="text-gray-600">Never share your login credentials. Log out from shared devices and monitor your account activity regularly.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Data Privacy</h4>
+                <p className="text-gray-600">We protect your personal information with industry-standard encryption and never share it with unauthorized parties.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Wishlist Management */}
+          <div id="wishlist" className="bg-white rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+              <BookOpen className="h-8 w-8 mr-3 text-primary" />
+              Managing Your Wishlist
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold">Adding to Wishlist</h4>
+                <p className="text-gray-600">Click the heart icon on any deal card to add it to your wishlist for easy access later.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Viewing Your Wishlist</h4>
+                <p className="text-gray-600">Access your saved deals anytime from the "My Wishlist" section in your account dashboard.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold">Wishlist Notifications</h4>
+                <p className="text-gray-600">Get notified when deals on your wishlist are about to expire or when similar deals become available.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

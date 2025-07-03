@@ -38,6 +38,7 @@ import {
   Star,
   Zap
 } from 'lucide-react';
+import ImageUpload from '@/components/ui/image-upload';
 
 // Vendor registration validation schema
 const vendorRegistrationSchema = z.object({

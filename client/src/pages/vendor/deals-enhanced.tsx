@@ -38,6 +38,7 @@ import {
   FileText,
   CheckCircle
 } from "lucide-react";
+import ImageUpload from "@/components/ui/image-upload";
 
 // Business categories
 const businessCategories = [
@@ -109,7 +110,7 @@ export default function VendorDealsEnhanced() {
     },
   });
 
-  const { data: deals, isLoading } = useQuery({
+  const { data: deals = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/vendors/deals"],
   });
 
@@ -388,48 +389,25 @@ export default function VendorDealsEnhanced() {
 
                   {/* Deal Image Upload */}
                   <div className="border rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <Image className="h-5 w-5 mr-2" />
-                      Deal Image
-                    </h3>
-                    
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-center w-full">
-                        <label htmlFor="deal-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <Upload className="w-8 h-8 mb-4 text-gray-500" />
-                            <p className="mb-2 text-sm text-gray-500">
-                              <span className="font-semibold">Click to upload</span> deal image
-                            </p>
-                            <p className="text-xs text-gray-500">PNG, JPG or GIF (MAX. 1200x800px)</p>
-                          </div>
-                          <input 
-                            id="deal-image-upload" 
-                            type="file" 
-                            className="hidden" 
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                          />
-                        </label>
-                      </div>
-                      
-                      {imageFile && (
-                        <div className="text-sm text-green-600">
-                          Image uploaded: {imageFile.name}
-                        </div>
+                    <FormField
+                      control={form.control}
+                      name="imageUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <ImageUpload
+                              value={field.value}
+                              onChange={field.onChange}
+                              placeholder="Upload deal image or enter URL"
+                              maxSizeInMB={5}
+                              allowCamera={true}
+                              showPreview={true}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-
-                      <div className="flex items-center space-x-4">
-                        <Button type="button" variant="outline" size="sm" className="flex items-center">
-                          <Image className="h-4 w-4 mr-2" />
-                          Upload from Gallery
-                        </Button>
-                        <Button type="button" variant="outline" size="sm" className="flex items-center">
-                          <Camera className="h-4 w-4 mr-2" />
-                          Take Photo with Camera
-                        </Button>
-                      </div>
-                    </div>
+                    />
                   </div>
 
                   {/* Validity and Terms */}
@@ -540,7 +518,7 @@ export default function VendorDealsEnhanced() {
           </div>
         ) : (
           <div className="grid gap-6">
-            {deals?.length === 0 ? (
+            {deals.length === 0 ? (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-16">
                   <Target className="h-12 w-12 text-gray-400 mb-4" />
@@ -556,7 +534,7 @@ export default function VendorDealsEnhanced() {
               </Card>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {deals?.map((deal: any) => (
+                {deals.map((deal: any) => (
                   <Card key={deal.id} className="overflow-hidden">
                     {deal.imageUrl && (
                       <div className="h-48 overflow-hidden">

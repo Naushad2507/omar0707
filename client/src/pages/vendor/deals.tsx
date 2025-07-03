@@ -29,6 +29,7 @@ import {
   Navigation,
   Crosshair
 } from "lucide-react";
+import ImageUpload from "@/components/ui/image-upload";
 
 const dealSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
@@ -539,9 +540,15 @@ export default function VendorDeals() {
                       name="imageUrl"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Image URL (Optional)</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="https://example.com/image.jpg" />
+                            <ImageUpload
+                              value={field.value}
+                              onChange={field.onChange}
+                              placeholder="Upload deal image or enter URL"
+                              maxSizeInMB={5}
+                              allowCamera={true}
+                              showPreview={true}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

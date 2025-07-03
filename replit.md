@@ -115,6 +115,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 3, 2025 - Enhanced Deal Creation: Image Upload & Interactive Help System
+- **Image Upload Component**: Created comprehensive ImageUpload component with drag-and-drop, camera capture, and URL input functionality
+- **Camera Integration**: Added mobile camera capture support with `capture="environment"` for taking photos directly in deal creation forms
+- **Enhanced Deal Forms**: Updated all vendor deal creation forms (deals.tsx, deals-enhanced.tsx, VendorPortal.jsx) to use new ImageUpload component
+- **Interactive Help Topics**: Made popular help topics clickable with smooth scrolling to corresponding detailed sections
+- **Comprehensive Help Sections**: Added detailed help sections for claiming deals, membership benefits, vendor registration, payment, security, and wishlist management
+- **TypeScript Improvements**: Fixed typing issues in vendor deals components by properly typing query responses as arrays
+- **User Experience Enhancement**: Improved deal creation workflow with preview functionality and support for multiple image input methods
+- **Mobile-Friendly**: Image upload component supports both file selection and camera capture on mobile devices
+
 ### July 3, 2025 - Security Enhancement: Two-Phase Deal Claiming System
 - **Critical Security Fix**: Resolved major security vulnerability where customers could accumulate fake savings without visiting stores
 - **Two-Phase Claiming Process**: Implemented secure two-phase deal claiming system:
