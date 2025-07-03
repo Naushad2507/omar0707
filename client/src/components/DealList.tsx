@@ -55,6 +55,11 @@ const DealList = () => {
     queryKey: ['/api/deals'],
   });
 
+  // Fetch user claims to check which deals have been claimed
+  const { data: userClaims = [] } = useQuery<Array<{id: number, dealId: number, status: string}>>({
+    queryKey: ['/api/users/claims'],
+  });
+
   // Calculate savings based on bill amount
   const calculateSavings = (billAmountValue: string, discountPercentage: number) => {
     const amount = parseFloat(billAmountValue);
@@ -219,6 +224,10 @@ const DealList = () => {
               deal.currentRedemptions >= deal.maxRedemptions;
             const canClaim = deal.isActive && !isExpired && !isLimitReached;
             
+            // Check if user has claimed this deal
+            const userClaim = userClaims.find(claim => claim.dealId === deal.id);
+            const hasClaimedDeal = !!userClaim;
+            
             return (
               <Card 
                 key={deal.id} 
@@ -284,44 +293,51 @@ const DealList = () => {
                 </CardContent>
 
                 <CardFooter className="flex flex-col gap-2">
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleClaimDeal(deal);
-                    }}
-                    disabled={!canClaim || claimMutation.isPending}
-                    className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                    size="lg"
-                  >
-                    {claimMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Claiming...
-                      </>
-                    ) : !canClaim ? (
-                      isExpired ? "⏰ Expired" : 
-                      isLimitReached ? "🚫 Limit Reached" : 
-                      "❌ Unavailable"
-                    ) : (
-                      <>
-                        <Gift className="h-4 w-4 mr-2" />
-                        🎉 Claim Deal
-                      </>
-                    )}
-                  </Button>
-                  
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setBillingDeal(deal);
-                    }}
-                    variant="outline"
-                    className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
-                    size="sm"
-                  >
-                    <Receipt className="h-4 w-4 mr-2" />
-                    Add Bill Amount
-                  </Button>
+                  {!hasClaimedDeal ? (
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleClaimDeal(deal);
+                      }}
+                      disabled={!canClaim || claimMutation.isPending}
+                      className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      size="lg"
+                    >
+                      {claimMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Claiming...
+                        </>
+                      ) : !canClaim ? (
+                        isExpired ? "⏰ Expired" : 
+                        isLimitReached ? "🚫 Limit Reached" : 
+                        "❌ Unavailable"
+                      ) : (
+                        <>
+                          <Gift className="h-4 w-4 mr-2" />
+                          🎉 Claim Deal
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="text-center text-sm text-green-600 font-medium bg-green-50 rounded-lg py-2">
+                        ✅ Deal Claimed
+                      </div>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setBillingDeal(deal);
+                        }}
+                        variant="outline"
+                        className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
+                        size="sm"
+                      >
+                        <Receipt className="h-4 w-4 mr-2" />
+                        Add Bill Amount
+                      </Button>
+                    </div>
+                  )}
                 </CardFooter>
               </Card>
             );
