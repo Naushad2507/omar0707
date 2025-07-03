@@ -645,10 +645,10 @@ const VendorPortal = () => {
                 </div>
               ) : (
                 <Form {...dealForm}>
-                  <form onSubmit={dealForm.handleSubmit(onDealSubmit)} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <form onSubmit={dealForm.handleSubmit(onDealSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Deal Information */}
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         <h4 className="text-lg font-semibold flex items-center space-x-2">
                           <Tag className="h-5 w-5 text-blue-500" />
                           <span>Deal Information</span>
@@ -702,7 +702,7 @@ const VendorPortal = () => {
                               <FormControl>
                                 <Textarea 
                                   placeholder="Describe your deal in detail..."
-                                  className="min-h-[120px]"
+                                  className="min-h-[80px]"
                                   {...field} 
                                 />
                               </FormControl>
@@ -713,7 +713,7 @@ const VendorPortal = () => {
                       </div>
 
                       {/* Pricing Information */}
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         <h4 className="text-lg font-semibold flex items-center space-x-2">
                           <DollarSign className="h-5 w-5 text-green-500" />
                           <span>Pricing Details</span>
@@ -763,9 +763,9 @@ const VendorPortal = () => {
                           )}
                         />
 
-                        <div className="flex items-center space-x-2 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                          <Percent className="h-5 w-5 text-green-600" />
-                          <span className="text-green-700 dark:text-green-300 font-semibold">
+                        <div className="flex items-center space-x-2 p-2 bg-green-50 dark:bg-green-950 rounded-lg">
+                          <Percent className="h-4 w-4 text-green-600" />
+                          <span className="text-green-700 dark:text-green-300 font-semibold text-sm">
                             Discount: {dealForm.watch('discountPercentage')}% OFF
                           </span>
                         </div>
@@ -790,7 +790,7 @@ const VendorPortal = () => {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <FormDescription>
+                              <FormDescription className="text-xs">
                                 Minimum membership level required to claim this deal
                               </FormDescription>
                               <FormMessage />
@@ -801,7 +801,7 @@ const VendorPortal = () => {
                     </div>
 
                     {/* Deal Validity */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <h4 className="text-lg font-semibold flex items-center space-x-2">
                         <Calendar className="h-5 w-5 text-purple-500" />
                         <span>Deal Validity & Limits</span>
@@ -835,7 +835,7 @@ const VendorPortal = () => {
                                   {...field} 
                                 />
                               </FormControl>
-                              <FormDescription>
+                              <FormDescription className="text-xs">
                                 Leave empty for unlimited redemptions
                               </FormDescription>
                               <FormMessage />
@@ -846,7 +846,7 @@ const VendorPortal = () => {
                     </div>
 
                     {/* Terms and Conditions */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <FormField
                         control={dealForm.control}
                         name="terms"
@@ -856,11 +856,11 @@ const VendorPortal = () => {
                             <FormControl>
                               <Textarea 
                                 placeholder="Enter terms and conditions for this deal..."
-                                className="min-h-[100px]"
+                                className="min-h-[70px]"
                                 {...field} 
                               />
                             </FormControl>
-                            <FormDescription>
+                            <FormDescription className="text-xs">
                               Include any restrictions, usage conditions, or special terms
                             </FormDescription>
                             <FormMessage />
@@ -872,7 +872,7 @@ const VendorPortal = () => {
                     <Button
                       type="submit"
                       disabled={!isAuthenticated || createDealMutation.isPending}
-                      className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                      className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
                       size="lg"
                     >
                       {createDealMutation.isPending ? (

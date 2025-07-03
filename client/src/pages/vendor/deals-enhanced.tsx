@@ -39,6 +39,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import ImageUpload from "@/components/ui/image-upload";
+import PinTracker from "@/components/ui/pin-tracker";
 
 // Business categories
 const businessCategories = [
@@ -171,62 +172,58 @@ export default function VendorDealsEnhanced() {
             </p>
           </div>
           
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Deal
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="flex gap-3">
+            {/* PIN Tracker */}
+            <PinTracker deals={deals.map(deal => ({
+              id: deal.id,
+              title: deal.title,
+              category: deal.category,
+              discountPercentage: deal.discountPercentage,
+              verificationPin: deal.verificationPin,
+              validUntil: deal.validUntil,
+              status: deal.approved ? 'active' : 'pending',
+              claimsCount: deal.claimsCount || 0,
+              maxRedemptions: deal.maxRedemptions
+            }))} />
+            
+            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Deal
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Create New Deal</DialogTitle>
               </DialogHeader>
               
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   
                   {/* Basic Deal Information */}
-                  <div className="border rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <div className="border rounded-lg p-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                       <FileText className="h-5 w-5 mr-2" />
                       Deal Information
                     </h3>
                     
-                    <div className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="title"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Deal Title *</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter deal title (e.g., Summer Sale - 50% Off)" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <div className="space-y-3">
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <FormField
+                          control={form.control}
+                          name="title"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Deal Title *</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Enter deal title (e.g., Summer Sale - 50% Off)" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Deal Description *</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Describe your deal in detail - what's included, any restrictions, etc."
-                                className="min-h-[100px]"
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="grid md:grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
                           name="category"
@@ -251,69 +248,88 @@ export default function VendorDealsEnhanced() {
                             </FormItem>
                           )}
                         />
-
                       </div>
 
                       <FormField
                         control={form.control}
-                        name="discountPercentage"
+                        name="description"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Discount Percentage *</FormLabel>
+                            <FormLabel>Deal Description *</FormLabel>
                             <FormControl>
-                              <div className="flex items-center space-x-2">
-                                <Input 
-                                  type="number" 
-                                  min="1" 
-                                  max="90"
-                                  placeholder="Enter discount percentage"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                />
-                                <Percent className="h-4 w-4 text-gray-500" />
-                              </div>
+                              <Textarea 
+                                placeholder="Describe your deal in detail - what's included, any restrictions, etc."
+                                className="min-h-[70px]"
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
 
-                      <FormField
-                        control={form.control}
-                        name="verificationPin"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Verification PIN *</FormLabel>
-                            <FormControl>
-                              <div className="flex items-center space-x-2">
-                                <Input 
-                                  type="text" 
-                                  maxLength={4}
-                                  placeholder="Enter 4-digit PIN"
-                                  {...field}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                    field.onChange(value);
-                                  }}
-                                />
-                                <div className="flex items-center text-blue-600">
-                                  <CheckCircle className="h-4 w-4" />
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <FormField
+                          control={form.control}
+                          name="discountPercentage"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Discount Percentage *</FormLabel>
+                              <FormControl>
+                                <div className="flex items-center space-x-2">
+                                  <Input 
+                                    type="number" 
+                                    min="1" 
+                                    max="90"
+                                    placeholder="Enter discount percentage"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                  />
+                                  <Percent className="h-4 w-4 text-gray-500" />
                                 </div>
-                              </div>
-                            </FormControl>
-                            <FormDescription>
-                              Set a 4-digit PIN that customers will need to enter at your store to redeem this deal. This works offline too!
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="verificationPin"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Verification PIN *</FormLabel>
+                              <FormControl>
+                                <div className="flex items-center space-x-2">
+                                  <Input 
+                                    type="text" 
+                                    maxLength={4}
+                                    placeholder="Enter 4-digit PIN"
+                                    {...field}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                      field.onChange(value);
+                                    }}
+                                  />
+                                  <div className="flex items-center text-blue-600">
+                                    <CheckCircle className="h-4 w-4" />
+                                  </div>
+                                </div>
+                              </FormControl>
+                              <FormDescription className="text-xs">
+                                Set a 4-digit PIN that customers will need to enter at your store to redeem this deal. This works offline too!
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   </div>
 
                   {/* Deal Availability */}
-                  <div className="border rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <div className="border rounded-lg p-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                       <MapPin className="h-5 w-5 mr-2" />
                       Deal Availability
                     </h3>
@@ -322,7 +338,7 @@ export default function VendorDealsEnhanced() {
                       control={form.control}
                       name="dealAvailability"
                       render={({ field }) => (
-                        <FormItem className="space-y-3">
+                        <FormItem className="space-y-2">
                           <FormLabel>Where is this deal available? *</FormLabel>
                           <FormControl>
                             <RadioGroup
@@ -354,12 +370,12 @@ export default function VendorDealsEnhanced() {
                         control={form.control}
                         name="selectedCities"
                         render={({ field }) => (
-                          <FormItem className="mt-4">
+                          <FormItem className="mt-3">
                             <FormLabel>Select Cities *</FormLabel>
-                            <FormDescription>
+                            <FormDescription className="text-xs">
                               Choose the cities where this deal will be available
                             </FormDescription>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-40 overflow-y-auto border rounded p-3">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-32 overflow-y-auto border rounded p-2">
                               {majorCities.map((city) => (
                                 <div key={city.name} className="flex items-center space-x-2">
                                   <Checkbox
@@ -374,7 +390,7 @@ export default function VendorDealsEnhanced() {
                                       }
                                     }}
                                   />
-                                  <label htmlFor={city.name} className="text-sm">
+                                  <label htmlFor={city.name} className="text-xs">
                                     {city.name}, {city.state}
                                   </label>
                                 </div>
@@ -388,7 +404,7 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Deal Image Upload */}
-                  <div className="border rounded-lg p-6">
+                  <div className="border rounded-lg p-4">
                     <FormField
                       control={form.control}
                       name="imageUrl"
@@ -411,13 +427,13 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Validity and Terms */}
-                  <div className="border rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <div className="border rounded-lg p-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                       <Clock className="h-5 w-5 mr-2" />
                       Validity & Terms
                     </h3>
                     
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <FormField
                         control={form.control}
                         name="validUntil"
@@ -431,7 +447,7 @@ export default function VendorDealsEnhanced() {
                                 {...field} 
                               />
                             </FormControl>
-                            <FormDescription>
+                            <FormDescription className="text-xs">
                               Select the last date when this deal will be valid
                             </FormDescription>
                             <FormMessage />
@@ -448,11 +464,11 @@ export default function VendorDealsEnhanced() {
                             <FormControl>
                               <Textarea 
                                 placeholder="Enter any specific terms, restrictions, or conditions for this deal (optional)"
-                                className="min-h-[80px]"
+                                className="min-h-[60px]"
                                 {...field} 
                               />
                             </FormControl>
-                            <FormDescription>
+                            <FormDescription className="text-xs">
                               Include any specific conditions, minimum purchase requirements, exclusions, etc.
                             </FormDescription>
                             <FormMessage />
@@ -463,7 +479,7 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Agreement */}
-                  <div className="border rounded-lg p-6">
+                  <div className="border rounded-lg p-4">
                     <FormField
                       control={form.control}
                       name="agreeToTerms"
@@ -479,7 +495,7 @@ export default function VendorDealsEnhanced() {
                             <FormLabel>
                               I Agree to Instoredealz Terms and Conditions *
                             </FormLabel>
-                            <FormDescription>
+                            <FormDescription className="text-xs">
                               By checking this box, you agree to our platform terms and deal posting guidelines.
                             </FormDescription>
                           </div>
@@ -509,6 +525,7 @@ export default function VendorDealsEnhanced() {
               </Form>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         {/* Deals Grid */}

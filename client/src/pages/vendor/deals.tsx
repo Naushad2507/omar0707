@@ -30,6 +30,7 @@ import {
   Crosshair
 } from "lucide-react";
 import ImageUpload from "@/components/ui/image-upload";
+import PinTracker from "@/components/ui/pin-tracker";
 
 const dealSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
