@@ -736,6 +736,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const pendingClaim = existingClaims.find(claim => claim.dealId === dealId && claim.status === "pending");
       const alreadyUsed = existingClaims.some(claim => claim.dealId === dealId && claim.status === "used");
       
+      Logger.debug("User Claims Check", {
+        userId,
+        dealId,
+        totalClaims: existingClaims.length,
+        hasPendingClaim: !!pendingClaim,
+        hasUsedClaim: alreadyUsed,
+        allClaims: existingClaims.map(c => ({ dealId: c.dealId, status: c.status }))
+      });
+      
       if (alreadyUsed) {
         return res.status(400).json({
           success: false,
