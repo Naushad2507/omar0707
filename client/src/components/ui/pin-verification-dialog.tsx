@@ -35,25 +35,12 @@ export function PinVerificationDialog({
 
   const verifyPinMutation = useMutation({
     mutationFn: async (pin: string) => {
-      const response = await fetch(`/api/deals/${dealId}/verify-pin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ pin }),
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to verify PIN");
-      }
-      
-      return response.json();
+      return apiRequest('POST', `/api/deals/${dealId}/verify-pin`, { pin });
     },
-    onSuccess: async (data) => {
+    onSuccess: async (response: any) => {
       toast({
         title: "Deal Redeemed Successfully!",
-        description: `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}`,
+        description: `You saved ₹${response.savingsAmount}! Total savings: ₹${response.newTotalSavings}`,
         variant: "default",
       });
       
