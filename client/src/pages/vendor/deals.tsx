@@ -35,6 +35,7 @@ const dealSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   category: z.string().min(1, "Please select a category"),
+  subcategory: z.string().optional(),
   customCategory: z.string().optional(),
   imageUrl: z.string().url().optional().or(z.literal("")),
   discountPercentage: z.number().min(1, "Discount must be at least 1%").max(90, "Discount cannot exceed 90%"),
@@ -56,8 +57,118 @@ export default function VendorDeals() {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [locationError, setLocationError] = useState<string>("");
   const [showCustomCategory, setShowCustomCategory] = useState(false);
+  const [showSubcategory, setShowSubcategory] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Services subcategories structure
+  const servicesSubcategories = {
+    "cleaning": {
+      name: "Cleaning Services",
+      subcategories: [
+        "Residential Cleaning",
+        "Commercial Cleaning", 
+        "Deep Cleaning",
+        "Move-in/Move-out Cleaning",
+        "Carpet Cleaning",
+        "Window Cleaning"
+      ]
+    },
+    "repair-maintenance": {
+      name: "Repair & Maintenance",
+      subcategories: [
+        "Plumbing",
+        "Electrical repairs",
+        "HVAC maintenance",
+        "Appliance repair",
+        "Electronics repair",
+        "General handyman services"
+      ]
+    },
+    "home-improvement": {
+      name: "Home Improvement",
+      subcategories: [
+        "Painting",
+        "Flooring installation",
+        "Kitchen remodeling",
+        "Bathroom renovation",
+        "Roofing",
+        "Drywall installation"
+      ]
+    },
+    "lawn-garden": {
+      name: "Lawn & Garden",
+      subcategories: [
+        "Lawn mowing",
+        "Landscaping",
+        "Tree trimming",
+        "Pest control",
+        "Garden design",
+        "Irrigation services"
+      ]
+    },
+    "moving-storage": {
+      name: "Moving & Storage",
+      subcategories: [
+        "Local moving",
+        "Long-distance moving",
+        "Packing services",
+        "Storage solutions",
+        "Furniture assembly",
+        "Junk removal"
+      ]
+    },
+    "home-healthcare": {
+      name: "Home Healthcare",
+      subcategories: [
+        "Nursing care",
+        "Physical therapy",
+        "Elderly care",
+        "Post-surgery care",
+        "Medical equipment rental"
+      ]
+    },
+    "delivery": {
+      name: "Delivery Services",
+      subcategories: [
+        "Food delivery",
+        "Grocery delivery",
+        "Package delivery",
+        "Courier services",
+        "Same-day delivery"
+      ]
+    },
+    "pet-services": {
+      name: "Pet Services",
+      subcategories: [
+        "Pet grooming",
+        "Dog walking",
+        "Pet sitting",
+        "Pet training",
+        "Veterinary services"
+      ]
+    },
+    "personal-services": {
+      name: "Personal Services",
+      subcategories: [
+        "Fashion styling",
+        "Custom tailoring",
+        "Jewelry cleaning",
+        "Personal shopping",
+        "Beauty services"
+      ]
+    },
+    "rental-services": {
+      name: "Rental Services",
+      subcategories: [
+        "Equipment rentals (cameras, tools)",
+        "Clothing rentals",
+        "Furniture rentals",
+        "Vehicle rentals",
+        "Party equipment rentals"
+      ]
+    }
+  };
 
   const { data: vendor } = useQuery({
     queryKey: ["/api/vendors/me"],
@@ -77,6 +188,7 @@ export default function VendorDeals() {
       title: "",
       description: "",
       category: "",
+      subcategory: "",
       customCategory: "",
       imageUrl: "",
       discountPercentage: 10,
@@ -91,13 +203,20 @@ export default function VendorDeals() {
     },
   });
 
-  // Watch category selection to show/hide custom category field
+  // Watch category selection to show/hide custom category field and subcategories
   const watchedCategory = form.watch("category");
   
   // Show custom category field when "others" is selected
+  // Show subcategory field when "services" is selected
   React.useEffect(() => {
     setShowCustomCategory(watchedCategory === "others");
-  }, [watchedCategory]);
+    setShowSubcategory(watchedCategory === "services");
+    
+    // Clear subcategory when not services
+    if (watchedCategory !== "services") {
+      form.setValue("subcategory", "");
+    }
+  }, [watchedCategory, form]);
 
   // Geolocation function
   const getCurrentLocation = () => {
@@ -145,6 +264,7 @@ export default function VendorDeals() {
       const finalData = {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
+        subcategory: data.subcategory || null,
         validUntil: data.validUntil ? new Date(data.validUntil).toISOString() : undefined,
         latitude: data.latitude ? data.latitude.toString() : undefined,
         longitude: data.longitude ? data.longitude.toString() : undefined,
@@ -178,6 +298,7 @@ export default function VendorDeals() {
       const finalData = {
         ...data,
         category: data.category === "others" && data.customCategory ? data.customCategory : data.category,
+        subcategory: data.subcategory || null,
         validUntil: data.validUntil ? new Date(data.validUntil).toISOString() : undefined,
         latitude: data.latitude ? data.latitude.toString() : undefined,
         longitude: data.longitude ? data.longitude.toString() : undefined,
@@ -213,11 +334,13 @@ export default function VendorDeals() {
 
   const handleEdit = (deal: any) => {
     const isOthersCategory = !categories.find((cat: any) => cat.id === deal.category);
+    const isServicesCategory = deal.category === "services";
     
     form.reset({
       title: deal.title,
       description: deal.description,
       category: isOthersCategory ? "others" : deal.category,
+      subcategory: deal.subcategory || "",
       customCategory: isOthersCategory ? deal.category : "",
       imageUrl: deal.imageUrl || "",
       discountPercentage: deal.discountPercentage,
@@ -232,6 +355,7 @@ export default function VendorDeals() {
     });
     
     setShowCustomCategory(isOthersCategory);
+    setShowSubcategory(isServicesCategory);
     setEditingDeal(deal);
   };
 
@@ -240,6 +364,7 @@ export default function VendorDeals() {
     setEditingDeal(null);
     form.reset();
     setShowCustomCategory(false);
+    setShowSubcategory(false);
   };
 
   const getDealStatusBadge = (deal: any) => {
@@ -368,41 +493,86 @@ export default function VendorDeals() {
                       )}
                     />
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <Select 
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              setShowCustomCategory(value === "others");
+                              setShowSubcategory(value === "services");
+                              if (value !== "services") {
+                                form.setValue("subcategory", "");
+                              }
+                            }} 
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {categories.map((category: any) => (
+                                <SelectItem key={category.id} value={category.id}>
+                                  {category.name}
+                                </SelectItem>
+                              ))}
+                              {!categories.find((cat: any) => cat.id === "others") && (
+                                <SelectItem key="others-custom" value="others">Others</SelectItem>
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {showSubcategory && (
                       <FormField
                         control={form.control}
-                        name="category"
+                        name="subcategory"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Category</FormLabel>
+                            <FormLabel>Service Type</FormLabel>
                             <Select 
-                              onValueChange={(value) => {
-                                field.onChange(value);
-                                setShowCustomCategory(value === "others");
-                              }} 
+                              onValueChange={field.onChange} 
                               defaultValue={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select category" />
+                                  <SelectValue placeholder="Select service type" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {categories.map((category: any) => (
-                                  <SelectItem key={category.id} value={category.id}>
-                                    {category.name}
-                                  </SelectItem>
+                                {Object.entries(servicesSubcategories).map(([key, category]) => (
+                                  <div key={key}>
+                                    <div className="px-2 py-1 text-sm font-semibold text-gray-700 bg-gray-100 border-b">
+                                      {category.name}
+                                    </div>
+                                    {category.subcategories.map((subcategory) => (
+                                      <SelectItem 
+                                        key={`${key}-${subcategory}`} 
+                                        value={`${key}:${subcategory}`}
+                                        className="pl-4"
+                                      >
+                                        {subcategory}
+                                      </SelectItem>
+                                    ))}
+                                  </div>
                                 ))}
-                                {!categories.find((cat: any) => cat.id === "others") && (
-                                  <SelectItem key="others-custom" value="others">Others</SelectItem>
-                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                    )}
 
+                    <div className="grid md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
                         name="verificationPin"

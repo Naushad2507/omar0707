@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -62,6 +62,7 @@ const dealCreationSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters'),
   description: z.string().min(20, 'Description must be at least 20 characters'),
   category: z.string().min(1, 'Please select a category'),
+  subcategory: z.string().optional(),
   originalPrice: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Must be a valid positive number'),
   discountedPrice: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Must be a valid positive number'),
   validUntil: z.string().min(1, 'Expiry date is required'),
@@ -95,8 +96,118 @@ const DEAL_CATEGORIES = [
   { value: 'entertainment', label: '🎬 Entertainment' },
   { value: 'automotive', label: '🚗 Automotive' },
   { value: 'beauty', label: '💄 Beauty' },
+  { value: 'services', label: '🔧 Services' },
   { value: 'other', label: '🔄 Other' }
 ];
+
+// Services subcategories structure
+const SERVICES_SUBCATEGORIES = {
+  "cleaning": {
+    name: "Cleaning Services",
+    subcategories: [
+      "Residential Cleaning",
+      "Commercial Cleaning", 
+      "Deep Cleaning",
+      "Move-in/Move-out Cleaning",
+      "Carpet Cleaning",
+      "Window Cleaning"
+    ]
+  },
+  "repair-maintenance": {
+    name: "Repair & Maintenance",
+    subcategories: [
+      "Plumbing",
+      "Electrical repairs",
+      "HVAC maintenance",
+      "Appliance repair",
+      "Electronics repair",
+      "General handyman services"
+    ]
+  },
+  "home-improvement": {
+    name: "Home Improvement",
+    subcategories: [
+      "Painting",
+      "Flooring installation",
+      "Kitchen remodeling",
+      "Bathroom renovation",
+      "Roofing",
+      "Drywall installation"
+    ]
+  },
+  "lawn-garden": {
+    name: "Lawn & Garden",
+    subcategories: [
+      "Lawn mowing",
+      "Landscaping",
+      "Tree trimming",
+      "Pest control",
+      "Garden design",
+      "Irrigation services"
+    ]
+  },
+  "moving-storage": {
+    name: "Moving & Storage",
+    subcategories: [
+      "Local moving",
+      "Long-distance moving",
+      "Packing services",
+      "Storage solutions",
+      "Furniture assembly",
+      "Junk removal"
+    ]
+  },
+  "home-healthcare": {
+    name: "Home Healthcare",
+    subcategories: [
+      "Nursing care",
+      "Physical therapy",
+      "Elderly care",
+      "Post-surgery care",
+      "Medical equipment rental"
+    ]
+  },
+  "delivery": {
+    name: "Delivery Services",
+    subcategories: [
+      "Food delivery",
+      "Grocery delivery",
+      "Package delivery",
+      "Courier services",
+      "Same-day delivery"
+    ]
+  },
+  "pet-services": {
+    name: "Pet Services",
+    subcategories: [
+      "Pet grooming",
+      "Dog walking",
+      "Pet sitting",
+      "Pet training",
+      "Veterinary services"
+    ]
+  },
+  "personal-services": {
+    name: "Personal Services",
+    subcategories: [
+      "Fashion styling",
+      "Custom tailoring",
+      "Jewelry cleaning",
+      "Personal shopping",
+      "Beauty services"
+    ]
+  },
+  "rental-services": {
+    name: "Rental Services",
+    subcategories: [
+      "Equipment rentals (cameras, tools)",
+      "Clothing rentals",
+      "Furniture rentals",
+      "Vehicle rentals",
+      "Party equipment rentals"
+    ]
+  }
+};
 
 const MEMBERSHIP_LEVELS = [
   { value: 'basic', label: '🆓 Basic (Free Users)', description: 'Available to all users' },
@@ -118,6 +229,7 @@ const VendorPortal = () => {
   const [dealSuccess, setDealSuccess] = useState(false);
   const [vendorResult, setVendorResult] = useState(null);
   const [dealResult, setDealResult] = useState(null);
+  const [showSubcategory, setShowSubcategory] = useState(false);
   
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -150,6 +262,7 @@ const VendorPortal = () => {
       title: '',
       description: '',
       category: '',
+      subcategory: '',
       originalPrice: '',
       discountedPrice: '',
       validUntil: '',
@@ -159,6 +272,17 @@ const VendorPortal = () => {
       imageUrl: '',
     }
   });
+
+  // Watch category to show/hide subcategory field
+  const watchedCategory = dealForm.watch('category');
+  
+  // Show subcategory field when "services" is selected
+  React.useEffect(() => {
+    setShowSubcategory(watchedCategory === 'services');
+    if (watchedCategory !== 'services') {
+      dealForm.setValue('subcategory', '');
+    }
+  }, [watchedCategory, dealForm]);
 
   // Calculate discount percentage automatically
   const watchOriginalPrice = dealForm.watch('originalPrice');
@@ -858,7 +982,16 @@ const VendorPortal = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Category *</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select 
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setShowSubcategory(value === 'services');
+                                if (value !== 'services') {
+                                  dealForm.setValue('subcategory', '');
+                                }
+                              }} 
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select deal category" />
@@ -876,6 +1009,44 @@ const VendorPortal = () => {
                           </FormItem>
                         )}
                       />
+
+                      {showSubcategory && (
+                        <FormField
+                          control={dealForm.control}
+                          name="subcategory"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Service Type *</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select service type" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {Object.entries(SERVICES_SUBCATEGORIES).map(([key, category]) => (
+                                    <div key={key}>
+                                      <div className="px-2 py-1 text-sm font-semibold text-gray-700 bg-gray-100 border-b">
+                                        {category.name}
+                                      </div>
+                                      {category.subcategories.map((subcategory) => (
+                                        <SelectItem 
+                                          key={`${key}-${subcategory}`} 
+                                          value={`${key}:${subcategory}`}
+                                          className="pl-4"
+                                        >
+                                          {subcategory}
+                                        </SelectItem>
+                                      ))}
+                                    </div>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
                     </div>
 
                     {/* Pricing Section */}

@@ -51,6 +51,7 @@ export const deals = pgTable("deals", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   category: text("category").notNull(), // fashion, electronics, travel, food, home, fitness
+  subcategory: text("subcategory"), // For hierarchical categories like Services
   imageUrl: text("image_url"),
   discountPercentage: integer("discount_percentage").notNull(),
 

@@ -14,6 +14,7 @@ interface DealCardProps {
   title: string;
   description: string;
   category: string;
+  subcategory?: string;
   imageUrl?: string;
   discountPercentage: number;
   originalPrice?: string;
@@ -47,6 +48,7 @@ export default function DealCard({
   title,
   description,
   category,
+  subcategory,
   imageUrl,
   discountPercentage,
   originalPrice,
@@ -126,6 +128,18 @@ export default function DealCard({
     });
   };
 
+  // Function to format subcategory display
+  const formatSubcategory = (subcategoryString?: string) => {
+    if (!subcategoryString) return null;
+    
+    // Parse the subcategory format: "key:value"
+    const parts = subcategoryString.split(':');
+    if (parts.length === 2) {
+      return parts[1]; // Return just the subcategory name
+    }
+    return subcategoryString; // Return as-is if not in expected format
+  };
+
   const redemptionPercentage = maxRedemptions 
     ? (currentRedemptions / maxRedemptions) * 100 
     : 0;
@@ -171,10 +185,15 @@ export default function DealCard({
           </div>
         )}
         
-        <div className="absolute top-12 left-2">
+        <div className="absolute top-12 left-2 space-y-1">
           <Badge className={`${categoryColors[category as keyof typeof categoryColors]} border-0`}>
             {category}
           </Badge>
+          {subcategory && formatSubcategory(subcategory) && (
+            <Badge className="bg-green-100 text-green-800 border-0 text-xs block">
+              {formatSubcategory(subcategory)}
+            </Badge>
+          )}
         </div>
         <div className={`absolute top-2 right-2 rounded-full px-2 py-1 text-xs font-semibold transition-all duration-300 ${
           isFlashing 
@@ -356,6 +375,15 @@ export default function DealCard({
                         {category}
                       </Badge>
                     </div>
+                    
+                    {subcategory && formatSubcategory(subcategory) && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Service Type:</span>
+                        <Badge className="bg-green-100 text-green-800 border-0">
+                          {formatSubcategory(subcategory)}
+                        </Badge>
+                      </div>
+                    )}
                     
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">Discount:</span>
