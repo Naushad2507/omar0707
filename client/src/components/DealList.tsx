@@ -56,8 +56,10 @@ const DealList = () => {
   });
 
   // Fetch user claims to check which deals have been claimed
-  const { data: userClaims = [] } = useQuery<Array<{id: number, dealId: number, status: string}>>({
+  const { data: userClaims = [], isLoading: isLoadingClaims } = useQuery<Array<{id: number, dealId: number, status: string}>>({
     queryKey: ['/api/users/claims'],
+    staleTime: 30000, // Cache for 30 seconds
+    retry: 3,
   });
 
   // Calculate savings based on bill amount
@@ -170,12 +172,14 @@ const DealList = () => {
     setQrCode(null);
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingClaims) {
     return (
       <div className="flex justify-center items-center p-12">
         <div className="text-center space-y-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-          <p className="text-lg text-muted-foreground">Loading amazing deals...</p>
+          <p className="text-lg text-muted-foreground">
+            {isLoading ? "Loading amazing deals..." : "Loading your claimed deals..."}
+          </p>
         </div>
       </div>
     );
@@ -227,6 +231,10 @@ const DealList = () => {
             // Check if user has claimed this deal
             const userClaim = userClaims.find(claim => claim.dealId === deal.id);
             const hasClaimedDeal = !!userClaim;
+            
+            // Show Add Bill Amount button for verified/completed claims (status 'used')
+            // This button allows customers to add their actual bill amount for savings calculation
+            const showBillAmountButton = hasClaimedDeal && userClaim?.status === 'used';
             
             return (
               <Card 
@@ -324,18 +332,25 @@ const DealList = () => {
                       <div className="text-center text-sm text-green-600 font-medium bg-green-50 rounded-lg py-2">
                         ✅ Deal Claimed
                       </div>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setBillingDeal(deal);
-                        }}
-                        variant="outline"
-                        className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
-                        size="sm"
-                      >
-                        <Receipt className="h-4 w-4 mr-2" />
-                        Add Bill Amount
-                      </Button>
+                      {userClaim?.status === 'pending' && (
+                        <div className="text-center text-sm text-amber-600 font-medium bg-amber-50 rounded-lg py-2">
+                          📍 Visit store to verify PIN
+                        </div>
+                      )}
+                      {showBillAmountButton && (
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setBillingDeal(deal);
+                          }}
+                          variant="outline"
+                          className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
+                          size="sm"
+                        >
+                          <Receipt className="h-4 w-4 mr-2" />
+                          Add Bill Amount
+                        </Button>
+                      )}
                     </div>
                   )}
                 </CardFooter>
