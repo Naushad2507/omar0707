@@ -89,6 +89,29 @@ export default function ImageUpload({
     if (files && files[0]) {
       handleFile(files[0]);
     }
+    // Reset the input value to allow same file selection again
+    e.target.value = '';
+  };
+
+  const handleCameraClick = () => {
+    if (cameraInputRef.current) {
+      // Clear any previous selection
+      cameraInputRef.current.value = '';
+      
+      try {
+        // Trigger camera immediately
+        cameraInputRef.current.click();
+      } catch (error) {
+        console.warn('Camera access failed:', error);
+        setError('Camera access not available. Please use file upload instead.');
+      }
+    } else {
+      setError('Camera functionality not available on this device.');
+    }
+  };
+
+  const isMobileDevice = () => {
+    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +139,10 @@ export default function ImageUpload({
             onChange={handleUrlChange}
             className="w-full"
           />
-          <p className="text-sm text-gray-500">Or upload/capture an image below</p>
+          <p className="text-sm text-gray-500">
+            Or upload/capture an image below
+            {isMobileDevice() && " (Camera available on mobile)"}
+          </p>
         </div>
 
         {/* Upload Area */}
@@ -184,10 +210,11 @@ export default function ImageUpload({
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => cameraInputRef.current?.click()}
+                      onClick={handleCameraClick}
+                      className="hover:bg-blue-50 hover:border-blue-300"
                     >
                       <Camera className="h-4 w-4 mr-2" />
-                      Take Photo
+                      {isMobileDevice() ? "Take Photo" : "Camera"}
                     </Button>
                   )}
                 </div>
@@ -206,14 +233,18 @@ export default function ImageUpload({
         />
         
         {allowCamera && (
-          <input
-            ref={cameraInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleInputChange}
-            className="hidden"
-          />
+          <>
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleInputChange}
+              className="hidden"
+              aria-label="Take photo with camera"
+              multiple={false}
+            />
+          </>
         )}
 
         {/* Error message */}
