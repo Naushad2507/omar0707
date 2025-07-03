@@ -29,7 +29,8 @@ import {
   Edit,
   Trash2,
   Eye,
-  Percent 
+  Percent,
+  ArrowLeft 
 } from "lucide-react";
 
 // Compact form schema
@@ -55,6 +56,9 @@ export default function CompactDealsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingDeal, setEditingDeal] = useState<any>(null);
+  const [viewingDeal, setViewingDeal] = useState<any>(null);
 
   // Fetch business categories
   const { data: businessCategories = [] } = useQuery<any[]>({
@@ -179,9 +183,20 @@ export default function CompactDealsPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Manage Deals</h1>
-            <p className="text-gray-600">Create and manage your business deals</p>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => window.history.back()}
+              className="flex items-center gap-2 hover:bg-gray-100"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Manage Deals</h1>
+              <p className="text-gray-600">Create and manage your business deals</p>
+            </div>
           </div>
           
           <div className="flex gap-3">
@@ -588,10 +603,23 @@ export default function CompactDealsPage() {
                           {deal.discountPercentage}% OFF
                         </span>
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => {
+                              setEditingDeal(deal);
+                              setIsEditOpen(true);
+                            }}
+                            className="hover:bg-blue-50 hover:border-blue-300"
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setViewingDeal(deal)}
+                            className="hover:bg-green-50 hover:border-green-300"
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                         </div>
@@ -602,6 +630,71 @@ export default function CompactDealsPage() {
               </div>
             )}
           </div>
+        )}
+
+        {/* View Deal Dialog */}
+        {viewingDeal && (
+          <Dialog open={!!viewingDeal} onOpenChange={() => setViewingDeal(null)}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Deal Details</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-lg">{viewingDeal.title}</h3>
+                  <Badge variant={viewingDeal.approved ? "default" : "secondary"} className="mt-1">
+                    {viewingDeal.approved ? "Approved" : "Pending"}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Category</label>
+                    <p className="text-sm">{viewingDeal.category}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Discount</label>
+                    <p className="text-sm font-bold text-green-600">{viewingDeal.discountPercentage}% OFF</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">PIN</label>
+                    <p className="text-sm font-mono">{viewingDeal.verificationPin}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Valid Until</label>
+                    <p className="text-sm">{new Date(viewingDeal.validUntil).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Description</label>
+                  <p className="text-sm mt-1">{viewingDeal.description}</p>
+                </div>
+                
+                {viewingDeal.address && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Address</label>
+                    <p className="text-sm mt-1">{viewingDeal.address}</p>
+                  </div>
+                )}
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setViewingDeal(null)}>
+                    Close
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      setEditingDeal(viewingDeal);
+                      setViewingDeal(null);
+                      setIsEditOpen(true);
+                    }}
+                  >
+                    Edit Deal
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
     </div>
