@@ -74,6 +74,11 @@ export default function DealCard({
   const canAccessDeal = () => {
     if (!user) return false;
     
+    // If deal requires basic membership or no specific membership, everyone can access
+    if (!requiredMembership || requiredMembership === 'basic') {
+      return true;
+    }
+    
     const membershipLevels = { basic: 1, premium: 2, ultimate: 3 };
     const userLevel = membershipLevels[user.membershipPlan as keyof typeof membershipLevels] || 1;
     const requiredLevel = membershipLevels[requiredMembership as keyof typeof membershipLevels] || 1;
@@ -83,8 +88,9 @@ export default function DealCard({
 
   // Get suggested upgrade tier
   const getSuggestedTier = () => {
-    if (requiredMembership === 'premium') return 'premium';
     if (requiredMembership === 'ultimate') return 'ultimate';
+    if (requiredMembership === 'premium') return 'premium';
+    // Never suggest 'basic' since it's free - default to premium for any other case
     return 'premium';
   };
 

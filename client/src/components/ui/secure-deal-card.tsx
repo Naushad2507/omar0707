@@ -105,16 +105,16 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
   const canAccessDeal = () => {
     if (!user) return false;
     
-    const userTier = user.membershipPlan || 'basic';
-    const dealCategory = deal.category.toLowerCase();
-    
-    // Basic tier logic
-    if (userTier === 'basic') {
-      return ['restaurants', 'fashion', 'travel'].includes(dealCategory);
+    // If deal requires basic membership or no specific membership, everyone can access
+    if (!deal.requiredMembership || deal.requiredMembership === 'basic') {
+      return true;
     }
     
-    // Premium and Ultimate can access all deals
-    return ['premium', 'ultimate'].includes(userTier);
+    const membershipLevels = { basic: 1, premium: 2, ultimate: 3 };
+    const userLevel = membershipLevels[user.membershipPlan as keyof typeof membershipLevels] || 1;
+    const requiredLevel = membershipLevels[deal.requiredMembership as keyof typeof membershipLevels] || 1;
+    
+    return userLevel >= requiredLevel;
   };
 
   const tierStyling = getTierStyling(user?.membershipPlan || 'basic');

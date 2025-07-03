@@ -236,6 +236,11 @@ export default function DealDetail({ params }: DealDetailProps) {
   const canAccessDeal = () => {
     if (!user || !deal) return false;
     
+    // If deal requires basic membership or no specific membership, everyone can access
+    if (!deal.requiredMembership || deal.requiredMembership === 'basic') {
+      return true;
+    }
+    
     const membershipLevels = { basic: 1, premium: 2, ultimate: 3 };
     const userLevel = membershipLevels[user.membershipPlan as keyof typeof membershipLevels] || 1;
     const requiredLevel = membershipLevels[deal.requiredMembership as keyof typeof membershipLevels] || 1;
@@ -462,8 +467,8 @@ export default function DealDetail({ params }: DealDetailProps) {
                     </Button>
                   )}
 
-                  {/* PIN Verification Button */}
-                  {canAccessDeal() ? (
+                  {/* PIN Verification Button - Only show when user can access the deal */}
+                  {canAccessDeal() && (
                     <Button
                       onClick={() => setShowPinDialog(true)}
                       variant="outline"
@@ -473,19 +478,6 @@ export default function DealDetail({ params }: DealDetailProps) {
                     >
                       <Shield className="w-4 h-4 mr-2" />
                       Verify with PIN
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => setLocation('/customer/upgrade')}
-                      className={`w-full ${
-                        deal?.requiredMembership === 'ultimate' 
-                          ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700' 
-                          : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
-                      }`}
-                      size="lg"
-                    >
-                      <Crown className="w-4 h-4 mr-2" />
-                      Upgrade to {deal?.requiredMembership || 'Premium'}
                     </Button>
                   )}
 
