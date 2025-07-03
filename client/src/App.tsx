@@ -31,7 +31,7 @@ import CustomerProfile from "@/pages/customer/profile";
 import VendorBenefits from "@/pages/vendor/benefits";
 import VendorRegister from "@/pages/vendor/register-enhanced";
 import VendorDashboard from "@/pages/vendor/dashboard";
-import VendorDeals from "@/pages/vendor/deals";
+import VendorDeals from "@/pages/vendor/deals-compact";
 import VendorAnalytics from "@/pages/vendor/analytics";
 import PosDashboard from "@/pages/vendor/pos-dashboard";
 import PosTransactions from "@/pages/vendor/pos-transactions";

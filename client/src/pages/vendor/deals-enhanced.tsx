@@ -193,7 +193,7 @@ export default function VendorDealsEnhanced() {
                   Add New Deal
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto p-3">
+              <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-2">
               <DialogHeader>
                 <DialogTitle>Create New Deal</DialogTitle>
               </DialogHeader>
@@ -201,15 +201,18 @@ export default function VendorDealsEnhanced() {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
                   
-                  {/* Basic Deal Information */}
-                  <div className="border rounded-lg p-2">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
-                      <FileText className="h-4 w-4 mr-1" />
-                      Deal Information
-                    </h3>
+                  {/* Top Row - Basic Information */}
+                  <div className="grid lg:grid-cols-2 gap-2">
                     
-                    <div className="space-y-1">
-                      <div className="grid md:grid-cols-2 gap-2">
+                    {/* Left Column - Deal Information */}
+                    <div className="border rounded-lg p-2">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                        <FileText className="h-4 w-4 mr-1" />
+                        Deal Information
+                      </h3>
+                      
+                      <div className="space-y-1">
+                        <div className="grid grid-cols-1 gap-2">
                         <FormField
                           control={form.control}
                           name="title"
@@ -325,14 +328,13 @@ export default function VendorDealsEnhanced() {
                         />
                       </div>
                     </div>
-                  </div>
-
-                  {/* Deal Availability */}
-                  <div className="border rounded-lg p-2">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      Deal Availability
-                    </h3>
+                    
+                    {/* Right Column - Deal Availability */}
+                    <div className="border rounded-lg p-2">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        Deal Availability
+                      </h3>
                     
                     <FormField
                       control={form.control}
@@ -401,39 +403,43 @@ export default function VendorDealsEnhanced() {
                         )}
                       />
                     )}
+                    </div>
                   </div>
 
-                  {/* Deal Image Upload */}
-                  <div className="border rounded-lg p-2">
-                    <FormField
-                      control={form.control}
-                      name="imageUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <ImageUpload
-                              value={field.value}
-                              onChange={field.onChange}
-                              placeholder="Upload deal image or enter URL"
-                              maxSizeInMB={5}
-                              allowCamera={true}
-                              showPreview={true}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* Validity and Terms */}
-                  <div className="border rounded-lg p-2">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
-                      <Clock className="h-4 w-4 mr-1" />
-                      Validity & Terms
-                    </h3>
+                  {/* Second Row - Image Upload and Validity */}
+                  <div className="grid lg:grid-cols-2 gap-2">
                     
-                    <div className="space-y-1">
+                    {/* Left Column - Deal Image Upload */}
+                    <div className="border rounded-lg p-2">
+                      <FormField
+                        control={form.control}
+                        name="imageUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <ImageUpload
+                                value={field.value}
+                                onChange={field.onChange}
+                                placeholder="Upload deal image or enter URL"
+                                maxSizeInMB={5}
+                                allowCamera={true}
+                                showPreview={true}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    {/* Right Column - Validity & Terms */}
+                    <div className="border rounded-lg p-2">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
+                        Validity & Terms
+                      </h3>
+                      
+                      <div className="space-y-1">
                       <FormField
                         control={form.control}
                         name="validUntil"
@@ -475,6 +481,7 @@ export default function VendorDealsEnhanced() {
                           </FormItem>
                         )}
                       />
+                      </div>
                     </div>
                   </div>
 
