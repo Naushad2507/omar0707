@@ -25,7 +25,8 @@ import {
   Target,
   Gift,
   CreditCard,
-  Bell
+  Bell,
+  Shield
 } from "lucide-react";
 
 interface TutorialStep {
@@ -82,14 +83,22 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
     },
     {
       id: 5,
-      title: "Claim Deals",
-      description: "Save money with discount codes",
+      title: "Claim Deals Online",
+      description: "Reserve deals for in-store redemption",
       icon: Tag,
-      content: "When you find a deal you like, click 'Claim Deal' to get the discount code. Copy the code and use it at the vendor's location or website for instant savings.",
+      content: "When you find a deal you like, click 'Claim Deal' to reserve it online. This creates a pending claim - no savings are added yet until you visit the store and verify your purchase.",
       action: "Claim a Deal"
     },
     {
       id: 6,
+      title: "Visit Store & Verify PIN",
+      description: "Complete redemption with secure verification",
+      icon: Shield,
+      content: "Visit the participating store with your claimed deal. Ask the vendor for the 4-digit PIN, then enter it in the app to verify your purchase. Only verified redemptions add savings to your account and update your statistics.",
+      action: "Verify PIN"
+    },
+    {
+      id: 7,
       title: "Save Favorites",
       description: "Heart icon to save deals for later",
       icon: Heart,
@@ -97,7 +106,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
       action: "Save a Deal"
     },
     {
-      id: 7,
+      id: 8,
       title: "Location-Based Deals",
       description: "Find deals near you",
       icon: MapPin,
@@ -105,7 +114,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
       action: "Set Location"
     },
     {
-      id: 8,
+      id: 9,
       title: "Get Support",
       description: "Help is always available",
       icon: HelpCircle,
@@ -134,13 +143,21 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
     {
       id: 3,
       title: "Create Your First Deal",
-      description: "Add deals to attract customers",
+      description: "Add deals with secure PIN verification",
       icon: Plus,
-      content: "Click 'Create New Deal' to add your first offer. Include attractive images, clear descriptions, discount percentages, and set validity periods to maximize appeal.",
+      content: "Click 'Create New Deal' to add your first offer. Include attractive images, clear descriptions, discount percentages, validity periods, and a unique 4-digit PIN for secure customer verification at your store.",
       action: "Create Deal"
     },
     {
       id: 4,
+      title: "Customer Redemption Process",
+      description: "Help customers verify their claimed deals",
+      icon: Shield,
+      content: "When customers visit your store with claimed deals, they'll ask for the 4-digit PIN. Provide the PIN so they can verify their purchase in the app. Only verified redemptions count toward their savings and your sales analytics.",
+      action: "Learn Process"
+    },
+    {
+      id: 5,
       title: "Deal Management",
       description: "Edit, activate, and monitor your deals",
       icon: Target,
@@ -148,7 +165,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
       action: "Manage Deals"
     },
     {
-      id: 5,
+      id: 6,
       title: "Analytics Dashboard",
       description: "Track performance and insights",
       icon: BarChart3,
@@ -156,7 +173,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
       action: "View Analytics"
     },
     {
-      id: 6,
+      id: 7,
       title: "Approval Process",
       description: "Admin review ensures quality",
       icon: CheckCircle,
@@ -164,7 +181,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
       action: "Check Status"
     },
     {
-      id: 7,
+      id: 8,
       title: "Customer Notifications",
       description: "Reach customers with promotions",
       icon: Bell,
@@ -172,7 +189,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
       action: "Send Notification"
     },
     {
-      id: 8,
+      id: 9,
       title: "Payment & Pricing",
       description: "Understand the revenue model",
       icon: CreditCard,

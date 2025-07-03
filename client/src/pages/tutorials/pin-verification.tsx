@@ -82,9 +82,9 @@ export default function PinVerificationTutorial() {
                     <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Eye className="w-8 h-8 text-blue-600" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">1. Browse Deals</h3>
+                    <h3 className="font-semibold text-lg mb-2">1. Claim Deal Online</h3>
                     <p className="text-gray-600 text-sm">
-                      Find deals you love on our platform. Look for the "Redeem Deal" button on any active deal.
+                      Find deals you love and click "Claim Deal" to reserve them. This creates a pending claim with no savings yet - you must visit the store to complete redemption.
                     </p>
                   </div>
 
@@ -94,7 +94,7 @@ export default function PinVerificationTutorial() {
                     </div>
                     <h3 className="font-semibold text-lg mb-2">2. Visit Store</h3>
                     <p className="text-gray-600 text-sm">
-                      Go to the vendor's store and show them the deal. Ask them for their 4-digit verification PIN.
+                      Go to the vendor's store with your claimed deal. Make your purchase and ask them for their 4-digit verification PIN to complete the redemption.
                     </p>
                   </div>
 
@@ -102,9 +102,9 @@ export default function PinVerificationTutorial() {
                     <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Shield className="w-8 h-8 text-purple-600" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">3. Enter PIN</h3>
+                    <h3 className="font-semibold text-lg mb-2">3. Verify PIN & Get Savings</h3>
                     <p className="text-gray-600 text-sm">
-                      Enter the 4-digit PIN in the verification dialog and instantly redeem your deal!
+                      Enter the 4-digit PIN in the verification dialog to complete your redemption. Only verified purchases update your savings and dashboard statistics.
                     </p>
                   </div>
                 </div>
@@ -120,29 +120,29 @@ export default function PinVerificationTutorial() {
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
-                        <p className="font-medium">Works Anywhere</p>
-                        <p className="text-sm text-gray-600">PIN verification works even without internet connection</p>
+                        <p className="font-medium">Secure Two-Phase Process</p>
+                        <p className="text-sm text-gray-600">Claim online first, then verify in-store for authentic savings tracking</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
-                        <p className="font-medium">Instant Redemption</p>
-                        <p className="text-sm text-gray-600">No QR codes to scan, just enter the PIN and you're done</p>
+                        <p className="font-medium">Real Savings Only</p>
+                        <p className="text-sm text-gray-600">Only verified purchases contribute to your savings and statistics</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
-                        <p className="font-medium">Secure Process</p>
-                        <p className="text-sm text-gray-600">Only the vendor knows the PIN, ensuring deal authenticity</p>
+                        <p className="font-medium">Anti-Fraud Protection</p>
+                        <p className="text-sm text-gray-600">PIN verification prevents fake claims and ensures authentic redemptions</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
-                        <p className="font-medium">Track Savings</p>
-                        <p className="text-sm text-gray-600">All redeemed deals are automatically tracked in your account</p>
+                        <p className="font-medium">Accurate Tracking</p>
+                        <p className="text-sm text-gray-600">Dashboard statistics reflect only genuine store visits and purchases</p>
                       </div>
                     </div>
                   </div>
