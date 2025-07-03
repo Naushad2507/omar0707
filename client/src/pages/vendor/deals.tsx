@@ -67,12 +67,10 @@ export default function VendorDeals() {
     "cleaning": {
       name: "Cleaning Services",
       subcategories: [
-        "Residential Cleaning",
-        "Commercial Cleaning", 
-        "Deep Cleaning",
-        "Move-in/Move-out Cleaning",
-        "Carpet Cleaning",
-        "Window Cleaning"
+        "House cleaning",
+        "Deep cleaning",
+        "Carpet cleaning",
+        "Window cleaning"
       ]
     },
     "repair-maintenance": {
@@ -81,9 +79,7 @@ export default function VendorDeals() {
         "Plumbing",
         "Electrical repairs",
         "HVAC maintenance",
-        "Appliance repair",
-        "Electronics repair",
-        "General handyman services"
+        "Appliance repair"
       ]
     },
     "home-improvement": {
@@ -92,9 +88,7 @@ export default function VendorDeals() {
         "Painting",
         "Flooring installation",
         "Kitchen remodeling",
-        "Bathroom renovation",
-        "Roofing",
-        "Drywall installation"
+        "Bathroom renovation"
       ]
     },
     "lawn-garden": {
@@ -103,9 +97,7 @@ export default function VendorDeals() {
         "Lawn mowing",
         "Landscaping",
         "Tree trimming",
-        "Pest control",
-        "Garden design",
-        "Irrigation services"
+        "Pest control"
       ]
     },
     "moving-storage": {
@@ -114,19 +106,16 @@ export default function VendorDeals() {
         "Local moving",
         "Long-distance moving",
         "Packing services",
-        "Storage solutions",
-        "Furniture assembly",
-        "Junk removal"
+        "Storage solution"
       ]
     },
-    "home-healthcare": {
-      name: "Home Healthcare",
+    "ride-services": {
+      name: "Ride Services",
       subcategories: [
-        "Nursing care",
-        "Physical therapy",
-        "Elderly care",
-        "Post-surgery care",
-        "Medical equipment rental"
+        "Economy rides",
+        "Premium rides",
+        "Shared rides",
+        "Airport transfers"
       ]
     },
     "delivery": {
@@ -135,8 +124,16 @@ export default function VendorDeals() {
         "Food delivery",
         "Grocery delivery",
         "Package delivery",
-        "Courier services",
-        "Same-day delivery"
+        "Courier services"
+      ]
+    },
+    "event-services": {
+      name: "Event Services",
+      subcategories: [
+        "Event planning",
+        "Catering",
+        "Photography",
+        "DJ or entertainment"
       ]
     },
     "pet-services": {
@@ -144,29 +141,34 @@ export default function VendorDeals() {
       subcategories: [
         "Pet grooming",
         "Dog walking",
-        "Pet sitting",
-        "Pet training",
-        "Veterinary services"
-      ]
-    },
-    "personal-services": {
-      name: "Personal Services",
-      subcategories: [
-        "Fashion styling",
-        "Custom tailoring",
-        "Jewelry cleaning",
-        "Personal shopping",
-        "Beauty services"
+        "Pet sitting"
       ]
     },
     "rental-services": {
       name: "Rental Services",
       subcategories: [
-        "Equipment rentals (cameras, tools)",
+        "Equipment rentals (e.g., cameras, tools)",
         "Clothing rentals",
         "Furniture rentals",
-        "Vehicle rentals",
-        "Party equipment rentals"
+        "Vehicle rentals"
+      ]
+    },
+    "local-experiences": {
+      name: "Local Experiences",
+      subcategories: [
+        "Guided tours",
+        "Adventure activities",
+        "Cultural workshops",
+        "Food tours"
+      ]
+    },
+    "cooking-classes": {
+      name: "Cooking Classes",
+      subcategories: [
+        "Online cooking lessons",
+        "In-person workshops",
+        "Baking classes",
+        "International cuisine lessons"
       ]
     }
   };
