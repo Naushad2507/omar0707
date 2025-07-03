@@ -187,14 +187,6 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
       icon: Bell,
       content: "When customers follow your business or claim your deals, they'll receive notifications about new offers. Build a loyal customer base over time.",
       action: "Send Notification"
-    },
-    {
-      id: 9,
-      title: "Payment & Pricing",
-      description: "Understand the revenue model",
-      icon: CreditCard,
-      content: "Instoredealz operates on a commission-based model. You only pay when customers successfully redeem deals, ensuring you get real value for your investment.",
-      action: "View Pricing"
     }
   ];
 

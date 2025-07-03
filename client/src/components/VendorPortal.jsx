@@ -67,6 +67,7 @@ const dealCreationSchema = z.object({
   maxRedemptions: z.string().optional(),
   terms: z.string().min(10, 'Terms and conditions are required'),
   requiredMembership: z.string().min(1, 'Please select required membership'),
+  imageUrl: z.string().optional(),
 }).refine((data) => Number(data.discountedPrice) < Number(data.originalPrice), {
   message: "Discounted price must be less than original price",
   path: ["discountedPrice"],
@@ -154,6 +155,7 @@ const VendorPortal = () => {
       maxRedemptions: '',
       terms: '',
       requiredMembership: 'basic',
+      imageUrl: '',
     }
   });
 
@@ -444,10 +446,7 @@ const VendorPortal = () => {
               <Plus className="h-5 w-5 mr-2" />
               Create Deal
             </TabsTrigger>
-            <TabsTrigger value="subscription" className="text-lg py-3">
-              <Crown className="h-5 w-5 mr-2" />
-              Premium Subscription
-            </TabsTrigger>
+
           </TabsList>
 
           {/* Vendor Registration Tab */}
@@ -802,6 +801,50 @@ const VendorPortal = () => {
                             </FormControl>
                             <FormDescription>
                               Provide detailed information about your deal (minimum 20 characters)
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={dealForm.control}
+                        name="imageUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Deal Image</FormLabel>
+                            <FormControl>
+                              <div className="space-y-4">
+                                <Input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      // For now, we'll use a simple file reader to convert to base64
+                                      // In production, you'd want to upload to a cloud service
+                                      const reader = new FileReader();
+                                      reader.onload = (event) => {
+                                        field.onChange(event.target.result);
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                  className="cursor-pointer"
+                                />
+                                {field.value && (
+                                  <div className="mt-2">
+                                    <img 
+                                      src={field.value} 
+                                      alt="Deal preview" 
+                                      className="max-w-xs max-h-48 object-cover rounded-lg border border-gray-300"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </FormControl>
+                            <FormDescription>
+                              Upload an attractive image for your deal (optional)
                             </FormDescription>
                             <FormMessage />
                           </FormItem>

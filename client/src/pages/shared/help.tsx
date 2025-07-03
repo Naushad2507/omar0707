@@ -50,13 +50,13 @@ export default function Help() {
       id: 2,
       category: "deals",
       question: "How do I claim a deal?",
-      answer: "Click on any deal card, then click 'View Deal Details' to see complete information. Click 'Claim Deal' to get your discount code, which you can use at the vendor's location."
+      answer: "Claiming deals is a secure two-step process: 1) Click 'Claim Deal' online to reserve it, 2) Visit the store and ask for the 4-digit PIN to verify your redemption in the app. Only verified redemptions count toward your savings."
     },
     {
       id: 3,
       category: "deals",
-      question: "Why can't I see discount codes?",
-      answer: "Discount codes are available to Premium and Ultimate members. Basic members need to upgrade their membership to access exclusive discount codes."
+      question: "How does PIN verification work?",
+      answer: "After claiming a deal online, visit the store and ask for the 4-digit PIN. Enter it in the app to verify your redemption. This prevents fake claims and ensures you actually visit the store to get your savings."
     },
     {
       id: 4,
@@ -75,6 +75,18 @@ export default function Help() {
       category: "deals",
       question: "Can I save deals for later?",
       answer: "Yes! Click the heart icon on any deal to add it to your wishlist. Access your saved deals from your dashboard anytime."
+    },
+    {
+      id: 15,
+      category: "deals", 
+      question: "What happens if I claim a deal but don't visit the store?",
+      answer: "Claimed deals that aren't verified with PIN remain in 'pending' status and don't count toward your savings or statistics. You must visit the store and verify the PIN to complete the redemption and get actual savings."
+    },
+    {
+      id: 16,
+      category: "deals",
+      question: "Do I need internet to verify a PIN?",
+      answer: "No! PIN verification works offline. You can enter the PIN even without internet connection, and it will sync when connection is restored. This makes verification convenient at any store location."
     },
     {
       id: 7,
@@ -113,19 +125,31 @@ export default function Help() {
       id: 12,
       category: "deals",
       question: "How do I create effective deals?",
-      answer: "Use high-quality images, clear descriptions, attractive discount percentages, and set reasonable validity periods. Monitor analytics to optimize performance."
+      answer: "Use high-quality images, clear descriptions, attractive discount percentages, set reasonable validity periods, and create a unique 4-digit PIN for secure verification. Monitor analytics to optimize performance."
     },
     {
       id: 13,
-      category: "payment",
-      question: "How does vendor payment work?",
-      answer: "We operate on a commission-based model. You only pay when customers successfully redeem deals, ensuring you get real value for your investment."
+      category: "deals",
+      question: "How does the PIN verification system work for vendors?",
+      answer: "When creating deals, you set a unique 4-digit PIN. When customers visit your store with claimed deals, provide them the PIN so they can verify their redemption. Only PIN-verified redemptions count toward analytics and customer savings."
     },
     {
       id: 14,
       category: "deals",
       question: "Can I edit deals after approval?",
       answer: "Yes, you can edit deal details, but major changes may require re-approval. You can activate/deactivate deals anytime from your dashboard."
+    },
+    {
+      id: 17,
+      category: "deals",
+      question: "What if customers claim deals but don't visit my store?",
+      answer: "No problem! The two-phase system protects you. Customers can claim deals online, but they must visit your store and verify with the PIN to complete redemption. Unverified claims don't count as completed sales."
+    },
+    {
+      id: 18,
+      category: "deals",
+      question: "How do I track which customers have verified deals?",
+      answer: "Your vendor dashboard shows real-time analytics of claimed vs verified deals. You can see which customers completed the verification process and actually visited your store."
     }
   ];
 

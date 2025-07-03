@@ -41,10 +41,10 @@ export default function VendorBenefits() {
       details: "Location-based discovery helps customers find your deals when they're close"
     },
     {
-       icon: IndianRupee,
-      title: "Zero Commission - Keep 100% of Sales",
-      description: "No transaction fees, keep all your revenue",
-      details: "Unlike other platforms, we don't take a cut from your sales"
+      icon: Shield,
+      title: "Secure PIN Verification",
+      description: "Protect your business with verified redemptions",
+      details: "PIN-based verification ensures only genuine customers redeem deals"
     },
     {
       icon: Zap,

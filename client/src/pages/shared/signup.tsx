@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -220,22 +221,22 @@ export default function Signup() {
               {/* Password */}
               <div className="space-y-2">
                 <Label htmlFor="password">Password *</Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="Create a password"
                   value={formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
                   disabled={isLoading}
                   required
+                  showStrengthIndicator={true}
+                  showRequirements={true}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password *</Label>
-                <Input
+                <PasswordInput
                   id="confirmPassword"
-                  type="password"
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
