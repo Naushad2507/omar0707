@@ -647,6 +647,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug endpoint for PIN (development only)
+  app.get('/api/deals/:id/debug-pin', async (req: AuthenticatedRequest, res) => {
+    if (process.env.NODE_ENV !== 'development') {
+      return res.status(404).json({ error: 'Not found' });
+    }
+    
+    try {
+      const dealId = parseInt(req.params.id);
+      const deal = await storage.getDeal(dealId);
+      
+      if (!deal) {
+        return res.status(404).json({ error: 'Deal not found' });
+      }
+      
+      res.json({ 
+        dealId: deal.id,
+        title: deal.title, 
+        verificationPin: deal.verificationPin 
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   // POST /api/deals/:id/verify-pin - Verify PIN and redeem deal
   app.post('/api/deals/:id/verify-pin', requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
@@ -687,7 +711,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verify PIN
+      Logger.debug("PIN Verification", {
+        dealId,
+        dealTitle: deal.title,
+        storedPin: deal.verificationPin,
+        providedPin: pin,
+        pinTypes: `stored: ${typeof deal.verificationPin}, provided: ${typeof pin}`
+      });
+      
       if (deal.verificationPin !== pin) {
+        Logger.warn("PIN Mismatch", {
+          dealId,
+          storedPin: deal.verificationPin,
+          providedPin: pin
+        });
         return res.status(400).json({
           success: false,
           error: "Invalid PIN. Please check with the vendor"
