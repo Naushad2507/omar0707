@@ -615,10 +615,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Upgrade membership to claim this deal" });
       }
       
-      // Calculate savings
-      const originalPrice = parseFloat(deal.originalPrice || "0");
-      const discountedPrice = parseFloat(deal.discountedPrice || "0");
-      const savingsAmount = originalPrice - discountedPrice;
+      // Calculate savings based on available pricing information
+      let savingsAmount = 0;
+      
+      if (deal.originalPrice && deal.discountedPrice) {
+        // If fixed prices are available, use them
+        const originalPrice = parseFloat(deal.originalPrice);
+        const discountedPrice = parseFloat(deal.discountedPrice);
+        savingsAmount = originalPrice - discountedPrice;
+      } else if (deal.discountPercentage) {
+        // For percentage-based deals, calculate based on typical purchase amount
+        // This is a reasonable assumption for tracking savings
+        const typicalPurchaseAmount = 1000; // ₹1000 as baseline
+        savingsAmount = (typicalPurchaseAmount * deal.discountPercentage) / 100;
+      } else {
+        // Default minimal savings if no pricing info available
+        savingsAmount = 50;
+      }
       
       // Create claim
       const claim = await storage.claimDeal({
