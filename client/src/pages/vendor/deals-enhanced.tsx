@@ -193,23 +193,23 @@ export default function VendorDealsEnhanced() {
                   Add New Deal
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto p-3">
               <DialogHeader>
                 <DialogTitle>Create New Deal</DialogTitle>
               </DialogHeader>
               
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
                   
                   {/* Basic Deal Information */}
-                  <div className="border rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                      <FileText className="h-5 w-5 mr-2" />
+                  <div className="border rounded-lg p-2">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                      <FileText className="h-4 w-4 mr-1" />
                       Deal Information
                     </h3>
                     
-                    <div className="space-y-3">
-                      <div className="grid md:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <div className="grid md:grid-cols-2 gap-2">
                         <FormField
                           control={form.control}
                           name="title"
@@ -259,7 +259,7 @@ export default function VendorDealsEnhanced() {
                             <FormControl>
                               <Textarea 
                                 placeholder="Describe your deal in detail - what's included, any restrictions, etc."
-                                className="min-h-[70px]"
+                                className="min-h-[50px]"
                                 {...field} 
                               />
                             </FormControl>
@@ -268,7 +268,7 @@ export default function VendorDealsEnhanced() {
                         )}
                       />
 
-                      <div className="grid md:grid-cols-2 gap-3">
+                      <div className="grid md:grid-cols-2 gap-2">
                         <FormField
                           control={form.control}
                           name="discountPercentage"
@@ -328,9 +328,9 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Deal Availability */}
-                  <div className="border rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                      <MapPin className="h-5 w-5 mr-2" />
+                  <div className="border rounded-lg p-2">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                      <MapPin className="h-4 w-4 mr-1" />
                       Deal Availability
                     </h3>
                     
@@ -338,13 +338,13 @@ export default function VendorDealsEnhanced() {
                       control={form.control}
                       name="dealAvailability"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
+                        <FormItem className="space-y-1">
                           <FormLabel>Where is this deal available? *</FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
                               defaultValue={field.value}
-                              className="flex flex-col space-y-2"
+                              className="flex flex-col space-y-1"
                             >
                               <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="all-stores" id="all-stores" />
@@ -370,12 +370,12 @@ export default function VendorDealsEnhanced() {
                         control={form.control}
                         name="selectedCities"
                         render={({ field }) => (
-                          <FormItem className="mt-3">
+                          <FormItem className="mt-1">
                             <FormLabel>Select Cities *</FormLabel>
                             <FormDescription className="text-xs">
                               Choose the cities where this deal will be available
                             </FormDescription>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-1 max-h-28 overflow-y-auto border rounded p-1">
                               {majorCities.map((city) => (
                                 <div key={city.name} className="flex items-center space-x-2">
                                   <Checkbox
@@ -404,7 +404,7 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Deal Image Upload */}
-                  <div className="border rounded-lg p-4">
+                  <div className="border rounded-lg p-2">
                     <FormField
                       control={form.control}
                       name="imageUrl"
@@ -427,13 +427,13 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Validity and Terms */}
-                  <div className="border rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                      <Clock className="h-5 w-5 mr-2" />
+                  <div className="border rounded-lg p-2">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
                       Validity & Terms
                     </h3>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-1">
                       <FormField
                         control={form.control}
                         name="validUntil"
@@ -464,7 +464,7 @@ export default function VendorDealsEnhanced() {
                             <FormControl>
                               <Textarea 
                                 placeholder="Enter any specific terms, restrictions, or conditions for this deal (optional)"
-                                className="min-h-[60px]"
+                                className="min-h-[40px]"
                                 {...field} 
                               />
                             </FormControl>
@@ -479,12 +479,12 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Agreement */}
-                  <div className="border rounded-lg p-4">
+                  <div className="border rounded-lg p-2">
                     <FormField
                       control={form.control}
                       name="agreeToTerms"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormItem className="flex flex-row items-start space-x-2 space-y-0">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
@@ -505,7 +505,7 @@ export default function VendorDealsEnhanced() {
                     <FormMessage />
                   </div>
 
-                  <div className="flex justify-end space-x-4">
+                  <div className="flex justify-end space-x-2 mt-2">
                     <Button
                       type="button"
                       variant="outline"
