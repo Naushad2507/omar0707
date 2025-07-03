@@ -423,7 +423,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                       <strong>Debug (Development Only):</strong> PIN = {
                         secureDeal?.verificationPin || 
                         deal?.verificationPin || 
-                        (deal?.id === 11 ? '1001' : 'Contact vendor for PIN')
+                        (deal?.id === 11 ? '1000' : 'Contact vendor for PIN')
                       }
                     </div>
                   )}
