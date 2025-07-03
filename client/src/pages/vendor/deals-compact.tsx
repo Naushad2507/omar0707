@@ -37,6 +37,8 @@ const dealFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   category: z.string().min(1, "Category is required"),
+  subcategory: z.string().optional(),
+  customCategory: z.string().optional(),
   discountPercentage: z.number().min(1).max(90),
   verificationPin: z.string().length(4, "PIN must be 4 digits"),
   dealAvailability: z.enum(["all-stores", "selected-locations"]),
@@ -70,6 +72,8 @@ export default function CompactDealsPage() {
       title: "",
       description: "",
       category: "",
+      subcategory: "",
+      customCategory: "",
       discountPercentage: 0,
       verificationPin: "",
       dealAvailability: "all-stores",
@@ -82,6 +86,29 @@ export default function CompactDealsPage() {
   });
 
   const selectedAvailability = form.watch("dealAvailability");
+  const selectedCategory = form.watch("category");
+  
+  // Reset subcategory when category changes
+  useEffect(() => {
+    if (selectedCategory !== "services") {
+      form.setValue("subcategory", "");
+      form.setValue("customCategory", "");
+    }
+  }, [selectedCategory, form]);
+  
+  // Define subcategories for services
+  const serviceSubcategories = [
+    "Beauty & Spa",
+    "Fitness & Wellness", 
+    "Home Services",
+    "Professional Services",
+    "Automotive Services",
+    "Health & Medical",
+    "Education & Training",
+    "Entertainment",
+    "Travel & Hospitality",
+    "Digital Services"
+  ];
 
   const createDealMutation = useMutation({
     mutationFn: async (data: DealFormData) => {
@@ -188,6 +215,7 @@ export default function CompactDealsPage() {
                           </FormItem>
                         )}
                       />
+                      
                       <FormField
                         control={form.control}
                         name="discountPercentage"
@@ -212,6 +240,54 @@ export default function CompactDealsPage() {
                         )}
                       />
                     </div>
+
+                    {/* Row 1.5: Subcategory for Services */}
+                    {selectedCategory === "services" && (
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <FormField
+                          control={form.control}
+                          name="subcategory"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm">Service Subcategory *</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select service type" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {serviceSubcategories.map((subcategory) => (
+                                    <SelectItem key={subcategory} value={subcategory}>
+                                      {subcategory}
+                                    </SelectItem>
+                                  ))}
+                                  <SelectItem value="others">Others</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        {/* Custom category field for "Others" */}
+                        {form.watch("subcategory") === "others" && (
+                          <FormField
+                            control={form.control}
+                            name="customCategory"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm">Custom Service Type *</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Enter custom service type" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
+                      </div>
+                    )}
 
                     {/* Row 2: Description and PIN */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
