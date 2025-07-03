@@ -50,16 +50,25 @@ export function PinVerificationDialog({
       
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast({
         title: "Deal Redeemed Successfully!",
-        description: `You saved ₹${data.savings}. Enjoy your deal!`,
+        description: `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}`,
         variant: "default",
       });
       
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ["/api/deals"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
+      // Comprehensive data refresh to update user profile and deal information
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/deals"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+        queryClient.invalidateQueries({ queryKey: [`/api/deals/${dealId}`] }),
+        queryClient.invalidateQueries({ queryKey: [`/api/deals/${dealId}/secure`] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
+      ]);
+      
+      // Force refetch user data to update dashboard statistics
+      queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
       
       onSuccess?.();
       onOpenChange(false);

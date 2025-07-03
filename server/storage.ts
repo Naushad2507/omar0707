@@ -59,6 +59,7 @@ export interface IStorage {
   getUserClaims(userId: number): Promise<DealClaim[]>;
   getDealClaims(dealId: number): Promise<DealClaim[]>;
   updateClaimStatus(id: number, status: string, usedAt?: Date): Promise<DealClaim | undefined>;
+  updateDealClaim(id: number, updates: Partial<DealClaim>): Promise<DealClaim | undefined>;
   incrementDealRedemptions(dealId: number): Promise<void>;
 
   // Help ticket operations
@@ -709,6 +710,16 @@ export class MemStorage implements IStorage {
     const claim = this.dealClaims.get(id);
     if (claim) {
       const updatedClaim = { ...claim, status, usedAt: usedAt || claim.usedAt };
+      this.dealClaims.set(id, updatedClaim);
+      return updatedClaim;
+    }
+    return undefined;
+  }
+
+  async updateDealClaim(id: number, updates: Partial<DealClaim>): Promise<DealClaim | undefined> {
+    const claim = this.dealClaims.get(id);
+    if (claim) {
+      const updatedClaim = { ...claim, ...updates };
       this.dealClaims.set(id, updatedClaim);
       return updatedClaim;
     }

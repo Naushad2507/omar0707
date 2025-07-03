@@ -149,21 +149,16 @@ export default function DealDetail({ params }: DealDetailProps) {
     onSuccess: async (data: any) => {
       toast({
         title: "Deal Claimed Successfully!",
-        description: `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}`,
+        description: data.message || "Visit the store and verify your PIN to complete the redemption and get your savings!",
       });
       
-      // Comprehensive data refresh to update user profile and deal information
+      // Refresh deal claims data
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["/api/deals"] }),
         queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
         queryClient.invalidateQueries({ queryKey: [`/api/deals/${id}`] }),
         queryClient.invalidateQueries({ queryKey: [`/api/deals/${id}/secure`] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
       ]);
-      
-      // Force refetch user data to update dashboard statistics
-      queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
     },
     onError: (error: any) => {
       toast({

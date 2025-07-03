@@ -115,6 +115,19 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 3, 2025 - Security Enhancement: Two-Phase Deal Claiming System
+- **Critical Security Fix**: Resolved major security vulnerability where customers could accumulate fake savings without visiting stores
+- **Two-Phase Claiming Process**: Implemented secure two-phase deal claiming system:
+  1. **Phase 1 - Claim**: Users can claim deals online, creating a "pending" status claim with no savings recorded
+  2. **Phase 2 - Redeem**: Users must visit the store and verify PIN to complete redemption and receive actual savings
+- **Prevented Fraud**: Eliminated ability for users to accumulate dashboard statistics and savings without actual store visits
+- **PIN Verification Security**: PIN verification is now the only way to update user savings, deal counts, and dashboard statistics
+- **Database Status Tracking**: Deal claims now properly track status ("pending" vs "used") with timestamps
+- **User Experience**: Clear messaging guides users through the secure process - claim online, verify in-store
+- **Email Service Resilience**: Made SendGrid email service optional to prevent application startup failures when API key is missing
+- **Comprehensive Frontend Updates**: Updated all claim success messages to reflect new security requirements
+- **Data Integrity**: Only verified redemptions contribute to user analytics, ensuring authentic usage tracking
+
 ### July 2, 2025 - Profile Editing & Email Notifications System
 - **User Profile Management**: Added comprehensive profile editing for customers at `/customer/profile` with fields for name, phone, location
 - **Vendor Profile Management**: Added business profile editing for vendors at `/vendor/profile` with business details, legal info, and location

@@ -598,9 +598,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Deal redemption limit reached" });
       }
       
-      // Allow multiple claims per deal - removed the restriction
-      // Users can now claim the same deal multiple times
-      
       // Check membership requirement
       const user = await storage.getUser(userId);
       if (!user) {
@@ -615,50 +612,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Upgrade membership to claim this deal" });
       }
       
-      // Calculate savings based on available pricing information
-      let savingsAmount = 0;
-      
-      if (deal.originalPrice && deal.discountedPrice) {
-        // If fixed prices are available, use them
-        const originalPrice = parseFloat(deal.originalPrice);
-        const discountedPrice = parseFloat(deal.discountedPrice);
-        savingsAmount = originalPrice - discountedPrice;
-      } else if (deal.discountPercentage) {
-        // For percentage-based deals, calculate based on typical purchase amount
-        // This is a reasonable assumption for tracking savings
-        const typicalPurchaseAmount = 1000; // ₹1000 as baseline
-        savingsAmount = (typicalPurchaseAmount * deal.discountPercentage) / 100;
-      } else {
-        // Default minimal savings if no pricing info available
-        savingsAmount = 50;
-      }
-      
-      // Create claim
+      // SECURITY FIX: Create claim with "pending" status - no savings calculated yet
+      // Savings and statistics are only updated when PIN is verified at the store
       const claim = await storage.claimDeal({
         userId,
         dealId,
-        savingsAmount: savingsAmount.toString(),
+        savingsAmount: "0", // No savings until PIN verification
+        status: "pending" // Mark as pending until store verification
       });
 
-      // Update user's total savings and deals claimed count
-      const currentTotalSavings = parseFloat(user.totalSavings || "0");
-      const newTotalSavings = currentTotalSavings + savingsAmount;
-      const newDealsClaimedCount = (user.dealsClaimed || 0) + 1;
-
-      await storage.updateUser(userId, {
-        totalSavings: newTotalSavings.toString(),
-        dealsClaimed: newDealsClaimedCount,
-      });
-
-      // Log the claim activity
+      // Log the claim activity (but not as completed savings)
       await storage.createSystemLog({
         userId,
-        action: "DEAL_CLAIMED",
+        action: "DEAL_CLAIMED_PENDING",
         details: {
           dealId,
           dealTitle: deal.title,
-          savingsAmount,
-          totalSavings: newTotalSavings
+          status: "pending_verification"
         },
         ipAddress: req.ip,
         userAgent: req.headers['user-agent'],
@@ -666,9 +636,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json({
         ...claim,
-        savingsAmount: savingsAmount,
-        newTotalSavings: newTotalSavings,
-        dealsClaimedCount: newDealsClaimedCount
+        message: "Deal claimed! Visit the store and verify your PIN to complete the redemption.",
+        savingsAmount: 0, // No savings until verified
+        requiresVerification: true
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to claim deal" });
@@ -722,13 +692,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Check if user already claimed this deal
+      // Check if user has a pending claim for this deal
       const existingClaims = await storage.getUserClaims(userId);
-      const alreadyClaimed = existingClaims.some(claim => claim.dealId === dealId);
-      if (alreadyClaimed) {
+      const pendingClaim = existingClaims.find(claim => claim.dealId === dealId && claim.status === "pending");
+      const alreadyUsed = existingClaims.some(claim => claim.dealId === dealId && claim.status === "used");
+      
+      if (alreadyUsed) {
         return res.status(400).json({
           success: false,
           error: "You have already redeemed this deal"
+        });
+      }
+
+      if (!pendingClaim) {
+        return res.status(400).json({
+          success: false,
+          error: "Please claim this deal first before verifying PIN"
         });
       }
 
@@ -740,38 +719,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Calculate savings
-      const savings = deal.originalPrice ? 
-        parseFloat(deal.originalPrice) - parseFloat(deal.discountedPrice || "0") : 
-        0;
+      // Calculate actual savings based on deal pricing
+      let savingsAmount = 0;
+      
+      if (deal.originalPrice && deal.discountedPrice) {
+        const originalPrice = parseFloat(deal.originalPrice);
+        const discountedPrice = parseFloat(deal.discountedPrice);
+        savingsAmount = originalPrice - discountedPrice;
+      } else if (deal.discountPercentage) {
+        // For percentage-based deals, calculate based on typical purchase amount
+        const typicalPurchaseAmount = 1000; // ₹1000 as baseline
+        savingsAmount = (typicalPurchaseAmount * deal.discountPercentage) / 100;
+      } else {
+        // Default minimal savings if no pricing info available
+        savingsAmount = 50;
+      }
 
-      // Create deal claim
-      const claim = await storage.createDealClaim({
-        userId,
-        dealId,
-        savingsAmount: savings.toString(),
-        status: "used"
+      // Update the existing claim to "used" status with actual savings
+      const updatedClaim = await storage.updateDealClaim(pendingClaim.id, {
+        status: "used",
+        savingsAmount: savingsAmount.toString(),
+        usedAt: new Date()
+      });
+
+      // NOW update user's total savings and deals claimed count (only after PIN verification)
+      const user = await storage.getUser(userId);
+      const currentTotalSavings = parseFloat(user?.totalSavings || "0");
+      const newTotalSavings = currentTotalSavings + savingsAmount;
+      const newDealsClaimedCount = (user?.dealsClaimed || 0) + 1;
+
+      await storage.updateUser(userId, {
+        totalSavings: newTotalSavings.toString(),
+        dealsClaimed: newDealsClaimedCount,
       });
 
       // Update deal redemption count
       await storage.incrementDealRedemptions(dealId);
 
-      // Log the redemption
+      // Log the successful redemption
       await storage.createSystemLog({
         userId,
         action: "DEAL_REDEEMED_PIN",
         details: {
           dealId,
-          savings,
+          dealTitle: deal.title,
+          savingsAmount,
+          newTotalSavings,
           timestamp: new Date().toISOString()
-        }
+        },
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent']
       });
 
       res.json({
         success: true,
         message: "Deal successfully redeemed!",
-        savings: savings,
-        claim
+        savingsAmount: savingsAmount,
+        newTotalSavings: newTotalSavings,
+        dealsClaimedCount: newDealsClaimedCount,
+        claim: updatedClaim
       });
 
     } catch (error) {
