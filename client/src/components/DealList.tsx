@@ -58,8 +58,10 @@ const DealList = () => {
   // Fetch user claims to check which deals have been claimed
   const { data: userClaims = [], isLoading: isLoadingClaims } = useQuery<Array<{id: number, dealId: number, status: string}>>({
     queryKey: ['/api/users/claims'],
-    staleTime: 30000, // Cache for 30 seconds
+    staleTime: 0, // Always fetch fresh data for claims
     retry: 3,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // Calculate savings based on bill amount
@@ -235,6 +237,11 @@ const DealList = () => {
             // Show Add Bill Amount button for verified/completed claims (status 'used')
             // This button allows customers to add their actual bill amount for savings calculation
             const showBillAmountButton = hasClaimedDeal && userClaim?.status === 'used';
+            
+            // Debug logging for troubleshooting
+            if (hasClaimedDeal) {
+              console.log(`Deal ${deal.id} - Claim Status: ${userClaim?.status}, Show Button: ${showBillAmountButton}`, userClaim);
+            }
             
             return (
               <Card 
