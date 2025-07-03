@@ -480,6 +480,8 @@ export class MemStorage implements IStorage {
           claimedAt: new Date(Date.now() - ((claimsCount - i) * 24 * 60 * 60 * 1000)),
           usedAt: Math.random() > 0.3 ? new Date() : null,
           savingsAmount: `${Math.floor(Math.random() * 500) + 100}.00`,
+          billAmount: null,
+          actualSavings: null,
         };
         this.dealClaims.set(claim.id, claim);
       }
@@ -681,6 +683,8 @@ export class MemStorage implements IStorage {
       status: insertClaim.status || "claimed",
       usedAt: insertClaim.usedAt || null,
       claimedAt: new Date(),
+      billAmount: insertClaim.billAmount ?? null,
+      actualSavings: insertClaim.actualSavings ?? null,
     };
     this.dealClaims.set(claim.id, claim);
     return claim;
