@@ -418,9 +418,13 @@ export default function DealDetail({ params }: DealDetailProps) {
                     This deal uses a 4-digit PIN verification system. Ask the vendor for their PIN when redeeming in-store. 
                     Works even without internet connection!
                   </p>
-                  {process.env.NODE_ENV === 'development' && deal?.verificationPin && (
+                  {process.env.NODE_ENV === 'development' && (
                     <div className="mt-2 p-2 bg-yellow-100 border border-yellow-300 rounded text-yellow-800 text-sm">
-                      <strong>Debug (Development Only):</strong> PIN = {deal.verificationPin}
+                      <strong>Debug (Development Only):</strong> PIN = {
+                        secureDeal?.verificationPin || 
+                        deal?.verificationPin || 
+                        (deal?.id === 11 ? '1001' : 'Contact vendor for PIN')
+                      }
                     </div>
                   )}
                 </div>

@@ -557,7 +557,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...deal,
         vendor,
         membershipTier,
-        hasAccess: true
+        hasAccess: true,
+        // Include PIN for development debugging
+        verificationPin: process.env.NODE_ENV === 'development' ? deal.verificationPin : undefined
       });
     } catch (error) {
       console.error("Error fetching secure deal:", error);
