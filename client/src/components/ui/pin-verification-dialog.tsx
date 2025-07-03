@@ -35,12 +35,13 @@ export function PinVerificationDialog({
 
   const verifyPinMutation = useMutation({
     mutationFn: async (pin: string) => {
-      return apiRequest('POST', `/api/deals/${dealId}/verify-pin`, { pin });
+      const response = await apiRequest(`/api/deals/${dealId}/verify-pin`, 'POST', { pin });
+      return response.json();
     },
-    onSuccess: async (response: any) => {
+    onSuccess: async (data: any) => {
       toast({
         title: "Deal Redeemed Successfully!",
-        description: `You saved ₹${response.savingsAmount}! Total savings: ₹${response.newTotalSavings}`,
+        description: `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}`,
         variant: "default",
       });
       
