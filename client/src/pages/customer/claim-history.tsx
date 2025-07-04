@@ -27,7 +27,7 @@ export default function ClaimHistory() {
   const [sortBy, setSortBy] = useState("newest");
   const { user } = useAuth();
 
-  const { data: claims, isLoading } = useQuery({
+  const { data: claims = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/users/claims"],
   });
 
@@ -40,7 +40,7 @@ export default function ClaimHistory() {
   const currentUser = userDetails || user;
 
   // Filter and sort claims
-  const filteredClaims = claims?.filter((claim: any) => {
+  const filteredClaims = (claims || []).filter((claim: any) => {
     const matchesSearch = searchQuery === "" || 
       claim.deal?.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       claim.vendor?.businessName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -48,7 +48,7 @@ export default function ClaimHistory() {
     const matchesStatus = filterStatus === "all" || claim.status === filterStatus;
     
     return matchesSearch && matchesStatus;
-  }) || [];
+  });
 
   const sortedClaims = [...filteredClaims].sort((a: any, b: any) => {
     switch (sortBy) {
@@ -62,14 +62,14 @@ export default function ClaimHistory() {
   });
 
   // Calculate summary stats
-  const totalSavings = claims?.reduce((sum: number, claim: any) => sum + parseFloat(claim.savingsAmount), 0) || 0;
-  const usedClaims = claims?.filter((claim: any) => claim.status === "used").length || 0;
-  const pendingClaims = claims?.filter((claim: any) => claim.status === "claimed").length || 0;
+  const totalSavings = (claims || []).reduce((sum: number, claim: any) => sum + parseFloat(claim.savingsAmount), 0);
+  const usedClaims = (claims || []).filter((claim: any) => claim.status === "used").length;
+  const pendingClaims = (claims || []).filter((claim: any) => claim.status === "claimed").length;
 
   const summaryStats = [
     {
       title: "Total Claims",
-      value: claims?.length || 0,
+      value: (claims || []).length,
       icon: Ticket,
       color: "text-primary",
       bgColor: "bg-primary/10",
@@ -260,9 +260,22 @@ export default function ClaimHistory() {
                       
                       {/* Savings and Status */}
                       <div className="text-right flex-shrink-0 ml-4">
-                        <p className="text-lg font-bold text-success mb-2">
-                          Saved ₹{parseFloat(claim.savingsAmount).toLocaleString('en-IN')}
-                        </p>
+                        <div className="mb-2">
+                          {claim.actualSavings && claim.billAmount ? (
+                            <div>
+                              <p className="text-lg font-bold text-success">
+                                Actual Saved ₹{parseFloat(claim.actualSavings).toLocaleString('en-IN')}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                Bill: ₹{parseFloat(claim.billAmount).toLocaleString('en-IN')}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-lg font-bold text-success">
+                              Saved ₹{parseFloat(claim.savingsAmount).toLocaleString('en-IN')}
+                            </p>
+                          )}
+                        </div>
                         <Badge className={getStatusColor(claim.status)}>
                           {claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
                         </Badge>

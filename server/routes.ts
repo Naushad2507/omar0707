@@ -871,10 +871,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Update user's total savings
+      // Update user's total savings (subtract previous actual savings if this is an update)
       const user = await storage.getUser(userId);
       const currentTotalSavings = parseFloat(user?.totalSavings || "0");
-      const newTotalSavings = currentTotalSavings + actualSavings;
+      const previousActualSavings = dealClaim.actualSavings ? parseFloat(dealClaim.actualSavings) : 0;
+      const newTotalSavings = currentTotalSavings - previousActualSavings + actualSavings;
 
       await storage.updateUser(userId, {
         totalSavings: newTotalSavings.toString(),
