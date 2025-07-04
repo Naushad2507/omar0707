@@ -552,14 +552,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get vendor info
       const vendor = await storage.getVendor(deal.vendorId);
       
-      // Include discount code for authenticated users with proper membership
+      // Include verification PIN for authenticated users for secure deal access
       res.json({
         ...deal,
         vendor,
         membershipTier,
         hasAccess: true,
-        // Include PIN for development debugging
-        verificationPin: process.env.NODE_ENV === 'development' ? deal.verificationPin : undefined
+        // Include PIN for authenticated users (required for PIN verification system)
+        verificationPin: deal.verificationPin
       });
     } catch (error) {
       console.error("Error fetching secure deal:", error);

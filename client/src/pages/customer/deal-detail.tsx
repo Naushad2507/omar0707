@@ -101,10 +101,10 @@ export default function DealDetail({ params }: DealDetailProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [showPinDialog, setShowPinDialog] = useState(false);
 
-  // Fetch deal details (public endpoint)
+  // Fetch deal details (public endpoint for non-authenticated users)
   const { data: deal, isLoading } = useQuery<Deal>({
     queryKey: [`/api/deals/${id}`],
-    enabled: !!id,
+    enabled: !!id && !isAuthenticated,
   });
 
   // Check if deal is in wishlist
@@ -113,8 +113,8 @@ export default function DealDetail({ params }: DealDetailProps) {
     enabled: !!id && isAuthenticated,
   });
 
-  // Try to fetch secure deal details with membership verification
-  const { data: secureDeal, error: secureError } = useQuery<Deal & { hasAccess: boolean; membershipTier: string }>({
+  // Try to fetch secure deal details with membership verification (for authenticated users)
+  const { data: secureDeal, error: secureError, isLoading: isSecureLoading } = useQuery<Deal & { hasAccess: boolean; membershipTier: string }>({
     queryKey: [`/api/deals/${id}/secure`],
     enabled: !!id && isAuthenticated,
     retry: false,
@@ -125,6 +125,10 @@ export default function DealDetail({ params }: DealDetailProps) {
     ? (secureError as any).response?.data as DiscountError 
     : null;
 
+  // Use authenticated deal data if available, otherwise use public deal data
+  const currentDeal = isAuthenticated ? secureDeal : deal;
+  const currentLoading = isAuthenticated ? isSecureLoading : isLoading;
+
   useEffect(() => {
     if (wishlistCheck?.inWishlist) {
       setIsFavorite(true);
@@ -133,12 +137,12 @@ export default function DealDetail({ params }: DealDetailProps) {
 
   // Increment view count when component mounts
   useEffect(() => {
-    if (deal && id) {
+    if (currentDeal && id) {
       apiRequest(`/api/deals/${id}/view`, "POST", {}).catch(() => {
         // Silently fail view tracking
       });
     }
-  }, [deal, id]);
+  }, [currentDeal, id]);
 
 
 
@@ -224,22 +228,22 @@ export default function DealDetail({ params }: DealDetailProps) {
       return;
     }
     
-    claimDealMutation.mutate(deal!.id);
+    claimDealMutation.mutate(currentDeal!.id);
   };
 
 
 
   const canAccessDeal = () => {
-    if (!user || !deal) return false;
+    if (!user || !currentDeal) return false;
     
     // If deal requires basic membership or no specific membership, everyone can access
-    if (!deal.requiredMembership || deal.requiredMembership === 'basic') {
+    if (!currentDeal.requiredMembership || currentDeal.requiredMembership === 'basic') {
       return true;
     }
     
     const membershipLevels = { basic: 1, premium: 2, ultimate: 3 };
     const userLevel = membershipLevels[user.membershipPlan as keyof typeof membershipLevels] || 1;
-    const requiredLevel = membershipLevels[deal.requiredMembership as keyof typeof membershipLevels] || 1;
+    const requiredLevel = membershipLevels[currentDeal.requiredMembership as keyof typeof membershipLevels] || 1;
     
     return userLevel >= requiredLevel;
   };
@@ -252,7 +256,7 @@ export default function DealDetail({ params }: DealDetailProps) {
     });
   };
 
-  if (isLoading) {
+  if (currentLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card>
@@ -265,7 +269,7 @@ export default function DealDetail({ params }: DealDetailProps) {
     );
   }
 
-  if (!deal) {
+  if (!currentDeal) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card>
@@ -281,8 +285,8 @@ export default function DealDetail({ params }: DealDetailProps) {
     );
   }
 
-  const isExpired = new Date(deal.validUntil) < new Date();
-  const isFullyRedeemed = deal.maxRedemptions && (deal.currentRedemptions || 0) >= deal.maxRedemptions;
+  const isExpired = new Date(currentDeal.validUntil) < new Date();
+  const isFullyRedeemed = currentDeal.maxRedemptions && (currentDeal.currentRedemptions || 0) >= currentDeal.maxRedemptions;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -303,10 +307,10 @@ export default function DealDetail({ params }: DealDetailProps) {
           {/* Deal Image */}
           <div className="relative">
             <Card className="overflow-hidden">
-              {deal.imageUrl ? (
+              {currentDeal.imageUrl ? (
                 <img
-                  src={deal.imageUrl}
-                  alt={deal.title}
+                  src={currentDeal.imageUrl}
+                  alt={currentDeal.title}
                   className="w-full h-96 object-cover"
                 />
               ) : (
@@ -318,7 +322,7 @@ export default function DealDetail({ params }: DealDetailProps) {
               {/* Discount overlay */}
               <div className="absolute top-4 left-4">
                 <Badge className="bg-red-500 text-white text-xl font-bold px-4 py-2">
-                  {deal.discountPercentage}% OFF
+                  {currentDeal.discountPercentage}% OFF
                 </Badge>
               </div>
 
@@ -342,15 +346,15 @@ export default function DealDetail({ params }: DealDetailProps) {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-2xl mb-2">{deal.title}</CardTitle>
-                    <p className="text-gray-600 mb-4">{deal.description}</p>
+                    <CardTitle className="text-2xl mb-2">{currentDeal.title}</CardTitle>
+                    <p className="text-gray-600 mb-4">{currentDeal.description}</p>
                     
                     <div className="flex flex-wrap gap-2 mb-4">
-                      <Badge className={categoryColors[deal.category as keyof typeof categoryColors] || "bg-gray-100 text-gray-800"}>
-                        {deal.category}
+                      <Badge className={categoryColors[currentDeal.category as keyof typeof categoryColors] || "bg-gray-100 text-gray-800"}>
+                        {currentDeal.category}
                       </Badge>
-                      <Badge className={membershipColors[deal.requiredMembership as keyof typeof membershipColors]}>
-                        {deal.requiredMembership}
+                      <Badge className={membershipColors[currentDeal.requiredMembership as keyof typeof membershipColors]}>
+                        {currentDeal.requiredMembership}
                       </Badge>
                     </div>
                   </div>
@@ -361,7 +365,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                 {/* Discount Info */}
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
-                    <span className="text-2xl font-bold text-green-600">{deal.discountPercentage}% OFF</span>
+                    <span className="text-2xl font-bold text-green-600">{currentDeal.discountPercentage}% OFF</span>
                     <span className="text-sm text-gray-600">on total bill</span>
                   </div>
                   <Badge variant="secondary" className="text-sm">
@@ -375,31 +379,31 @@ export default function DealDetail({ params }: DealDetailProps) {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4 text-gray-500" />
-                    <span>Valid until {formatDate(deal.validUntil)}</span>
+                    <span>Valid until {formatDate(currentDeal.validUntil)}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Eye className="h-4 w-4 text-gray-500" />
-                    <span>{deal.viewCount || 0} views</span>
+                    <span>{currentDeal.viewCount || 0} views</span>
                   </div>
-                  {deal.maxRedemptions && (
+                  {currentDeal.maxRedemptions && (
                     <div className="flex items-center space-x-2">
                       <Users className="h-4 w-4 text-gray-500" />
-                      <span>{deal.currentRedemptions || 0}/{deal.maxRedemptions} claimed</span>
+                      <span>{currentDeal.currentRedemptions || 0}/{currentDeal.maxRedemptions} claimed</span>
                     </div>
                   )}
                 </div>
 
                 {/* Vendor Info */}
-                {deal.vendor && (
+                {currentDeal.vendor && (
                   <>
                     <Separator />
                     <div className="flex items-center space-x-3">
                       <Store className="h-5 w-5 text-gray-500" />
                       <div>
-                        <p className="font-medium">{deal.vendor.businessName}</p>
+                        <p className="font-medium">{currentDeal.vendor.businessName}</p>
                         <p className="text-sm text-gray-600 flex items-center">
                           <MapPin className="h-3 w-3 mr-1" />
-                          {deal.vendor.city}
+                          {currentDeal.vendor.city}
                         </p>
                       </div>
                     </div>
@@ -498,7 +502,7 @@ export default function DealDetail({ params }: DealDetailProps) {
         open={showPinDialog}
         onOpenChange={setShowPinDialog}
         dealId={Number(id)}
-        dealTitle={deal?.title || ""}
+        dealTitle={currentDeal?.title || ""}
         onSuccess={async () => {
           setShowPinDialog(false);
           // Comprehensive data refresh after successful PIN verification
