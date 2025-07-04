@@ -57,7 +57,7 @@ export default function ClaimHistory() {
   // Update bill amount mutation
   const updateBillMutation = useMutation({
     mutationFn: async ({ dealId, billAmount, savings }: { dealId: number, billAmount: number, savings: number }) => {
-      return apiRequest('POST', `/api/deals/${dealId}/update-bill`, {
+      return apiRequest(`/api/deals/${dealId}/update-bill`, 'POST', {
         billAmount,
         actualSavings: savings
       });

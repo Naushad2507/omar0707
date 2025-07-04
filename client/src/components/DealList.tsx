@@ -74,7 +74,7 @@ const DealList = () => {
   // Update bill amount mutation
   const updateBillMutation = useMutation({
     mutationFn: async ({ dealId, billAmount, savings }: { dealId: number, billAmount: number, savings: number }) => {
-      return apiRequest('POST', `/api/deals/${dealId}/update-bill`, {
+      return apiRequest(`/api/deals/${dealId}/update-bill`, 'POST', {
         billAmount,
         actualSavings: savings
       });
@@ -107,7 +107,7 @@ const DealList = () => {
   // Claim deal mutation
   const claimMutation = useMutation({
     mutationFn: async (dealId: number) => {
-      return apiRequest('POST', `/api/deals/${dealId}/claim`);
+      return apiRequest(`/api/deals/${dealId}/claim`, 'POST');
     },
     onSuccess: async (claimData: any, dealId) => {
       // Generate QR code for the claim
@@ -224,7 +224,7 @@ const DealList = () => {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {deals.map((deal) => {
+          {deals.map((deal, index) => {
             const isExpired = new Date(deal.validUntil) < new Date();
             const isLimitReached = deal.maxRedemptions && deal.currentRedemptions && 
               deal.currentRedemptions >= deal.maxRedemptions;
@@ -245,7 +245,7 @@ const DealList = () => {
             
             return (
               <Card 
-                key={deal.id} 
+                key={`deal-${deal.id}-${index}`} 
                 className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/20 cursor-pointer"
                 onClick={() => handleDealClick(deal.id)}
               >

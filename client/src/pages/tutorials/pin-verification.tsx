@@ -16,7 +16,10 @@ import {
   Eye,
   MessageSquare,
   Clock,
-  Star
+  Star,
+  Calculator,
+  Receipt,
+  MousePointer2
 } from "lucide-react";
 
 export default function PinVerificationTutorial() {
@@ -107,6 +110,18 @@ export default function PinVerificationTutorial() {
                       Enter the 4-digit PIN in the verification dialog to complete your redemption. Only verified purchases update your savings and dashboard statistics.
                     </p>
                   </div>
+
+                  <ArrowRight className="w-6 h-6 text-gray-400 mx-auto" />
+
+                  <div className="text-center">
+                    <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Calculator className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">4. Add Bill Amount (Optional)</h3>
+                    <p className="text-gray-600 text-sm">
+                      After PIN verification, enter your actual bill amount to calculate precise savings. This provides accurate spending insights and real savings tracking.
+                    </p>
+                  </div>
                 </div>
 
                 <Separator className="my-6" />
@@ -143,6 +158,20 @@ export default function PinVerificationTutorial() {
                       <div>
                         <p className="font-medium">Accurate Tracking</p>
                         <p className="text-sm text-gray-600">Dashboard statistics reflect only genuine store visits and purchases</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Bill Amount Tracking</p>
+                        <p className="text-sm text-gray-600">Add your actual purchase amount for precise savings calculation</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Optional but Recommended</p>
+                        <p className="text-sm text-gray-600">You can skip bill entry or add it later for convenience</p>
                       </div>
                     </div>
                   </div>

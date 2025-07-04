@@ -18,6 +18,8 @@ import {
   Store,
   BarChart3,
   Plus,
+  MousePointer2,
+  Calculator,
   Eye,
   Clock,
   HelpCircle,
@@ -84,21 +86,37 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
     {
       id: 5,
       title: "Claim Deals Online",
-      description: "Reserve deals for in-store redemption",
-      icon: Tag,
-      content: "When you find a deal you like, click 'Claim Deal' to reserve it online. This creates a pending claim - no savings are added yet until you visit the store and verify your purchase.",
-      action: "Claim a Deal"
+      description: "Save deals for in-store redemption",
+      icon: MousePointer2,
+      content: "Found a deal you want? Click 'Claim Deal' to reserve it for in-store use. This creates a pending claim that you'll complete at the vendor's location.",
+      action: "Try Claiming"
     },
     {
       id: 6,
       title: "Visit Store & Verify PIN",
-      description: "Complete redemption with secure verification",
+      description: "Complete your deal redemption in-store",
       icon: Shield,
-      content: "Visit the participating store with your claimed deal. Ask the vendor for the 4-digit PIN, then enter it in the app to verify your purchase. Only verified redemptions add savings to your account and update your statistics.",
-      action: "Verify PIN"
+      content: "Take your claimed deal to the vendor's store. Ask the vendor for their 4-digit verification PIN, then enter it in the app to verify your purchase. This works even without internet!",
+      action: "Learn PIN Process"
     },
     {
       id: 7,
+      title: "Add Your Bill Amount",
+      description: "Calculate exact savings from your purchase",
+      icon: Calculator,
+      content: "After PIN verification, you can enter your actual bill amount to see your precise savings. This helps track your real spending and gives you accurate insights into your deal benefits.",
+      action: "Try Bill Entry"
+    },
+    {
+      id: 8,
+      title: "Track Your Savings",
+      description: "Monitor your deals and savings dashboard",
+      icon: BarChart3,
+      content: "View your claimed deals, total savings, and deal history in your dashboard. Track which deals are pending, completed, and see your overall savings progress.",
+      action: "View Dashboard"
+    },
+    {
+      id: 9,
       title: "Save Favorites",
       description: "Heart icon to save deals for later",
       icon: Heart,
@@ -150,14 +168,30 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
     },
     {
       id: 4,
-      title: "Customer Redemption Process",
-      description: "Help customers verify their claimed deals",
-      icon: Shield,
-      content: "When customers visit your store with claimed deals, they'll ask for the 4-digit PIN. Provide the PIN so they can verify their purchase in the app. Only verified redemptions count toward their savings and your sales analytics.",
-      action: "Learn Process"
+      title: "Understanding Deal Claims",
+      description: "How customers claim your deals online",
+      icon: MousePointer2,
+      content: "Customers can claim your deals online, which creates a 'pending' status. This reserves the deal but doesn't count as a sale yet. Customers must visit your store to complete redemption.",
+      action: "Learn Claims"
     },
     {
       id: 5,
+      title: "PIN Verification Process",
+      description: "Help customers complete deal redemption",
+      icon: Shield,
+      content: "When customers visit your store with claimed deals, they'll ask for the 4-digit PIN. Give them the PIN so they can verify their purchase in the app. This confirms the sale and updates both your analytics and their savings.",
+      action: "Learn PIN Process"
+    },
+    {
+      id: 6,
+      title: "Bill Amount Tracking",
+      description: "Customers can add actual purchase amounts",
+      icon: Calculator,
+      content: "After PIN verification, customers can enter their actual bill amount to calculate precise savings. This gives them better insights and helps track real spending patterns versus estimated savings.",
+      action: "Learn Bill Tracking"
+    },
+    {
+      id: 7,
       title: "Deal Management",
       description: "Edit, activate, and monitor your deals",
       icon: Target,

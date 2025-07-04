@@ -121,7 +121,7 @@ export default function VendorDealsEnhanced() {
         ...data,
         selectedCities: data.dealAvailability === "all-stores" ? null : data.selectedCities,
       };
-      return apiRequest('POST', '/api/vendors/deals', payload);
+      return apiRequest('/api/vendors/deals', 'POST', payload);
     },
     onSuccess: () => {
       toast({
@@ -484,7 +484,8 @@ export default function VendorDealsEnhanced() {
                       </div>
                     </div>
                   </div>
-
+                  </div>
+                  
                   {/* Agreement */}
                   <div className="border rounded-lg p-2">
                     <FormField
