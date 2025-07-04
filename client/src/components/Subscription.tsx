@@ -42,11 +42,23 @@ interface PaymentResponse {
   message: string;
 }
 
+// Razorpay Test Configuration
+const RAZORPAY_CONFIG = {
+  testMode: true,
+  // Use Razorpay test key - user should replace with actual test key
+  keyId: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_XXXXXXXXXXXXXXX',
+  testCards: {
+    success: '4111111111111111', // Always succeeds
+    failure: '4000000000000002'  // Always fails
+  },
+  testUPI: 'success@razorpay'
+};
+
 const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
   {
     id: 'premium',
     name: 'Premium',
-    price: 500,
+    price: 500, // ₹500 in test mode
     duration: 'month',
     features: [
       'Access to premium deals',
@@ -165,14 +177,27 @@ const Subscription = () => {
         throw new Error('Failed to load Razorpay SDK');
       }
 
-      // Razorpay payment options
+      // Razorpay payment options (TEST MODE)
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID || 'rzp_test_1234567890', // Replace with actual key
+        key: RAZORPAY_CONFIG.keyId, // Test key from configuration
         amount: plan.price * 100, // Amount in paise
         currency: 'INR',
-        name: 'Instoredealz',
-        description: `${plan.name} Subscription - ${plan.duration}ly`,
+        name: 'Instoredealz (TEST MODE)',
+        description: `${plan.name} Subscription - ${plan.duration}ly (TEST)`,
         image: '/logo.png', // Add your logo
+        theme: {
+          color: '#3399cc'
+        },
+        modal: {
+          ondismiss: () => {
+            setIsPaymentLoading(false);
+            toast({
+              title: "Payment Cancelled",
+              description: "Payment was cancelled by user",
+              variant: "default",
+            });
+          }
+        },
         handler: async (response: any) => {
           // Payment successful
           try {
@@ -189,15 +214,6 @@ const Subscription = () => {
         prefill: {
           name: user?.name || '',
           email: user?.email || '',
-        },
-        theme: {
-          color: '#3B82F6',
-        },
-        modal: {
-          ondismiss: () => {
-            setIsPaymentLoading(false);
-            setSelectedPlan(null);
-          },
         },
       };
 
