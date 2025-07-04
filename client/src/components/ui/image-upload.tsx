@@ -33,33 +33,71 @@ export default function ImageUpload({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = (file: File) => {
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calculate new dimensions (max 1200px width/height)
+        const maxSize = 1200;
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, width, height);
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        resolve(compressedDataUrl);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleFile = async (file: File) => {
     setError(null);
     
-    // Validate file size
-    if (file.size > maxSizeInMB * 1024 * 1024) {
-      setError(`File size must be less than ${maxSizeInMB}MB`);
-      return;
-    }
-
     // Validate file type
     if (!file.type.startsWith('image/')) {
       setError('Please select an image file');
       return;
     }
 
-    // Call the onFileSelect callback if provided
-    if (onFileSelect) {
-      onFileSelect(file);
-    }
+    try {
+      // Compress image before processing
+      const compressedDataUrl = await compressImage(file);
+      
+      // Check compressed size (rough estimate)
+      const compressedSize = (compressedDataUrl.length * 3) / 4; // Base64 to bytes
+      if (compressedSize > maxSizeInMB * 1024 * 1024) {
+        setError(`Image too large even after compression. Please use a smaller image.`);
+        return;
+      }
 
-    // Convert to base64 for preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      onChange(result);
-    };
-    reader.readAsDataURL(file);
+      // Call the onFileSelect callback if provided
+      if (onFileSelect) {
+        onFileSelect(file);
+      }
+
+      onChange(compressedDataUrl);
+    } catch (error) {
+      setError('Failed to process image');
+    }
   };
 
   const handleDrag = (e: React.DragEvent) => {
