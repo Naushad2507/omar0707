@@ -841,10 +841,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/deals/:id/update-bill', requireAuth, async (req: AuthenticatedRequest, res) => {
     try {
       const dealId = parseInt(req.params.id);
-      const { billAmount, actualSavings } = req.body;
+      const { billAmount, actualSavings, savings } = req.body;
       const userId = req.user!.id;
 
-      if (!billAmount || !actualSavings || billAmount <= 0 || actualSavings <= 0) {
+      // Accept either 'actualSavings' or 'savings' parameter for flexibility
+      const savingsAmount = actualSavings || savings;
+
+      if (!billAmount || !savingsAmount || billAmount <= 0 || savingsAmount <= 0) {
         return res.status(400).json({ 
           success: false, 
           message: "Valid bill amount and savings are required" 
@@ -875,7 +878,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       const currentTotalSavings = parseFloat(user?.totalSavings || "0");
       const previousActualSavings = dealClaim.actualSavings ? parseFloat(dealClaim.actualSavings) : 0;
-      const newTotalSavings = currentTotalSavings - previousActualSavings + actualSavings;
+      const newTotalSavings = currentTotalSavings - previousActualSavings + savingsAmount;
 
       await storage.updateUser(userId, {
         totalSavings: newTotalSavings.toString(),
@@ -884,7 +887,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update the claim with bill amount and actual savings
       await storage.updateDealClaim(dealClaim.id, {
         billAmount: billAmount.toString(),
-        actualSavings: actualSavings.toString(),
+        actualSavings: savingsAmount.toString(),
         status: "completed"
       });
 
@@ -896,7 +899,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           dealId,
           dealTitle: deal.title,
           billAmount,
-          actualSavings,
+          actualSavings: savingsAmount,
           newTotalSavings,
           timestamp: new Date().toISOString()
         },
@@ -908,7 +911,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         message: "Bill amount updated successfully!",
         billAmount,
-        actualSavings,
+        actualSavings: savingsAmount,
         newTotalSavings
       });
 

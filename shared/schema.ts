@@ -298,7 +298,7 @@ export const signupSchema = z.object({
   phone: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
-  role: z.enum(["customer", "vendor"]).default("customer"),
+  role: z.enum(["customer", "vendor", "admin", "superadmin"]).default("customer"),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

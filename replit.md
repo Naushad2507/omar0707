@@ -115,6 +115,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 4, 2025 - Critical Authentication & Bill Amount Fixes
+- **Admin Role Creation Fix**: Updated signup schema to allow admin and superadmin role creation, resolving validation error that blocked admin user registration
+- **Bill Amount Parameter Flexibility**: Enhanced `/api/deals/:id/update-bill` endpoint to accept both `actualSavings` and `savings` parameters for better frontend compatibility
+- **Token Generation Fix**: Resolved admin token creation sequence issue - admin users can now be created and login successfully with proper JWT token generation
+- **Parameter Validation Enhancement**: Improved bill amount validation to handle multiple parameter formats while maintaining data integrity
+- **Testing Verification**: Complete authentication flow tested - admin signup, login, token validation, and bill amount updates all working correctly
+
 ### July 4, 2025 - Enhanced Dummy Deals with Unique 4-Digit PIN Verification System
 - **Complete Dummy Data Replacement**: Successfully removed all old dummy deals and replaced with new high-quality deals featuring unique 4-digit PIN verification
 - **Enhanced Deal Variety**: Created 5 deals per category (40 total) across 8 categories with professional titles and detailed descriptions
