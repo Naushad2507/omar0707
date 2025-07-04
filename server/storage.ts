@@ -387,74 +387,209 @@ export class MemStorage implements IStorage {
     
     const dealTemplates = {
       fashion: {
-        titles: ["50% Off Designer Clothes", "Buy 2 Get 1 Free Shoes", "Summer Collection Sale", "Winter Wear Discount", "Ethnic Wear Special"],
+        titles: [
+          "Premium Designer Clothing Collection",
+          "Luxury Footwear Showcase",
+          "Trendy Accessories Boutique",
+          "Ethnic Wear Festival Special",
+          "Seasonal Fashion Clearance"
+        ],
+        descriptions: [
+          "Discover premium designer clothing with authentic materials and craftsmanship. Limited edition pieces from renowned fashion houses.",
+          "Step into luxury with our curated footwear collection featuring premium leather and designer styles.",
+          "Complete your look with trending accessories from top fashion brands and exclusive collections.",
+          "Celebrate traditions with our handcrafted ethnic wear collection featuring silk, cotton, and premium fabrics.",
+          "End-of-season clearance featuring high-quality fashion items at unbeatable prices."
+        ],
         images: ["https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&h=300&fit=crop"]
       },
       electronics: {
-        titles: ["Smartphone Mega Sale", "Laptop Clearance", "Gaming Console Deals", "Smart TV Offers", "Headphones Discount"],
+        titles: [
+          "Latest Smartphone Technology Hub",
+          "Gaming Electronics Paradise",
+          "Smart Home Device Center",
+          "Professional Audio Equipment",
+          "Computer & Laptop Warehouse"
+        ],
+        descriptions: [
+          "Experience cutting-edge smartphone technology with latest processors, cameras, and innovative features.",
+          "Ultimate gaming destination with high-performance consoles, accessories, and gaming peripherals.",
+          "Transform your home with smart devices, automation systems, and IoT solutions.",
+          "Professional-grade audio equipment for musicians, content creators, and audiophiles.",
+          "High-performance computers and laptops for work, gaming, and creative professionals."
+        ],
         images: ["https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop"]
       },
       restaurants: {
-        titles: ["Dine-in 40% Off", "Free Dessert with Main Course", "Weekend Buffet Special", "Happy Hours 50% Off", "Family Meal Combo"],
+        titles: [
+          "Gourmet Fine Dining Experience",
+          "Authentic Street Food Festival",
+          "International Cuisine Journey",
+          "Family Restaurant Special",
+          "Chef's Signature Tasting Menu"
+        ],
+        descriptions: [
+          "Indulge in exquisite fine dining with chef-curated menus, premium ingredients, and exceptional service.",
+          "Explore authentic street food flavors from across India with traditional recipes and fresh ingredients.",
+          "Journey through global cuisines with authentic flavors from Italian, Chinese, Mexican, and more.",
+          "Perfect family dining with kid-friendly options, comfortable seating, and wholesome meals.",
+          "Experience the chef's creativity with signature dishes featuring seasonal ingredients and innovative techniques."
+        ],
         images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop"]
       },
       beauty: {
-        titles: ["Spa Package 60% Off", "Skincare Bundle Deal", "Makeup Masterclass Free", "Hair Treatment Special", "Wellness Package"],
+        titles: [
+          "Luxury Spa & Wellness Retreat",
+          "Professional Beauty Makeover",
+          "Organic Skincare Treatment",
+          "Advanced Hair Styling Studio",
+          "Holistic Wellness Package"
+        ],
+        descriptions: [
+          "Rejuvenate with luxury spa treatments, therapeutic massages, and wellness therapies in a serene environment.",
+          "Transform your look with professional makeup, styling, and beauty consultation from expert artists.",
+          "Nourish your skin with organic treatments using natural ingredients and advanced skincare technology.",
+          "Experience professional hair styling, coloring, and treatments with premium products and expert stylists.",
+          "Complete wellness journey combining beauty treatments, relaxation therapy, and health consultation."
+        ],
         images: ["https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&h=300&fit=crop"]
       },
       travel: {
-        titles: ["Weekend Getaway 30% Off", "Flight + Hotel Combo", "Adventure Tour Package", "Luxury Resort Deal", "Backpacking Special"],
+        titles: [
+          "Himalayan Adventure Expedition",
+          "Luxury Beach Resort Getaway",
+          "Cultural Heritage Tour Package",
+          "Wildlife Safari Experience",
+          "Backpacking Adventure Trail"
+        ],
+        descriptions: [
+          "Conquer the majestic Himalayas with guided trekking, mountain camping, and breathtaking scenic views.",
+          "Relax at premium beach resorts with oceanfront accommodations, water sports, and spa treatments.",
+          "Explore India's rich heritage with guided tours of historical monuments, museums, and cultural sites.",
+          "Experience wildlife in natural habitats with guided safaris, bird watching, and nature photography.",
+          "Adventure-packed backpacking with hiking trails, camping, and exploration of hidden gems."
+        ],
         images: ["https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop"]
       },
       home: {
-        titles: ["Furniture Sale 45% Off", "Home Decor Bundle", "Kitchen Appliances Deal", "Garden Equipment Offer", "Smart Home Package"],
+        titles: [
+          "Modern Furniture Collection",
+          "Smart Home Automation",
+          "Kitchen Appliance Upgrade",
+          "Garden & Outdoor Living",
+          "Interior Design Consultation"
+        ],
+        descriptions: [
+          "Transform your space with contemporary furniture featuring premium materials and ergonomic design.",
+          "Upgrade to smart home technology with automated lighting, security, and climate control systems.",
+          "Modernize your kitchen with energy-efficient appliances, innovative features, and sleek designs.",
+          "Create beautiful outdoor spaces with garden furniture, landscaping, and outdoor entertainment systems.",
+          "Professional interior design services with space planning, color consultation, and style recommendations."
+        ],
         images: ["https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"]
       },
       automotive: {
-        titles: ["Car Service 50% Off", "Bike Accessories Deal", "Fuel Card Cashback", "Insurance Premium Discount", "Spare Parts Sale"],
+        titles: [
+          "Premium Car Service Package",
+          "Motorcycle Maintenance Special",
+          "Auto Parts & Accessories",
+          "Vehicle Customization Hub",
+          "Complete Auto Care Solution"
+        ],
+        descriptions: [
+          "Comprehensive car servicing with genuine parts, expert technicians, and advanced diagnostic equipment.",
+          "Professional motorcycle maintenance with specialized tools, quality parts, and experienced mechanics.",
+          "Genuine auto parts and accessories with warranty, installation support, and compatibility guarantee.",
+          "Transform your vehicle with custom modifications, performance upgrades, and aesthetic enhancements.",
+          "Complete automotive care including servicing, repairs, insurance, and roadside assistance."
+        ],
         images: ["https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=300&fit=crop"]
       },
       health: {
-        titles: ["Health Checkup Package", "Gym Membership 40% Off", "Yoga Classes Free Trial", "Nutrition Consultation", "Medical Insurance Deal"],
+        titles: [
+          "Comprehensive Health Checkup",
+          "Fitness Training Program",
+          "Nutrition & Diet Consultation",
+          "Mental Wellness Therapy",
+          "Preventive Healthcare Package"
+        ],
+        descriptions: [
+          "Complete health assessment with advanced diagnostics, lab tests, and specialist consultations.",
+          "Personalized fitness programs with certified trainers, nutrition guidance, and progress tracking.",
+          "Expert nutrition consultation with customized diet plans and ongoing support for healthy living.",
+          "Professional mental health support with therapy sessions, stress management, and wellness coaching.",
+          "Preventive healthcare with regular screenings, vaccinations, and health monitoring services."
+        ],
         images: ["https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop"]
       }
     };
 
+    const cities = [
+      { name: "Mumbai", state: "Maharashtra", lat: 19.0760, lng: 72.8777 },
+      { name: "Delhi", state: "Delhi", lat: 28.7041, lng: 77.1025 },
+      { name: "Bangalore", state: "Karnataka", lat: 12.9716, lng: 77.5946 },
+      { name: "Hyderabad", state: "Telangana", lat: 17.3850, lng: 78.4867 },
+      { name: "Chennai", state: "Tamil Nadu", lat: 13.0827, lng: 80.2707 },
+      { name: "Kolkata", state: "West Bengal", lat: 22.5726, lng: 88.3639 },
+      { name: "Pune", state: "Maharashtra", lat: 18.5204, lng: 73.8567 },
+      { name: "Ahmedabad", state: "Gujarat", lat: 23.0225, lng: 72.5714 }
+    ];
+
     const membershipRequirements = ["basic", "premium", "ultimate"];
+    
+    // Generate a variety of 4-digit PINs using different patterns
+    const generatePin = (dealId: number): string => {
+      const patterns = [
+        () => `${1000 + dealId}`, // Sequential starting from 1000
+        () => `${2000 + (dealId * 3) % 1000}`, // Mathematical pattern starting from 2000
+        () => `${3000 + (dealId * 7) % 1000}`, // Mathematical pattern starting from 3000
+        () => `${4000 + (dealId * 11) % 1000}`, // Mathematical pattern starting from 4000
+        () => `${5000 + (dealId * 13) % 1000}`, // Mathematical pattern starting from 5000
+        () => `${6000 + (dealId * 17) % 1000}`, // Mathematical pattern starting from 6000
+        () => `${7000 + (dealId * 19) % 1000}`, // Mathematical pattern starting from 7000
+        () => `${8000 + (dealId * 23) % 1000}`, // Mathematical pattern starting from 8000
+      ];
+      return patterns[dealId % patterns.length]();
+    };
     
     categories.forEach((category, categoryIndex) => {
       const templates = dealTemplates[category as keyof typeof dealTemplates];
       
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 5; i++) { // Reduced to 5 deals per category for better quality
         const vendorId = (categoryIndex * 2) + 1 + (i % 2); // Distribute across vendors
         const titleIndex = i % templates.titles.length;
-        const membershipReq = i < 3 ? null : membershipRequirements[i % 3];
+        const descriptionIndex = i % templates.descriptions.length;
+        const membershipReq = i < 2 ? "basic" : membershipRequirements[i % 3];
+        const dealId = this.currentDealId++;
+        const cityIndex = (categoryIndex + i) % cities.length;
         
         const deal: Deal = {
-          id: this.currentDealId++,
+          id: dealId,
           title: templates.titles[titleIndex],
-          description: `Amazing ${category} deal with excellent value for money. Limited time offer with premium quality guaranteed.`,
+          description: templates.descriptions[descriptionIndex],
           vendorId: vendorId,
           category: category,
+          subcategory: null,
           imageUrl: templates.images[0],
-          originalPrice: `${1000 + (i * 200)}.00`,
-          discountedPrice: `${500 + (i * 100)}.00`,
-          discountPercentage: 30 + (i * 5),
-          verificationPin: `${1000 + i}`, // 4-digit PIN for offline verification
+          originalPrice: null, // Removed pricing as per user preference
+          discountedPrice: null, // Removed pricing as per user preference
+          discountPercentage: 25 + (i * 10), // 25%, 35%, 45%, 55%, 65%
+          verificationPin: generatePin(dealId), // Unique 4-digit PIN for each deal
           validFrom: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
-          validUntil: new Date(Date.now() + ((30 - i) * 24 * 60 * 60 * 1000)),
-          maxRedemptions: 100 + (i * 10),
-          currentRedemptions: i * 5,
+          validUntil: new Date(Date.now() + ((45 - i * 5) * 24 * 60 * 60 * 1000)), // Varying validity periods
+          maxRedemptions: 50 + (i * 25), // 50, 75, 100, 125, 150
+          currentRedemptions: Math.floor(Math.random() * 20), // Random current redemptions
           isActive: true,
-          isApproved: i < 8, // Most deals approved
-          approvedBy: i < 8 ? 1 : null,
-          viewCount: (i + 1) * 25,
-          requiredMembership: membershipReq || "basic",
-          address: `${category.charAt(0).toUpperCase() + category.slice(1)} Store, Shop ${i + 1}, Main Market, Mumbai, Maharashtra 400001`,
-          latitude: `19.${75000 + (i * 100)}`,
-          longitude: `72.${83000 + (i * 50)}`,
+          isApproved: true, // All deals approved for demo
+          approvedBy: 1,
+          viewCount: Math.floor(Math.random() * 500) + 50, // Random view count
+          requiredMembership: membershipReq,
+          address: `${templates.titles[titleIndex]}, Sector ${i + 1}, ${cities[cityIndex].name}, ${cities[cityIndex].state}`,
+          latitude: `${cities[cityIndex].lat + (Math.random() - 0.5) * 0.1}`, // Small random offset
+          longitude: `${cities[cityIndex].lng + (Math.random() - 0.5) * 0.1}`, // Small random offset
           createdAt: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
         };
+        
         deals.push(deal);
       }
     });
@@ -614,7 +749,7 @@ export class MemStorage implements IStorage {
       id: this.currentDealId++,
       ...insertDeal,
       imageUrl: insertDeal.imageUrl || null,
-
+      subcategory: insertDeal.subcategory || null,
       originalPrice: insertDeal.originalPrice || null,
       discountedPrice: insertDeal.discountedPrice || null,
       maxRedemptions: insertDeal.maxRedemptions || null,
