@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { 
   Search, 
@@ -18,14 +22,22 @@ import {
   PiggyBank,
   Ticket,
   Filter,
-  FileText
+  FileText,
+  Receipt,
+  Calculator,
+  Loader2
 } from "lucide-react";
 
 export default function ClaimHistory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [billingClaim, setBillingClaim] = useState<any>(null);
+  const [billAmount, setBillAmount] = useState<string>('');
+  const [calculatedSavings, setCalculatedSavings] = useState<number>(0);
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: claims = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/users/claims"],
@@ -33,6 +45,46 @@ export default function ClaimHistory() {
 
   const { data: userDetails } = useQuery({
     queryKey: ["/api/auth/me"],
+  });
+
+  // Calculate savings based on bill amount
+  const calculateSavings = (billAmountValue: string, discountPercentage: number) => {
+    const amount = parseFloat(billAmountValue);
+    if (isNaN(amount) || amount <= 0) return 0;
+    return (amount * discountPercentage) / 100;
+  };
+
+  // Update bill amount mutation
+  const updateBillMutation = useMutation({
+    mutationFn: async ({ dealId, billAmount, savings }: { dealId: number, billAmount: number, savings: number }) => {
+      return apiRequest('POST', `/api/deals/${dealId}/update-bill`, {
+        billAmount,
+        actualSavings: savings
+      });
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Bill Updated Successfully!",
+        description: `Your actual savings of ₹${calculatedSavings.toFixed(2)} have been recorded.`,
+        variant: "default",
+      });
+      
+      // Reset and close billing dialog
+      setBillingClaim(null);
+      setBillAmount('');
+      setCalculatedSavings(0);
+      
+      // Refresh user data to update dashboard
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update bill amount. Please try again.",
+        variant: "destructive",
+      });
+    }
   });
 
   if (!user) return null;
@@ -280,6 +332,19 @@ export default function ClaimHistory() {
                           {claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
                         </Badge>
                         
+                        {/* Add Bill Amount Button for used claims without bill amount */}
+                        {claim.status === 'used' && !claim.billAmount && (
+                          <Button
+                            onClick={() => setBillingClaim(claim)}
+                            variant="outline"
+                            className="mt-2 w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
+                            size="sm"
+                          >
+                            <Receipt className="h-4 w-4 mr-2" />
+                            Add Bill Amount
+                          </Button>
+                        )}
+                        
                         {claim.deal?.discountCode && (
                           <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
                             <span className="font-mono">{claim.deal.discountCode}</span>
@@ -310,6 +375,99 @@ export default function ClaimHistory() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bill Amount Dialog */}
+      <Dialog open={!!billingClaim} onOpenChange={() => setBillingClaim(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5 text-orange-600" />
+              Calculate Your Savings
+            </DialogTitle>
+            <DialogDescription>
+              Enter the total bill amount to calculate your actual savings
+            </DialogDescription>
+          </DialogHeader>
+          
+          {billingClaim && (
+            <div className="space-y-4 py-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-lg mb-1">{billingClaim.deal?.title}</h3>
+                <p className="text-sm text-gray-600">Discount: {billingClaim.deal?.discountPercentage}% OFF</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="bill-amount">Total Bill Amount (₹)</Label>
+                <Input
+                  id="bill-amount"
+                  type="number"
+                  placeholder="Enter your total bill amount"
+                  value={billAmount}
+                  onChange={(e) => {
+                    setBillAmount(e.target.value);
+                    const savings = calculateSavings(e.target.value, billingClaim.deal?.discountPercentage || 0);
+                    setCalculatedSavings(savings);
+                  }}
+                  className="text-lg"
+                />
+              </div>
+              
+              {billAmount && calculatedSavings > 0 && (
+                <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-green-700">Your Savings:</span>
+                    <span className="text-xl font-bold text-green-600">
+                      ₹{calculatedSavings.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {billingClaim.deal?.discountPercentage}% off ₹{billAmount}
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setBillingClaim(null);
+                    setBillAmount('');
+                    setCalculatedSavings(0);
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    if (calculatedSavings > 0) {
+                      updateBillMutation.mutate({
+                        dealId: billingClaim.deal?.id,
+                        billAmount: parseFloat(billAmount),
+                        savings: calculatedSavings
+                      });
+                    }
+                  }}
+                  disabled={!billAmount || calculatedSavings <= 0 || updateBillMutation.isPending}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700"
+                >
+                  {updateBillMutation.isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Receipt className="h-4 w-4 mr-2" />
+                      Record Savings
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
