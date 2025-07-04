@@ -146,22 +146,28 @@ export default function CustomerDashboard() {
           {/* Right Column - Stats Grid */}
           <div className="lg:col-span-2">
             <div className="grid md:grid-cols-2 gap-6">
-              {stats.map((stat) => {
+              {stats.map((stat, index) => {
                 const Icon = stat.icon;
+                const gradientClasses = [
+                  'bg-gradient-to-br from-blue-400 to-blue-600',
+                  'bg-gradient-to-br from-green-400 to-green-600', 
+                  'bg-gradient-to-br from-pink-400 to-pink-600',
+                  'bg-gradient-to-br from-purple-400 to-purple-600'
+                ];
+                const gradientClass = gradientClasses[index % gradientClasses.length];
+                
                 return (
-                  <Card key={stat.title}>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-gray-500 text-sm">{stat.title}</p>
-                          <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                        </div>
-                        <div className={`${stat.bgColor} p-3 rounded-lg`}>
-                          <Icon className={`h-6 w-6 ${stat.color}`} />
-                        </div>
+                  <div key={stat.title} className={`${gradientClass} rounded-xl p-6 shadow-lg transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl`}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-white/90 text-sm font-medium">{stat.title}</p>
+                        <p className="text-3xl font-bold text-white mt-2">{stat.value}</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <div className="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                        <Icon className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
