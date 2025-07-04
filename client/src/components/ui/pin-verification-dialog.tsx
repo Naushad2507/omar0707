@@ -9,16 +9,19 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PinInput } from "@/components/ui/pin-input";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Shield, CheckCircle, AlertCircle } from "lucide-react";
+import { Shield, CheckCircle, AlertCircle, Calculator, Receipt, Loader2 } from "lucide-react";
 
 interface PinVerificationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   dealId: number;
   dealTitle: string;
+  dealDiscountPercentage?: number;
   onSuccess?: () => void;
 }
 
@@ -27,11 +30,56 @@ export function PinVerificationDialog({
   onOpenChange,
   dealId,
   dealTitle,
+  dealDiscountPercentage = 0,
   onSuccess
 }: PinVerificationDialogProps) {
   const [pin, setPin] = useState("");
+  const [showBillDialog, setShowBillDialog] = useState(false);
+  const [billAmount, setBillAmount] = useState("");
+  const [calculatedSavings, setCalculatedSavings] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Calculate savings based on bill amount
+  const calculateSavings = (billAmountValue: string, discountPercentage: number) => {
+    const amount = parseFloat(billAmountValue);
+    if (isNaN(amount) || amount <= 0) return 0;
+    return (amount * discountPercentage) / 100;
+  };
+
+  // Update bill amount mutation
+  const updateBillMutation = useMutation({
+    mutationFn: async ({ billAmount, savings }: { billAmount: number, savings: number }) => {
+      return apiRequest(`/api/deals/${dealId}/update-bill`, 'POST', {
+        billAmount,
+        actualSavings: savings
+      });
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Bill Updated Successfully!",
+        description: `Your actual savings of ₹${calculatedSavings.toFixed(2)} have been recorded.`,
+        variant: "default",
+      });
+      
+      // Reset and close dialogs
+      handleClose();
+      
+      // Refresh user data
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/deals"] });
+      
+      if (onSuccess) onSuccess();
+    },
+    onError: (error) => {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update bill amount. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
 
   const verifyPinMutation = useMutation({
     mutationFn: async (pin: string) => {
@@ -41,26 +89,25 @@ export function PinVerificationDialog({
     onSuccess: async (data: any) => {
       toast({
         title: "Deal Redeemed Successfully!",
-        description: `You saved ₹${data.savingsAmount}! Total savings: ₹${data.newTotalSavings}`,
+        description: `You saved ₹${data.savingsAmount}! Would you like to add your actual bill amount?`,
         variant: "default",
       });
+      
+      // Show bill amount dialog immediately after successful PIN verification
+      setPin("");
+      setShowBillDialog(true);
       
       // Comprehensive data refresh to update user profile and deal information
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["/api/deals"] }),
         queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
-        queryClient.invalidateQueries({ queryKey: [`/api/deals/${dealId}`] }),
-        queryClient.invalidateQueries({ queryKey: [`/api/deals/${dealId}/secure`] }),
         queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+        queryClient.invalidateQueries({ queryKey: [`/api/deals/${dealId}`] })
       ]);
       
       // Force refetch user data to update dashboard statistics
       queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
-      
-      onSuccess?.();
-      onOpenChange(false);
-      setPin("");
     },
     onError: (error: any) => {
       toast({
@@ -84,98 +131,213 @@ export function PinVerificationDialog({
   };
 
   const handleClose = () => {
+    setShowBillDialog(false);
+    setBillAmount("");
+    setCalculatedSavings(0);
     onOpenChange(false);
     setPin("");
+  };
+
+  const handleSkipBillAmount = () => {
+    handleClose();
+    if (onSuccess) onSuccess();
   };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-blue-500" />
-            Verify Deal PIN
-          </DialogTitle>
-          <DialogDescription>
-            Enter the 4-digit PIN provided by the vendor for{" "}
-            <span className="font-semibold">"{dealTitle}"</span>
-          </DialogDescription>
-        </DialogHeader>
+        {!showBillDialog ? (
+          // PIN Verification Dialog
+          <>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-blue-500" />
+                Verify Deal PIN
+              </DialogTitle>
+              <DialogDescription>
+                Enter the 4-digit PIN provided by the vendor for{" "}
+                <span className="font-semibold">"{dealTitle}"</span>
+              </DialogDescription>
+            </DialogHeader>
 
-        <div className="flex flex-col items-center space-y-6 py-4">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-              <Shield className="w-8 h-8 text-blue-600" />
-            </div>
-            <p className="text-sm text-gray-600 mb-4">
-              Ask the vendor for their verification PIN to complete your redemption
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <div className="text-center">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Enter 4-digit PIN
-              </label>
-              <PinInput
-                value={pin}
-                onChange={setPin}
-                onComplete={handleVerify}
-                disabled={verifyPinMutation.isPending}
-                className="justify-center"
-              />
-            </div>
-
-            {pin.length === 4 && !verifyPinMutation.isPending && (
-              <div className="flex items-center justify-center gap-2 text-green-600">
-                <CheckCircle className="w-4 h-4" />
-                <span className="text-sm">PIN entered, ready to verify</span>
-              </div>
-            )}
-
-            {verifyPinMutation.isPending && (
-              <div className="flex items-center justify-center gap-2 text-blue-600">
-                <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full" />
-                <span className="text-sm">Verifying PIN...</span>
-              </div>
-            )}
-          </div>
-
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 w-full">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5" />
-              <div className="text-sm text-yellow-800">
-                <p className="font-medium mb-1">Offline Friendly</p>
-                <p className="text-xs">
-                  This verification works without internet. The vendor can share their PIN even when offline.
+            <div className="flex flex-col items-center space-y-6 py-4">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Shield className="w-8 h-8 text-blue-600" />
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
+                  Ask the vendor for their verification PIN to complete your redemption
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
 
-        <DialogFooter className="flex gap-2">
-          <Button variant="outline" onClick={handleClose} disabled={verifyPinMutation.isPending}>
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleVerify} 
-            disabled={pin.length !== 4 || verifyPinMutation.isPending}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            {verifyPinMutation.isPending ? (
-              <>
-                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
-                Verifying...
-              </>
-            ) : (
-              <>
-                <Shield className="w-4 h-4 mr-2" />
-                Verify & Redeem
-              </>
-            )}
-          </Button>
-        </DialogFooter>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    Enter 4-digit PIN
+                  </label>
+                  <PinInput
+                    value={pin}
+                    onChange={setPin}
+                    onComplete={handleVerify}
+                    disabled={verifyPinMutation.isPending}
+                    className="justify-center"
+                  />
+                </div>
+
+                {pin.length === 4 && !verifyPinMutation.isPending && (
+                  <div className="flex items-center justify-center gap-2 text-green-600">
+                    <CheckCircle className="w-4 h-4" />
+                    <span className="text-sm">PIN entered, ready to verify</span>
+                  </div>
+                )}
+
+                {verifyPinMutation.isPending && (
+                  <div className="flex items-center justify-center gap-2 text-blue-600">
+                    <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full" />
+                    <span className="text-sm">Verifying PIN...</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 w-full">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5" />
+                  <div className="text-sm text-yellow-800">
+                    <p className="font-medium mb-1">Offline Friendly</p>
+                    <p className="text-xs">
+                      This verification works without internet. The vendor can share their PIN even when offline.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="flex gap-2">
+              <Button variant="outline" onClick={handleClose} disabled={verifyPinMutation.isPending}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleVerify} 
+                disabled={pin.length !== 4 || verifyPinMutation.isPending}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {verifyPinMutation.isPending ? (
+                  <>
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    <Shield className="w-4 h-4 mr-2" />
+                    Verify & Redeem
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          // Bill Amount Dialog
+          <>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Receipt className="w-5 h-5 text-green-500" />
+                Add Bill Amount
+              </DialogTitle>
+              <DialogDescription>
+                Enter your actual bill amount to calculate your precise savings from{" "}
+                <span className="font-semibold">"{dealTitle}"</span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 py-4">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                  <Calculator className="w-8 h-8 text-green-600" />
+                </div>
+                <p className="text-sm text-gray-600">
+                  Deal redeemed successfully! Add your bill amount for accurate savings calculation.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="billAmount" className="text-sm font-medium text-gray-700 mb-2 block">
+                    Bill Amount (₹)
+                  </Label>
+                  <Input
+                    id="billAmount"
+                    type="number"
+                    value={billAmount}
+                    onChange={(e) => {
+                      setBillAmount(e.target.value);
+                      setCalculatedSavings(calculateSavings(e.target.value, dealDiscountPercentage));
+                    }}
+                    placeholder="Enter your bill amount"
+                    className="text-lg text-center"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                {billAmount && calculatedSavings > 0 && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-green-800 mb-1">Your Savings</p>
+                      <p className="text-2xl font-bold text-green-600">
+                        ₹{calculatedSavings.toFixed(2)}
+                      </p>
+                      <p className="text-xs text-green-600 mt-1">
+                        {dealDiscountPercentage}% off ₹{billAmount}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium mb-1">Why add bill amount?</p>
+                      <p className="text-xs">
+                        This helps us calculate your exact savings and gives you accurate spending insights.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="flex gap-2">
+              <Button variant="outline" onClick={handleSkipBillAmount} disabled={updateBillMutation.isPending}>
+                Skip for Now
+              </Button>
+              <Button 
+                onClick={() => {
+                  if (billAmount && calculatedSavings > 0) {
+                    updateBillMutation.mutate({ 
+                      billAmount: parseFloat(billAmount), 
+                      savings: calculatedSavings 
+                    });
+                  }
+                }}
+                disabled={!billAmount || calculatedSavings <= 0 || updateBillMutation.isPending}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {updateBillMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Receipt className="w-4 h-4 mr-2" />
+                    Update Savings
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

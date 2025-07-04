@@ -234,6 +234,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
         onOpenChange={setShowPinDialog}
         dealId={deal.id}
         dealTitle={deal.title}
+        dealDiscountPercentage={deal.discountPercentage}
         onSuccess={() => onClaim?.(deal.id)}
       />
     </Card>

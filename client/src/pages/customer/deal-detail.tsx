@@ -503,6 +503,7 @@ export default function DealDetail({ params }: DealDetailProps) {
         onOpenChange={setShowPinDialog}
         dealId={Number(id)}
         dealTitle={currentDeal?.title || ""}
+        dealDiscountPercentage={currentDeal?.discountPercentage || 0}
         onSuccess={async () => {
           setShowPinDialog(false);
           // Comprehensive data refresh after successful PIN verification
