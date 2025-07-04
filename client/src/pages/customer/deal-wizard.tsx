@@ -191,16 +191,39 @@ export default function DealRecommendationWizard() {
               <p className="text-gray-600">Select all categories that interest you</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {Array.isArray(categories) ? categories.map((category: any) => (
-                <Button
-                  key={category.id}
-                  variant={preferences.categories.includes(category.id) ? "default" : "outline"}
-                  className="h-16 flex items-center justify-center"
-                  onClick={() => handleCategoryToggle(category.id)}
-                >
-                  <span className="text-sm font-medium">{category.name}</span>
-                </Button>
-              )) : null}
+              {Array.isArray(categories) ? categories.map((category: any, index: number) => {
+                const colors = [
+                  'bg-blue-50 hover:bg-blue-100 border-blue-200',
+                  'bg-green-50 hover:bg-green-100 border-green-200',
+                  'bg-purple-50 hover:bg-purple-100 border-purple-200',
+                  'bg-orange-50 hover:bg-orange-100 border-orange-200',
+                  'bg-pink-50 hover:bg-pink-100 border-pink-200',
+                  'bg-indigo-50 hover:bg-indigo-100 border-indigo-200',
+                  'bg-yellow-50 hover:bg-yellow-100 border-yellow-200',
+                  'bg-red-50 hover:bg-red-100 border-red-200',
+                  'bg-teal-50 hover:bg-teal-100 border-teal-200',
+                  'bg-cyan-50 hover:bg-cyan-100 border-cyan-200',
+                  'bg-emerald-50 hover:bg-emerald-100 border-emerald-200',
+                  'bg-violet-50 hover:bg-violet-100 border-violet-200'
+                ];
+                const colorClass = colors[index % colors.length];
+                const isSelected = preferences.categories.includes(category.id);
+                
+                return (
+                  <Button
+                    key={category.id}
+                    variant="outline"
+                    className={`h-16 flex items-center justify-center transition-all duration-200 ${
+                      isSelected 
+                        ? 'bg-primary text-primary-foreground border-primary shadow-md' 
+                        : colorClass
+                    }`}
+                    onClick={() => handleCategoryToggle(category.id)}
+                  >
+                    <span className="text-sm font-medium">{category.name}</span>
+                  </Button>
+                );
+              }) : null}
             </div>
           </div>
         );
