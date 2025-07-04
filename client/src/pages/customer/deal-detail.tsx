@@ -101,10 +101,10 @@ export default function DealDetail({ params }: DealDetailProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [showPinDialog, setShowPinDialog] = useState(false);
 
-  // Fetch deal details (public endpoint for non-authenticated users)
-  const { data: deal, isLoading } = useQuery<Deal>({
+  // Always fetch public deal details as fallback
+  const { data: deal, isLoading: isPublicLoading } = useQuery<Deal>({
     queryKey: [`/api/deals/${id}`],
-    enabled: !!id && !isAuthenticated,
+    enabled: !!id,
   });
 
   // Check if deal is in wishlist
@@ -125,9 +125,9 @@ export default function DealDetail({ params }: DealDetailProps) {
     ? (secureError as any).response?.data as DiscountError 
     : null;
 
-  // Use authenticated deal data if available, otherwise use public deal data
-  const currentDeal = isAuthenticated ? secureDeal : deal;
-  const currentLoading = isAuthenticated ? isSecureLoading : isLoading;
+  // Use secure deal data if available and successful, otherwise fall back to public deal data
+  const currentDeal = isAuthenticated && secureDeal ? secureDeal : deal;
+  const currentLoading = isAuthenticated ? isSecureLoading && isPublicLoading : isPublicLoading;
 
   useEffect(() => {
     if (wishlistCheck?.inWishlist) {
