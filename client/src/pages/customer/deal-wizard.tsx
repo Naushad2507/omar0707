@@ -195,11 +195,10 @@ export default function DealRecommendationWizard() {
                 <Button
                   key={category.id}
                   variant={preferences.categories.includes(category.id) ? "default" : "outline"}
-                  className="h-20 flex flex-col items-center justify-center space-y-1"
+                  className="h-16 flex items-center justify-center"
                   onClick={() => handleCategoryToggle(category.id)}
                 >
-                  <span className="text-2xl">{category.icon || '🏷️'}</span>
-                  <span className="text-sm">{category.name}</span>
+                  <span className="text-sm font-medium">{category.name}</span>
                 </Button>
               )) : null}
             </div>
