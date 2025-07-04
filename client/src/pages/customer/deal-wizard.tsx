@@ -287,18 +287,37 @@ export default function DealRecommendationWizard() {
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {Array.isArray(cities) ? cities.slice(0, 12).map((city: any) => (
-                <Button
-                  key={city.name}
-                  variant={preferences.location === city.name ? "default" : "outline"}
-                  className="h-16 flex flex-col items-center justify-center"
-                  onClick={() => setPreferences(prev => ({ ...prev, location: city.name }))}
-                >
-                  <MapPin className="h-4 w-4 mb-1" />
-                  <span className="text-sm font-medium">{city.name}</span>
-                  <span className="text-xs text-gray-500">{city.dealCount || 0} deals</span>
-                </Button>
-              )) : null}
+              {Array.isArray(cities) ? cities.slice(0, 8).map((city: any, index: number) => {
+                const colors = [
+                  'bg-blue-50 hover:bg-blue-100 border-blue-200',
+                  'bg-green-50 hover:bg-green-100 border-green-200',
+                  'bg-purple-50 hover:bg-purple-100 border-purple-200',
+                  'bg-orange-50 hover:bg-orange-100 border-orange-200',
+                  'bg-pink-50 hover:bg-pink-100 border-pink-200',
+                  'bg-indigo-50 hover:bg-indigo-100 border-indigo-200',
+                  'bg-teal-50 hover:bg-teal-100 border-teal-200',
+                  'bg-emerald-50 hover:bg-emerald-100 border-emerald-200'
+                ];
+                const colorClass = colors[index % colors.length];
+                const isSelected = preferences.location === city.name;
+                
+                return (
+                  <Button
+                    key={city.name}
+                    variant="outline"
+                    className={`h-20 flex flex-col items-center justify-center space-y-1 transition-all duration-200 ${
+                      isSelected 
+                        ? 'bg-primary text-primary-foreground border-primary shadow-md' 
+                        : colorClass
+                    }`}
+                    onClick={() => setPreferences(prev => ({ ...prev, location: city.name }))}
+                  >
+                    <MapPin className="h-4 w-4" />
+                    <span className="text-sm font-medium">{city.name}</span>
+                    <span className="text-xs opacity-75">{city.dealCount || 0} deals</span>
+                  </Button>
+                );
+              }) : null}
             </div>
 
             <div className="space-y-2">
