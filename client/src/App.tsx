@@ -26,6 +26,7 @@ import MembershipCard from "@/pages/customer/membership-card";
 import DealDetail from "@/pages/customer/deal-detail";
 import UpgradeMembership from "@/pages/customer/upgrade-membership";
 import CustomerProfile from "@/pages/customer/profile";
+import DealWizard from "@/pages/customer/deal-wizard";
 
 // Vendor pages
 import VendorBenefits from "@/pages/vendor/benefits";
@@ -120,6 +121,7 @@ function Router() {
   const [matchCustomerMembershipCard] = useRoute("/customer/membership-card");
   const [matchCustomerUpgrade] = useRoute("/customer/upgrade");
   const [matchCustomerProfile] = useRoute("/customer/profile");
+  const [matchCustomerDealWizard] = useRoute("/customer/deal-wizard");
 
   // Vendor routes
   const [matchVendor] = useRoute("/vendor");
@@ -237,6 +239,13 @@ function Router() {
     return (
       <RoleProtectedRoute allowedRoles={['customer']}>
         <CustomerProfile />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchCustomerDealWizard) {
+    return (
+      <RoleProtectedRoute allowedRoles={['customer']}>
+        <DealWizard />
       </RoleProtectedRoute>
     );
   }
