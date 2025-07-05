@@ -288,6 +288,79 @@ export default function DealDetail({ params }: DealDetailProps) {
   const isExpired = new Date(currentDeal.validUntil) < new Date();
   const isFullyRedeemed = currentDeal.maxRedemptions && (currentDeal.currentRedemptions || 0) >= currentDeal.maxRedemptions;
 
+  // Enhanced back button handler
+  const handleGoBack = () => {
+    // Always redirect to home page to ensure consistent navigation
+    setLocation('/');
+  };
+
+  // Show login prompt for unauthenticated users
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          {/* Back button */}
+          <div className="mb-6">
+            <Button 
+              variant="ghost" 
+              className="mb-4"
+              onClick={handleGoBack}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Go Back
+            </Button>
+          </div>
+
+          {/* Login Required Message */}
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-amber-200 bg-amber-50">
+              <CardContent className="p-12 text-center">
+                <div className="mb-6">
+                  <Lock className="h-16 w-16 text-amber-600 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold text-amber-900 mb-2">
+                    Login Required to View Deal
+                  </h2>
+                  <p className="text-amber-800 text-lg">
+                    Please log in or sign up to access deal details and exclusive offers
+                  </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+                      <Link to="/login">
+                        <Shield className="w-4 h-4 mr-2" />
+                        Login
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="lg" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                      <Link to="/signup">
+                        <Users className="w-4 h-4 mr-2" />
+                        Sign Up
+                      </Link>
+                    </Button>
+                  </div>
+                  
+                  <div className="mt-6 pt-6 border-t border-amber-200">
+                    <p className="text-amber-700 text-sm">
+                      <strong>Why create an account?</strong>
+                    </p>
+                    <ul className="text-amber-700 text-sm mt-2 space-y-1">
+                      <li>• Access exclusive deals and discounts</li>
+                      <li>• Save deals to your wishlist</li>
+                      <li>• Track your savings and claimed deals</li>
+                      <li>• Get personalized deal recommendations</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
@@ -296,10 +369,10 @@ export default function DealDetail({ params }: DealDetailProps) {
           <Button 
             variant="ghost" 
             className="mb-4"
-            onClick={() => window.history.back()}
+            onClick={handleGoBack}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Deals
+            Go Back
           </Button>
         </div>
 
