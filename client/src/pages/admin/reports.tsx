@@ -5,7 +5,7 @@ import Footer from "@/components/ui/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/lib/auth";
@@ -54,10 +54,16 @@ export default function AdminReports() {
         return;
       }
 
-      const token = localStorage.getItem('token');
+      // Get token from localStorage - use correct key
+      let token = localStorage.getItem('auth_token');
+      if (!token) {
+        // Try alternative token storage keys
+        token = localStorage.getItem('token') || localStorage.getItem('authToken');
+      }
+      
       if (!token) {
         toast({
-          title: "Authentication Error",
+          title: "Authentication Error", 
           description: "Session expired. Please log in again",
           variant: "destructive",
         });
@@ -209,7 +215,13 @@ export default function AdminReports() {
         return;
       }
 
-      const token = localStorage.getItem('token');
+      // Get token from localStorage - use correct key
+      let token = localStorage.getItem('auth_token');
+      if (!token) {
+        // Try alternative token storage keys
+        token = localStorage.getItem('token') || localStorage.getItem('authToken');
+      }
+      
       if (!token) {
         toast({
           title: "Authentication Error",
@@ -462,6 +474,9 @@ export default function AdminReports() {
                             <report.icon className={`h-5 w-5 mr-2 ${report.color}`} />
                             {report.title} - Preview
                           </DialogTitle>
+                          <DialogDescription>
+                            Preview of {report.title.toLowerCase()} data. First 50 records shown. Download CSV for complete data.
+                          </DialogDescription>
                         </DialogHeader>
                         <ScrollArea className="h-[60vh] w-full">
                           {reportData.length > 0 ? (
