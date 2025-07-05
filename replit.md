@@ -167,6 +167,16 @@ Preferred communication style: Simple, everyday language.
 - **Streamlined Category Navigation**: Removed redundant "Browse by Category" section from deals pages to prevent confusion after category selection
 - **Simplified Deal Card Actions**: Removed redundant "Claim Deal" button from deal cards, keeping only "View Details" button to reduce confusion and improve user flow
 
+### July 5, 2025 - Comprehensive Deal Claiming Process Instructions Update
+- **Universal Claiming Instructions**: Updated all deal components and vendor forms with new 3-step claiming process instructions
+- **Vendor Deal Creation Forms**: Modified deals.tsx, deals-compact.tsx, and deals-enhanced.tsx to show new claiming process in PIN field descriptions
+- **Customer Deal Interface**: Updated deal detail page to show comprehensive claiming process instead of basic offline verification
+- **PIN Verification Dialog**: Enhanced PIN verification dialog with complete claiming workflow instructions
+- **Consistent User Education**: Applied unified claiming process messaging across all customer-facing and vendor-facing components
+- **Three-Step Process**: Clear instructions for: 1) Claim online, 2) Visit store for PIN, 3) Verify & add bill amount for savings tracking
+- **Enhanced User Understanding**: Replaced technical "offline verification" language with user-friendly claiming process explanations
+- **Platform-Wide Consistency**: Ensured all components use identical claiming process instructions for unified user experience
+
 ### July 5, 2025 - Mobile UX Optimization & Deal Button Positioning Enhancement
 - **Mobile Carousel Improvements**: Fixed navigation arrows positioning on mobile - arrows now inside container (left-2/right-2) instead of outside where they were cut off
 - **Responsive Carousel Cards**: Added dynamic cards per view (1 mobile, 2 tablet, 3 desktop) with proper window resize handling

@@ -199,13 +199,13 @@ export function PinVerificationDialog({
                 )}
               </div>
 
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 w-full">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 w-full">
                 <div className="flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5" />
-                  <div className="text-sm text-yellow-800">
-                    <p className="font-medium mb-1">Offline Friendly</p>
+                  <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5" />
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium mb-1">How do I claim a deal?</p>
                     <p className="text-xs">
-                      This verification works without internet. The vendor can share their PIN even when offline.
+                      Claiming deals is a secure three-step process: 1) Click 'Claim Deal' online to reserve it, 2) Visit the store and ask for the 4-digit PIN to verify your redemption in the app. 3) Click on Verify & Redeem and add the bill amount and update savings. Only verified redemptions count toward your savings.
                     </p>
                   </div>
                 </div>

@@ -323,7 +323,7 @@ export default function VendorDealsEnhanced() {
                                 </div>
                               </FormControl>
                               <FormDescription className="text-xs">
-                                Set a 4-digit PIN that customers will need to enter at your store to redeem this deal. This works offline too!
+                                Customers will use this PIN for the 3-step claiming process: 1) Claim online, 2) Visit store for PIN, 3) Verify & add bill amount
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
