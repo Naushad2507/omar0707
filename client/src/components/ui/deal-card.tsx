@@ -289,7 +289,7 @@ export default function DealCard({
         {/* Action Buttons */}
         <div className="flex gap-2 w-full">
           {user && !canAccessDeal() ? (
-            // Show upgrade button for premium/ultimate deals
+            // Show upgrade button for premium/ultimate deals - these can stay on the card for immediate action
             <Button 
               onClick={() => navigate('/customer/upgrade')}
               className={`flex-1 ${
@@ -302,35 +302,17 @@ export default function DealCard({
               <Crown className="h-4 w-4 mr-2" />
               Upgrade to {getSuggestedTier()}
             </Button>
-          ) : user ? (
-            // Show claim button for accessible deals
-            <Button 
-              onClick={onClaim}
-              className="flex-1"
-              size="sm"
-            >
-              Claim Deal
-            </Button>
           ) : (
-            // Show login prompt for non-authenticated users
+            // Always show View button - users can claim from the detailed view
             <Button 
-              onClick={() => navigate('/login')}
-              variant="outline"
+              onClick={onView}
               className="flex-1"
               size="sm"
             >
-              <Lock className="h-4 w-4 mr-2" />
-              Login to Claim
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Details
             </Button>
           )}
-          
-          <Button 
-            onClick={onView}
-            variant="outline"
-            size="sm"
-          >
-            View
-          </Button>
         </div>
 
         <Dialog open={showModal} onOpenChange={setShowModal}>
