@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
+import { Loader2, Camera, Upload, User, X, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { indianStates, getCitiesByState } from "@/lib/cities";
 
@@ -23,9 +23,16 @@ export default function Signup() {
     state: "",
     city: "",
     role: "customer" as "customer" | "vendor",
+    profileImage: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [uploadMethod, setUploadMethod] = useState<"file" | "camera" | "url">("file");
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   
   const { signup } = useAuth();
   const [, navigate] = useLocation();
@@ -38,6 +45,50 @@ export default function Signup() {
       // Reset city when state changes
       ...(field === "state" ? { city: "" } : {})
     }));
+  };
+
+  // Photo upload helpers
+  const handlePhotoChange = (file: File) => {
+    setProfilePhoto(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: "File too large",
+          description: "Please select a photo smaller than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      handlePhotoChange(file);
+    }
+  };
+
+  const handleUrlSubmit = () => {
+    if (formData.profileImage) {
+      setPhotoPreview(formData.profileImage);
+      setProfilePhoto(null);
+      toast({
+        title: "Photo URL set",
+        description: "Profile photo has been updated",
+      });
+    }
+  };
+
+  const clearPhoto = () => {
+    setProfilePhoto(null);
+    setPhotoPreview("");
+    setFormData(prev => ({ ...prev, profileImage: "" }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,7 +115,14 @@ export default function Signup() {
 
     try {
       const { confirmPassword, ...signupData } = formData;
-      await signup(signupData);
+      
+      // Add profile photo data if available
+      const finalSignupData = {
+        ...signupData,
+        profileImage: photoPreview || formData.profileImage || undefined,
+      };
+      
+      await signup(finalSignupData);
       
       toast({
         title: "Account created successfully!",
@@ -181,6 +239,145 @@ export default function Signup() {
                   disabled={isLoading}
                   className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
+              </div>
+
+              {/* Profile Photo Upload */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Profile Photo (Optional)</Label>
+                
+                {/* Upload Method Selection */}
+                <div className="flex space-x-2 mb-3">
+                  <Button
+                    type="button"
+                    variant={uploadMethod === "file" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setUploadMethod("file")}
+                    className="text-xs"
+                  >
+                    <Upload className="h-3 w-3 mr-1" />
+                    Upload
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={uploadMethod === "camera" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setUploadMethod("camera")}
+                    className="text-xs"
+                  >
+                    <Camera className="h-3 w-3 mr-1" />
+                    Camera
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={uploadMethod === "url" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setUploadMethod("url")}
+                    className="text-xs"
+                  >
+                    URL
+                  </Button>
+                </div>
+
+                {/* Photo Preview */}
+                {photoPreview && (
+                  <div className="relative inline-block">
+                    <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+                      <img
+                        src={photoPreview}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={clearPhoto}
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                )}
+
+                {/* Upload Controls */}
+                {uploadMethod === "file" && (
+                  <div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full text-sm"
+                      disabled={isLoading}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Choose Photo File
+                    </Button>
+                    <p className="text-xs text-gray-500 mt-1">
+                      JPG, PNG or GIF (max 5MB)
+                    </p>
+                  </div>
+                )}
+
+                {uploadMethod === "camera" && (
+                  <div>
+                    <input
+                      ref={cameraInputRef}
+                      type="file"
+                      accept="image/*"
+                      capture="user"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => cameraInputRef.current?.click()}
+                      className="w-full text-sm"
+                      disabled={isLoading}
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Take Photo
+                    </Button>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Use your device camera to take a photo
+                    </p>
+                  </div>
+                )}
+
+                {uploadMethod === "url" && (
+                  <div className="space-y-2">
+                    <div className="flex space-x-2">
+                      <Input
+                        type="url"
+                        placeholder="Enter image URL"
+                        value={formData.profileImage}
+                        onChange={(e) => handleInputChange("profileImage", e.target.value)}
+                        className="flex-1 text-sm"
+                        disabled={isLoading}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleUrlSubmit}
+                        size="sm"
+                        disabled={!formData.profileImage || isLoading}
+                      >
+                        <Check className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Enter a direct link to your profile photo
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Location */}

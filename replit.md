@@ -115,6 +115,32 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 5, 2025 - Customer Registration Photo Upload Feature & Enhanced Digital Membership Card
+- **Complete Photo Upload System**: Added comprehensive photo upload functionality to customer registration form with multiple input methods
+- **Three Upload Options**: Users can upload photos via file selection, camera capture, or URL input for maximum flexibility
+- **Mobile Camera Integration**: Direct camera access using `capture="user"` attribute for taking selfies during registration
+- **Photo Preview & Management**: Real-time photo preview with cropped circular display and easy removal functionality
+- **File Validation**: 5MB file size limit with format validation (JPG, PNG, GIF) and user-friendly error messages
+- **Professional UI Components**: Method toggle buttons (Upload/Camera/URL) with active state indicators and clean design
+- **Form Integration**: Seamless integration with existing signup flow, automatically includes photo data in registration payload
+- **Responsive Design**: Mobile-optimized photo upload interface with touch-friendly controls and proper sizing
+- **User Experience**: Clear instructions, loading states, and success feedback for smooth photo upload process
+- **Backend Ready**: Form data properly formatted to include profile photo information for backend processing
+
+### July 5, 2025 - Enhanced Digital Membership Card with Modern Features & Interactive Controls
+- **Comprehensive Card Enhancement**: Upgraded digital membership card component with modern design, interactive controls, and enhanced user experience
+- **Advanced Statistics Display**: Added real-time savings tracker, deals claimed counter, and membership status indicators with visual icons
+- **Interactive Features**: Implemented copy-to-clipboard functionality, QR code enlargement dialog, and card download capability
+- **Enhanced Visual Design**: Added tier-specific color schemes (basic: blue gradient, premium: purple gradient, ultimate: dark gradient) with professional styling
+- **Smart Controls System**: Optional controls panel with copy ID, view QR, and download card buttons for enhanced functionality
+- **Profile Integration**: Enhanced profile photo display with fallback user icon and improved QR code positioning
+- **Status Indicators**: Real-time active/inactive status display with color-coded icons and professional status badges
+- **Modern Footer Design**: Enhanced footer with security indicators, 24/7 access status, and tier-specific membership badges
+- **Copy & Share Features**: One-click membership ID copying with success feedback and clipboard integration
+- **QR Code Dialog**: Full-screen QR code viewer with download and copy options for easy vendor verification
+- **Responsive Design**: Mobile-optimized layout with proper spacing and touch-friendly interactive elements
+- **Professional Instructions**: Clear usage instructions with sparkle icons and enhanced typography for better user guidance
+
 ### July 5, 2025 - Comprehensive Admin Reports System with View & Download Functionality
 - **Complete Reports Infrastructure**: Built comprehensive admin reports system with 6 report types (Users, Vendors, Deals, Analytics, Claims, Revenue)
 - **Dual Functionality**: Added both "View Report" (table preview) and "Download CSV" functionality for each report type

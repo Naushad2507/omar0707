@@ -1,8 +1,31 @@
+import { useState } from "react";
 import { generateMembershipQR } from "@/lib/qr-code";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import InstoredeelzLogo from "@/components/ui/instoredealz-logo";
-import { User, Calendar, MapPin, QrCode } from "lucide-react";
+import { 
+  User, 
+  Calendar, 
+  MapPin, 
+  QrCode, 
+  Star, 
+  Shield, 
+  Crown, 
+  Copy, 
+  Download, 
+  Eye, 
+  EyeOff,
+  Wallet,
+  TrendingUp,
+  CheckCircle,
+  AlertCircle,
+  Sparkles,
+  Clock,
+  RotateCcw
+} from "lucide-react";
 
 interface MembershipCardProps {
   name: string;
@@ -14,6 +37,10 @@ interface MembershipCardProps {
   profileImage?: string;
   userId: number;
   className?: string;
+  totalSavings?: string;
+  dealsClaimed?: number;
+  isActive?: boolean;
+  showControls?: boolean;
 }
 
 export default function MembershipCardDigital({
@@ -26,8 +53,53 @@ export default function MembershipCardDigital({
   profileImage,
   userId,
   className = "",
+  totalSavings = "0",
+  dealsClaimed = 0,
+  isActive = true,
+  showControls = false,
 }: MembershipCardProps) {
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [showQR, setShowQR] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+
   const qrCode = generateMembershipQR(userId, membershipId);
+
+  // Helper functions
+  const formatSavings = (savings: string) => {
+    const amount = parseFloat(savings);
+    if (amount >= 100000) {
+      return `₹${(amount / 100000).toFixed(1)}L`;
+    } else if (amount >= 1000) {
+      return `₹${(amount / 1000).toFixed(1)}K`;
+    }
+    return `₹${amount.toFixed(0)}`;
+  };
+
+  const copyToClipboard = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      toast({
+        title: "Copied!",
+        description: `${type} copied to clipboard`,
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      toast({
+        title: "Copy failed",
+        description: "Could not copy to clipboard",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const downloadCard = () => {
+    toast({
+      title: "Download started",
+      description: "Your membership card is being prepared for download",
+    });
+  };
 
   // Modern gradient backgrounds based on membership tier
   const getCardBackground = (plan: string) => {
@@ -171,21 +243,164 @@ export default function MembershipCardDigital({
           </div>
         </div>
 
-        {/* Instructions */}
+        {/* Enhanced Stats & Status Section */}
         <div className="relative z-10 mt-6 pt-4 border-t border-white/20">
-          <div className="flex items-start space-x-2 text-sm">
-            <QrCode className="h-4 w-4 mt-0.5 opacity-80 flex-shrink-0" />
+          <div className="grid grid-cols-3 gap-4 text-center">
+            {/* Total Savings */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-center text-white/80">
+                <Wallet className="h-3 w-3 mr-1" />
+              </div>
+              <div className="text-lg font-bold">{formatSavings(totalSavings)}</div>
+              <div className="text-xs opacity-80">Total Saved</div>
+            </div>
+
+            {/* Deals Claimed */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-center text-white/80">
+                <TrendingUp className="h-3 w-3 mr-1" />
+              </div>
+              <div className="text-lg font-bold">{dealsClaimed}</div>
+              <div className="text-xs opacity-80">Deals Used</div>
+            </div>
+
+            {/* Status */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-center text-white/80">
+                {isActive ? (
+                  <CheckCircle className="h-3 w-3 text-green-300" />
+                ) : (
+                  <AlertCircle className="h-3 w-3 text-red-300" />
+                )}
+              </div>
+              <div className={`text-sm font-bold ${isActive ? 'text-green-200' : 'text-red-200'}`}>
+                {isActive ? 'ACTIVE' : 'INACTIVE'}
+              </div>
+              <div className="text-xs opacity-80">Status</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Interactive Controls */}
+        {showControls && (
+          <div className="relative z-10 mt-6 pt-4 border-t border-white/20">
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-white hover:bg-white/10 text-xs py-2"
+                onClick={() => copyToClipboard(membershipId, "Membership ID")}
+              >
+                <Copy className="h-3 w-3 mb-1" />
+                <div>{copied ? "Copied!" : "Copy ID"}</div>
+              </Button>
+
+              <Dialog open={showQR} onOpenChange={setShowQR}>
+                <DialogTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-white hover:bg-white/10 text-xs py-2"
+                  >
+                    <Eye className="h-3 w-3 mb-1" />
+                    <div>View QR</div>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-sm">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center">
+                      <QrCode className="h-5 w-5 mr-2" />
+                      Membership QR Code
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="text-center p-6">
+                    <div className="bg-white p-4 rounded-lg inline-block mb-4 shadow-lg">
+                      {qrCode ? (
+                        <img 
+                          src={qrCode} 
+                          alt="Large QR Code" 
+                          className="w-48 h-48 mx-auto"
+                        />
+                      ) : (
+                        <div className="w-48 h-48 bg-gray-200 flex items-center justify-center rounded">
+                          <QrCode className="h-16 w-16 text-gray-500" />
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Show this QR code to vendors for instant verification
+                    </p>
+                    <div className="space-y-2">
+                      <Button
+                        onClick={() => copyToClipboard(membershipId, "Membership ID")}
+                        className="w-full"
+                        variant="outline"
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy Membership ID
+                      </Button>
+                      <Button
+                        onClick={downloadCard}
+                        className="w-full"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download Card
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-white hover:bg-white/10 text-xs py-2"
+                onClick={downloadCard}
+              >
+                <Download className="h-3 w-3 mb-1" />
+                <div>Download</div>
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Enhanced Instructions */}
+        <div className="relative z-10 mt-6 pt-4 border-t border-white/20">
+          <div className="flex items-start space-x-3 text-sm">
+            <div className="flex-shrink-0">
+              <div className="bg-white/10 p-2 rounded-full">
+                <Sparkles className="h-4 w-4" />
+              </div>
+            </div>
             <div>
-              <div className="font-medium mb-1">Scan this code at store</div>
-              <div className="opacity-80">to redeem discounts</div>
+              <div className="font-semibold mb-1">Present this digital card at participating stores</div>
+              <div className="opacity-80 text-xs">to unlock exclusive member discounts and special offers</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className={`${getCardBackground(membershipPlan)} px-6 py-3 text-xs ${getMembershipColor(membershipPlan)} opacity-90`}>
-        *T&C apply. Only valid for active subscriptions.
+      {/* Enhanced Footer */}
+      <div className={`${getCardBackground(membershipPlan)} px-6 py-4 border-t border-white/10`}>
+        <div className="flex items-center justify-between text-xs text-white/80">
+          <div className="flex items-center space-x-2">
+            <Shield className="h-3 w-3" />
+            <span>Secure Digital ID</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Clock className="h-3 w-3" />
+            <span>24/7 Access</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            {membershipPlan.toLowerCase() === 'premium' && <Crown className="h-3 w-3 text-purple-300" />}
+            {membershipPlan.toLowerCase() === 'ultimate' && <Star className="h-3 w-3 text-yellow-300" />}
+            {membershipPlan.toLowerCase() === 'basic' && <Shield className="h-3 w-3 text-blue-300" />}
+            <span className="capitalize">{membershipPlan}</span>
+          </div>
+        </div>
+        <div className="text-xs mt-2 text-white/60 text-center">
+          Terms & Conditions apply • Valid only for active memberships • instoredealz.com
+        </div>
       </div>
     </Card>
   );
