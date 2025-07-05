@@ -284,6 +284,62 @@ const DealList = () => {
                     </div>
                   </div>
 
+                  {/* Action Buttons - Moved above validity section */}
+                  <div className="flex flex-col gap-2">
+                    {!hasClaimedDeal ? (
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClaimDeal(deal);
+                        }}
+                        disabled={!canClaim || claimMutation.isPending}
+                        className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                        size="lg"
+                      >
+                        {claimMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            Claiming...
+                          </>
+                        ) : !canClaim ? (
+                          isExpired ? "⏰ Expired" : 
+                          isLimitReached ? "🚫 Limit Reached" : 
+                          "❌ Unavailable"
+                        ) : (
+                          <>
+                            <Gift className="h-4 w-4 mr-2" />
+                            🎉 Claim Deal
+                          </>
+                        )}
+                      </Button>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="text-center text-sm text-green-600 font-medium bg-green-50 rounded-lg py-2">
+                          ✅ Deal Claimed
+                        </div>
+                        {userClaim?.status === 'pending' && (
+                          <div className="text-center text-sm text-amber-600 font-medium bg-amber-50 rounded-lg py-2">
+                            📍 Visit store to verify PIN
+                          </div>
+                        )}
+                        {showBillAmountButton && (
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setBillingDeal(deal);
+                            }}
+                            variant="outline"
+                            className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
+                            size="sm"
+                          >
+                            <Receipt className="h-4 w-4 mr-2" />
+                            Add Bill Amount
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4" />
@@ -306,61 +362,6 @@ const DealList = () => {
                     )}
                   </div>
                 </CardContent>
-
-                <CardFooter className="flex flex-col gap-2">
-                  {!hasClaimedDeal ? (
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleClaimDeal(deal);
-                      }}
-                      disabled={!canClaim || claimMutation.isPending}
-                      className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                      size="lg"
-                    >
-                      {claimMutation.isPending ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                          Claiming...
-                        </>
-                      ) : !canClaim ? (
-                        isExpired ? "⏰ Expired" : 
-                        isLimitReached ? "🚫 Limit Reached" : 
-                        "❌ Unavailable"
-                      ) : (
-                        <>
-                          <Gift className="h-4 w-4 mr-2" />
-                          🎉 Claim Deal
-                        </>
-                      )}
-                    </Button>
-                  ) : (
-                    <div className="space-y-2">
-                      <div className="text-center text-sm text-green-600 font-medium bg-green-50 rounded-lg py-2">
-                        ✅ Deal Claimed
-                      </div>
-                      {userClaim?.status === 'pending' && (
-                        <div className="text-center text-sm text-amber-600 font-medium bg-amber-50 rounded-lg py-2">
-                          📍 Visit store to verify PIN
-                        </div>
-                      )}
-                      {showBillAmountButton && (
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setBillingDeal(deal);
-                          }}
-                          variant="outline"
-                          className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:border-orange-400"
-                          size="sm"
-                        >
-                          <Receipt className="h-4 w-4 mr-2" />
-                          Add Bill Amount
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                </CardFooter>
               </Card>
             );
           })}

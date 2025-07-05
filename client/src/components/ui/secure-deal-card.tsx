@@ -177,7 +177,39 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Action Buttons - Moved above validity section */}
+        <div className="space-y-2">
+          <Button
+            onClick={() => setShowPinDialog(true)}
+            className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+            size="lg"
+            disabled={!isAuthenticated}
+          >
+            <Shield className="w-4 h-4 mr-2" />
+            Redeem Deal
+          </Button>
+          
+          <div className="flex gap-2">
+            {deal.vendor && (
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={handleGetDirections}
+                className="flex-1"
+              >
+                <Navigation className="w-4 h-4 mr-2" />
+                Directions
+              </Button>
+            )}
+            
+            <Button variant="outline" size="lg" className="flex-1">
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Visit Store
+            </Button>
+          </div>
+        </div>
 
+        <Separator />
 
         {/* Validity and nearby deals info */}
         <div className="flex items-center justify-between text-sm text-gray-500">
@@ -192,42 +224,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
             </div>
           )}
         </div>
-
-        <Separator />
-
-
       </CardContent>
-
-      <CardFooter className="gap-2">
-        <Button
-          onClick={() => setShowPinDialog(true)}
-          className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
-          size="lg"
-          disabled={!isAuthenticated}
-        >
-          <Shield className="w-4 h-4 mr-2" />
-          Redeem Deal
-        </Button>
-        
-        <div className="flex gap-2 flex-1">
-          {deal.vendor && (
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={handleGetDirections}
-              className="flex-1"
-            >
-              <Navigation className="w-4 h-4 mr-2" />
-              Directions
-            </Button>
-          )}
-          
-          <Button variant="outline" size="lg" className="flex-1">
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Visit Store
-          </Button>
-        </div>
-      </CardFooter>
 
       <PinVerificationDialog
         open={showPinDialog}

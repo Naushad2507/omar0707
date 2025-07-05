@@ -375,6 +375,64 @@ export default function DealDetail({ params }: DealDetailProps) {
 
                 <Separator />
 
+                {/* Action Buttons - Moved above validity section */}
+                <div className="space-y-4">
+                  {/* Claim Deal Button */}
+                  {canAccessDeal() ? (
+                    <Button
+                      onClick={handleClaimDeal}
+                      disabled={claimDealMutation.isPending || isExpired || !!isFullyRedeemed}
+                      className="w-full"
+                      size="lg"
+                    >
+                      {claimDealMutation.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Claiming Deal...
+                        </>
+                      ) : isExpired ? (
+                        "Deal Expired"
+                      ) : isFullyRedeemed ? (
+                        "Fully Redeemed"
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          Claim Deal
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setLocation('/customer/upgrade')}
+                      className={`w-full ${
+                        deal?.requiredMembership === 'ultimate' 
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700' 
+                          : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                      }`}
+                      size="lg"
+                    >
+                      <Crown className="w-4 h-4 mr-2" />
+                      Upgrade to {deal?.requiredMembership || 'Premium'}
+                    </Button>
+                  )}
+
+                  {/* PIN Verification Button - Only show when user can access the deal */}
+                  {canAccessDeal() && (
+                    <Button
+                      onClick={() => setShowPinDialog(true)}
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                      disabled={!isAuthenticated || isExpired || !deal?.isActive}
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      Verify with PIN
+                    </Button>
+                  )}
+                </div>
+
+                <Separator />
+
                 {/* Deal Details */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2">
@@ -433,64 +491,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                   )}
                 </div>
 
-                <Separator />
 
-                {/* Action Buttons */}
-                <div className="space-y-4">
-                  {/* Claim Deal Button */}
-                  {canAccessDeal() ? (
-                    <Button
-                      onClick={handleClaimDeal}
-                      disabled={claimDealMutation.isPending || isExpired || !!isFullyRedeemed}
-                      className="w-full"
-                      size="lg"
-                    >
-                      {claimDealMutation.isPending ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Claiming Deal...
-                        </>
-                      ) : isExpired ? (
-                        "Deal Expired"
-                      ) : isFullyRedeemed ? (
-                        "Fully Redeemed"
-                      ) : (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 mr-2" />
-                          Claim Deal
-                        </>
-                      )}
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => setLocation('/customer/upgrade')}
-                      className={`w-full ${
-                        deal?.requiredMembership === 'ultimate' 
-                          ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700' 
-                          : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
-                      }`}
-                      size="lg"
-                    >
-                      <Crown className="w-4 h-4 mr-2" />
-                      Upgrade to {deal?.requiredMembership || 'Premium'}
-                    </Button>
-                  )}
-
-                  {/* PIN Verification Button - Only show when user can access the deal */}
-                  {canAccessDeal() && (
-                    <Button
-                      onClick={() => setShowPinDialog(true)}
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                      disabled={!isAuthenticated || isExpired || !deal?.isActive}
-                    >
-                      <Shield className="w-4 h-4 mr-2" />
-                      Verify with PIN
-                    </Button>
-                  )}
-
-                </div>
               </CardContent>
             </Card>
           </div>
