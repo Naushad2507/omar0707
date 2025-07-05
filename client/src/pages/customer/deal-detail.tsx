@@ -313,27 +313,30 @@ export default function DealDetail({ params }: DealDetailProps) {
 
           {/* Login Required Message */}
           <div className="max-w-2xl mx-auto">
-            <Card className="border-amber-200 bg-amber-50">
+            <Card className="border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 shadow-xl">
               <CardContent className="p-12 text-center">
                 <div className="mb-6">
-                  <Lock className="h-16 w-16 text-amber-600 mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold text-amber-900 mb-2">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full blur-sm opacity-20"></div>
+                    <Lock className="h-16 w-16 text-gradient bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent mx-auto mb-4 relative z-10" style={{color: '#d97706'}} />
+                  </div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-700 to-cyan-800 bg-clip-text text-transparent mb-2">
                     Login Required to View Deal
                   </h2>
-                  <p className="text-amber-800 text-lg">
+                  <p className="text-teal-700 text-lg">
                     Please log in or sign up to access deal details and exclusive offers
                   </p>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+                    <Button asChild size="lg" className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-lg">
                       <Link to="/login">
                         <Shield className="w-4 h-4 mr-2" />
                         Login
                       </Link>
                     </Button>
-                    <Button asChild variant="outline" size="lg" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                    <Button asChild variant="outline" size="lg" className="border-2 border-amber-400 text-amber-600 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-amber-50 shadow-md">
                       <Link to="/signup">
                         <Users className="w-4 h-4 mr-2" />
                         Sign Up
@@ -341,15 +344,27 @@ export default function DealDetail({ params }: DealDetailProps) {
                     </Button>
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t border-amber-200">
-                    <p className="text-amber-700 text-sm">
+                  <div className="mt-6 pt-6 border-t border-teal-200">
+                    <p className="text-amber-700 font-semibold text-sm bg-gradient-to-r from-yellow-600 to-amber-700 bg-clip-text text-transparent">
                       <strong>Why create an account?</strong>
                     </p>
-                    <ul className="text-amber-700 text-sm mt-2 space-y-1">
-                      <li>• Access exclusive deals and discounts</li>
-                      <li>• Save deals to your wishlist</li>
-                      <li>• Track your savings and claimed deals</li>
-                      <li>• Get personalized deal recommendations</li>
+                    <ul className="text-teal-700 text-sm mt-2 space-y-2">
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full mr-2"></span>
+                        Access exclusive deals and discounts
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full mr-2"></span>
+                        Save deals to your wishlist
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full mr-2"></span>
+                        Track your savings and claimed deals
+                      </li>
+                      <li className="flex items-center">
+                        <span className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full mr-2"></span>
+                        Get personalized deal recommendations
+                      </li>
                     </ul>
                   </div>
                 </div>
