@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -438,24 +438,35 @@ export default function VendorDeals() {
                   Create Deal
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
+              <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>
+                  <DialogTitle className="text-lg sm:text-xl">
                     {editingDeal ? "Edit Deal" : "Create New Deal"}
                   </DialogTitle>
+                  <DialogDescription className="text-sm text-gray-600">
+                    {editingDeal 
+                      ? "Update your deal information. Changes will need admin approval before going live."
+                      : "Create a new deal for your customers. Fill in all required fields marked with *."
+                    }
+                  </DialogDescription>
                 </DialogHeader>
                 
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-4">
+                  <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                    {/* Row 1: Title and Discount */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <FormField
                         control={form.control}
                         name="title"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Deal Title</FormLabel>
+                            <FormLabel className="text-sm">Deal Title *</FormLabel>
                             <FormControl>
-                              <Input {...field} placeholder="Enter deal title" />
+                              <Input 
+                                {...field} 
+                                placeholder="Enter deal title"
+                                className="h-12 text-base"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -467,13 +478,14 @@ export default function VendorDeals() {
                         name="discountPercentage"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Discount Percentage</FormLabel>
+                            <FormLabel className="text-sm">Discount % *</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
                                 {...field}
                                 onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                                 placeholder="10"
+                                className="h-12 text-base"
                               />
                             </FormControl>
                             <FormMessage />
@@ -482,71 +494,105 @@ export default function VendorDeals() {
                       />
                     </div>
 
+                    {/* Row 2: Description */}
                     <FormField
                       control={form.control}
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Description</FormLabel>
+                          <FormLabel className="text-sm">Description *</FormLabel>
                           <FormControl>
-                            <Textarea {...field} placeholder="Describe your deal" rows={3} />
+                            <Textarea 
+                              {...field} 
+                              placeholder="Describe your deal"
+                              className="min-h-[80px] text-base resize-none"
+                              rows={3}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Category</FormLabel>
-                          <Select 
-                            onValueChange={(value) => {
-                              field.onChange(value);
-                              setShowCustomCategory(value === "others");
-                              setShowSubcategory(value === "services");
-                              if (value !== "services") {
-                                form.setValue("subcategory", "");
-                              }
-                            }} 
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {categories.map((category: any) => (
-                                <SelectItem key={category.id} value={category.id}>
-                                  {category.name}
-                                </SelectItem>
-                              ))}
-                              {!categories.find((cat: any) => cat.id === "others") && (
-                                <SelectItem key="others-custom" value="others">Others</SelectItem>
-                              )}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {/* Row 3: Category and PIN */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm">Category *</FormLabel>
+                            <Select 
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                setShowCustomCategory(value === "others");
+                                setShowSubcategory(value === "services");
+                                if (value !== "services") {
+                                  form.setValue("subcategory", "");
+                                }
+                              }} 
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="h-12">
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {categories.map((category: any) => (
+                                  <SelectItem key={category.id} value={category.id}>
+                                    {category.name}
+                                  </SelectItem>
+                                ))}
+                                {!categories.find((cat: any) => cat.id === "others") && (
+                                  <SelectItem key="others-custom" value="others">Others</SelectItem>
+                                )}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
+                      <FormField
+                        control={form.control}
+                        name="verificationPin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm">Verification PIN *</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                type="text"
+                                placeholder="4-digit PIN"
+                                maxLength={4}
+                                pattern="[0-9]{4}"
+                                className="h-12 text-base text-center font-mono"
+                              />
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                              4-digit PIN for offline verification
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Conditional: Service Type */}
                     {showSubcategory && (
                       <FormField
                         control={form.control}
                         name="subcategory"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Service Type</FormLabel>
+                            <FormLabel className="text-sm">Service Type</FormLabel>
                             <Select 
                               onValueChange={field.onChange} 
                               defaultValue={field.value}
                             >
                               <FormControl>
-                                <SelectTrigger>
+                                <SelectTrigger className="h-12">
                                   <SelectValue placeholder="Select service type" />
                                 </SelectTrigger>
                               </FormControl>
@@ -575,40 +621,20 @@ export default function VendorDeals() {
                       />
                     )}
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="verificationPin"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Verification PIN</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                type="number"
-                                placeholder="4-digit PIN"
-                                maxLength={4}
-                                pattern="[0-9]{4}"
-                              />
-                            </FormControl>
-                            <FormDescription>
-                              4-digit PIN for offline verification
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
+                    {/* Conditional: Custom Category */}
                     {showCustomCategory && (
                       <FormField
                         control={form.control}
                         name="customCategory"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Custom Category</FormLabel>
+                            <FormLabel className="text-sm">Custom Category</FormLabel>
                             <FormControl>
-                              <Input {...field} placeholder="Enter custom category name" />
+                              <Input 
+                                {...field} 
+                                placeholder="Enter custom category name"
+                                className="h-12 text-base"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -616,15 +642,20 @@ export default function VendorDeals() {
                       />
                     )}
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    {/* Row 4: Valid Until and Max Redemptions */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <FormField
                         control={form.control}
                         name="validUntil"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Valid Until</FormLabel>
+                            <FormLabel className="text-sm">Valid Until</FormLabel>
                             <FormControl>
-                              <Input type="date" {...field} />
+                              <Input 
+                                type="date" 
+                                {...field}
+                                className="h-12 text-base"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -636,13 +667,14 @@ export default function VendorDeals() {
                         name="maxRedemptions"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Max Redemptions (Optional)</FormLabel>
+                            <FormLabel className="text-sm">Max Redemptions</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
                                 {...field}
                                 onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                                 placeholder="Unlimited"
+                                className="h-12 text-base"
                               />
                             </FormControl>
                             <FormMessage />
@@ -651,15 +683,16 @@ export default function VendorDeals() {
                       />
                     </div>
 
+                    {/* Row 5: Required Membership */}
                     <FormField
                       control={form.control}
                       name="requiredMembership"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Required Membership</FormLabel>
+                          <FormLabel className="text-sm">Required Membership</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="h-12">
                                 <SelectValue />
                               </SelectTrigger>
                             </FormControl>
@@ -674,26 +707,35 @@ export default function VendorDeals() {
                       )}
                     />
 
+                    {/* Row 6: Address */}
                     <FormField
                       control={form.control}
                       name="address"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Address</FormLabel>
+                          <FormLabel className="text-sm">Address</FormLabel>
                           <FormControl>
-                            <Textarea {...field} placeholder="Enter full address" rows={2} />
+                            <Textarea 
+                              {...field} 
+                              placeholder="Enter full address"
+                              className="min-h-[60px] text-base resize-none"
+                              rows={2}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    <div className="flex justify-between items-center">
+                    {/* Location Button */}
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={getCurrentLocation}
                         disabled={isGettingLocation}
+                        className="h-10 text-sm"
+                        size="sm"
                       >
                         {isGettingLocation ? (
                           <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -704,15 +746,17 @@ export default function VendorDeals() {
                       </Button>
                       
                       {locationError && (
-                        <p className="text-sm text-red-600">{locationError}</p>
+                        <p className="text-xs text-red-600">{locationError}</p>
                       )}
                     </div>
 
+                    {/* Row 7: Image Upload */}
                     <FormField
                       control={form.control}
                       name="imageUrl"
                       render={({ field }) => (
                         <FormItem>
+                          <FormLabel className="text-sm">Deal Image</FormLabel>
                           <FormControl>
                             <ImageUpload
                               value={field.value}
@@ -728,17 +772,20 @@ export default function VendorDeals() {
                       )}
                     />
 
-                    <div className="flex justify-end space-x-4">
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-2 pt-4">
                       <Button
                         type="button"
                         variant="outline"
                         onClick={handleCloseDialog}
+                        className="h-12 text-base flex-1"
                       >
                         Cancel
                       </Button>
                       <Button
                         type="submit"
                         disabled={createDealMutation.isPending || updateDealMutation.isPending}
+                        className="h-12 text-base flex-1"
                       >
                         {(createDealMutation.isPending || updateDealMutation.isPending) ? (
                           <Loader2 className="h-4 w-4 animate-spin mr-2" />
