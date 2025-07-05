@@ -94,7 +94,7 @@ export function PinInput({
           onKeyDown={(e) => handleKeyDown(index, e)}
           disabled={disabled}
           placeholder={placeholder}
-          className="w-12 h-12 text-center text-lg font-bold"
+          className="w-14 h-14 text-center text-xl font-bold min-h-[44px] min-w-[44px] touch-manipulation"
         />
       ))}
     </div>

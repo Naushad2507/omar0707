@@ -145,7 +145,7 @@ export function PinVerificationDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-w-[95vw] mx-4">
         {!showBillDialog ? (
           // PIN Verification Dialog
           <>
