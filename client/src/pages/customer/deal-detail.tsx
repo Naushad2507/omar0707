@@ -518,15 +518,15 @@ export default function DealDetail({ params }: DealDetailProps) {
                     </Button>
                   )}
 
-                  {/* Offline-Friendly Verification Instructions - Show right after PIN button */}
+                  {/* Deal Claiming Process Instructions - Show right after PIN button */}
                   {canAccessDeal() && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <Shield className="w-5 h-5 text-blue-600" />
-                        <h4 className="font-semibold text-blue-900">Offline-Friendly Verification</h4>
+                        <h4 className="font-semibold text-blue-900">How do I claim a deal?</h4>
                       </div>
                       <p className="text-blue-800 text-sm">
-                        Please ask the merchant/store for 4-digit PIN when redeeming in-store.
+                        Claiming deals is a secure three-step process: 1) Click 'Claim Deal' online to reserve it, 2) Visit the store and ask for the 4-digit PIN to verify your redemption in the app. 3) Click on Verify & Redeem and add the bill amount and update savings. Only verified redemptions count toward your savings.
                       </p>
                       {process.env.NODE_ENV === 'development' && (
                         <div className="mt-2 p-2 bg-yellow-100 border border-yellow-300 rounded text-yellow-800 text-sm">
