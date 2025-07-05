@@ -159,6 +159,97 @@ export const posInventory = pgTable("pos_inventory", {
   lastUpdated: timestamp("last_updated").defaultNow(),
 });
 
+// Customer Reviews for Deals and Vendors
+export const customerReviews = pgTable("customer_reviews", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  dealId: integer("deal_id").references(() => deals.id).notNull(),
+  vendorId: integer("vendor_id").references(() => vendors.id).notNull(),
+  dealClaimId: integer("deal_claim_id").references(() => dealClaims.id).notNull(), // Links to specific redemption
+  
+  // Deal-specific ratings (1-5 stars)
+  dealQualityRating: integer("deal_quality_rating").notNull(), // How good was the deal/product
+  valueForMoneyRating: integer("value_for_money_rating").notNull(), // Was it worth the price
+  dealAccuracyRating: integer("deal_accuracy_rating").notNull(), // Did it match description
+  
+  // Vendor-specific ratings (1-5 stars)
+  vendorServiceRating: integer("vendor_service_rating").notNull(), // Service quality
+  vendorResponseRating: integer("vendor_response_rating").notNull(), // Response time and helpfulness
+  vendorProfessionalismRating: integer("vendor_professionalism_rating").notNull(), // Overall professionalism
+  
+  // Overall experience
+  overallRating: integer("overall_rating").notNull(), // Overall experience (1-5 stars)
+  
+  // Written feedback
+  reviewTitle: text("review_title"),
+  reviewText: text("review_text"),
+  pros: text("pros"), // What customer liked
+  cons: text("cons"), // What could be improved
+  
+  // Metadata
+  wouldRecommend: boolean("would_recommend").default(true),
+  isVerifiedPurchase: boolean("is_verified_purchase").default(true), // Always true since review comes after redemption
+  isVisible: boolean("is_visible").default(true), // For moderation
+  helpfulVotes: integer("helpful_votes").default(0), // For community feedback on reviews
+  reportedCount: integer("reported_count").default(0), // For spam/inappropriate content
+  
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Deal Ratings Summary (calculated from reviews)
+export const dealRatings = pgTable("deal_ratings", {
+  id: serial("id").primaryKey(),
+  dealId: integer("deal_id").references(() => deals.id).notNull().unique(),
+  
+  // Average ratings
+  avgDealQuality: decimal("avg_deal_quality", { precision: 3, scale: 2 }).default("0"),
+  avgValueForMoney: decimal("avg_value_for_money", { precision: 3, scale: 2 }).default("0"),
+  avgDealAccuracy: decimal("avg_deal_accuracy", { precision: 3, scale: 2 }).default("0"),
+  avgOverallRating: decimal("avg_overall_rating", { precision: 3, scale: 2 }).default("0"),
+  
+  // Review counts
+  totalReviews: integer("total_reviews").default(0),
+  recommendationPercentage: decimal("recommendation_percentage", { precision: 5, scale: 2 }).default("0"),
+  
+  // Star distribution
+  oneStarCount: integer("one_star_count").default(0),
+  twoStarCount: integer("two_star_count").default(0),
+  threeStarCount: integer("three_star_count").default(0),
+  fourStarCount: integer("four_star_count").default(0),
+  fiveStarCount: integer("five_star_count").default(0),
+  
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
+// Vendor Ratings Summary (calculated from reviews)
+export const vendorRatings = pgTable("vendor_ratings", {
+  id: serial("id").primaryKey(),
+  vendorId: integer("vendor_id").references(() => vendors.id).notNull().unique(),
+  
+  // Average ratings
+  avgServiceRating: decimal("avg_service_rating", { precision: 3, scale: 2 }).default("0"),
+  avgResponseRating: decimal("avg_response_rating", { precision: 3, scale: 2 }).default("0"),
+  avgProfessionalismRating: decimal("avg_professionalism_rating", { precision: 3, scale: 2 }).default("0"),
+  avgOverallRating: decimal("avg_overall_rating", { precision: 3, scale: 2 }).default("0"),
+  
+  // Performance metrics
+  totalReviews: integer("total_reviews").default(0),
+  totalDealsRated: integer("total_deals_rated").default(0),
+  recommendationPercentage: decimal("recommendation_percentage", { precision: 5, scale: 2 }).default("0"),
+  dealFulfillmentRate: decimal("deal_fulfillment_rate", { precision: 5, scale: 2 }).default("100"), // % of successful redemptions
+  avgResponseTime: integer("avg_response_time").default(0), // In hours
+  
+  // Star distribution for overall rating
+  oneStarCount: integer("one_star_count").default(0),
+  twoStarCount: integer("two_star_count").default(0),
+  threeStarCount: integer("three_star_count").default(0),
+  fourStarCount: integer("four_star_count").default(0),
+  fiveStarCount: integer("five_star_count").default(0),
+  
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   vendor: one(vendors, { fields: [users.id], references: [vendors.userId] }),
@@ -166,11 +257,14 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   helpTickets: many(helpTickets),
   systemLogs: many(systemLogs),
   wishlists: many(wishlists),
+  reviews: many(customerReviews),
 }));
 
 export const vendorsRelations = relations(vendors, ({ one, many }) => ({
   user: one(users, { fields: [vendors.userId], references: [users.id] }),
   deals: many(deals),
+  reviews: many(customerReviews),
+  vendorRating: one(vendorRatings, { fields: [vendors.id], references: [vendorRatings.vendorId] }),
 }));
 
 export const dealsRelations = relations(deals, ({ one, many }) => ({
@@ -178,11 +272,14 @@ export const dealsRelations = relations(deals, ({ one, many }) => ({
   approver: one(users, { fields: [deals.approvedBy], references: [users.id] }),
   claims: many(dealClaims),
   wishlists: many(wishlists),
+  reviews: many(customerReviews),
+  dealRating: one(dealRatings, { fields: [deals.id], references: [dealRatings.dealId] }),
 }));
 
-export const dealClaimsRelations = relations(dealClaims, ({ one }) => ({
+export const dealClaimsRelations = relations(dealClaims, ({ one, many }) => ({
   user: one(users, { fields: [dealClaims.userId], references: [users.id] }),
   deal: one(deals, { fields: [dealClaims.dealId], references: [deals.id] }),
+  review: one(customerReviews, { fields: [dealClaims.id], references: [customerReviews.dealClaimId] }),
 }));
 
 export const wishlistsRelations = relations(wishlists, ({ one }) => ({
@@ -204,6 +301,22 @@ export const posTransactionsRelations = relations(posTransactions, ({ one }) => 
 export const posInventoryRelations = relations(posInventory, ({ one }) => ({
   vendor: one(vendors, { fields: [posInventory.vendorId], references: [vendors.id] }),
   deal: one(deals, { fields: [posInventory.dealId], references: [deals.id] }),
+}));
+
+// Review system relations
+export const customerReviewsRelations = relations(customerReviews, ({ one }) => ({
+  user: one(users, { fields: [customerReviews.userId], references: [users.id] }),
+  deal: one(deals, { fields: [customerReviews.dealId], references: [deals.id] }),
+  vendor: one(vendors, { fields: [customerReviews.vendorId], references: [vendors.id] }),
+  dealClaim: one(dealClaims, { fields: [customerReviews.dealClaimId], references: [dealClaims.id] }),
+}));
+
+export const dealRatingsRelations = relations(dealRatings, ({ one }) => ({
+  deal: one(deals, { fields: [dealRatings.dealId], references: [deals.id] }),
+}));
+
+export const vendorRatingsRelations = relations(vendorRatings, ({ one }) => ({
+  vendor: one(vendors, { fields: [vendorRatings.vendorId], references: [vendors.id] }),
 }));
 
 // Insert schemas
@@ -262,6 +375,25 @@ export const insertPosInventorySchema = createInsertSchema(posInventory).omit({
   lastUpdated: true,
 });
 
+// Review system insert schemas
+export const insertCustomerReviewSchema = createInsertSchema(customerReviews).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  helpfulVotes: true,
+  reportedCount: true,
+});
+
+export const insertDealRatingSchema = createInsertSchema(dealRatings).omit({
+  id: true,
+  lastUpdated: true,
+});
+
+export const insertVendorRatingSchema = createInsertSchema(vendorRatings).omit({
+  id: true,
+  lastUpdated: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -283,6 +415,12 @@ export type PosTransaction = typeof posTransactions.$inferSelect;
 export type InsertPosTransaction = z.infer<typeof insertPosTransactionSchema>;
 export type PosInventory = typeof posInventory.$inferSelect;
 export type InsertPosInventory = z.infer<typeof insertPosInventorySchema>;
+export type CustomerReview = typeof customerReviews.$inferSelect;
+export type InsertCustomerReview = z.infer<typeof insertCustomerReviewSchema>;
+export type DealRating = typeof dealRatings.$inferSelect;
+export type InsertDealRating = z.infer<typeof insertDealRatingSchema>;
+export type VendorRating = typeof vendorRatings.$inferSelect;
+export type InsertVendorRating = z.infer<typeof insertVendorRatingSchema>;
 
 // Auth schemas
 export const loginSchema = z.object({

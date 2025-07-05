@@ -19,6 +19,12 @@ import {
   InsertPosTransaction,
   PosInventory,
   InsertPosInventory,
+  CustomerReview,
+  InsertCustomerReview,
+  DealRating,
+  InsertDealRating,
+  VendorRating,
+  InsertVendorRating,
 } from "../shared/schema";
 
 export interface IStorage {
@@ -116,6 +122,27 @@ export interface IStorage {
   updatePosInventory(id: number, updates: Partial<PosInventory>): Promise<PosInventory | undefined>;
   getPosInventoryByVendor(vendorId: number): Promise<PosInventory[]>;
   getPosInventoryByDeal(dealId: number): Promise<PosInventory | undefined>;
+
+  // Review and Rating operations
+  createCustomerReview(review: InsertCustomerReview): Promise<CustomerReview>;
+  getReviewsByDeal(dealId: number): Promise<CustomerReview[]>;
+  getReviewsByVendor(vendorId: number): Promise<CustomerReview[]>;
+  getReviewsByUser(userId: number): Promise<CustomerReview[]>;
+  getReviewByDealClaim(dealClaimId: number): Promise<CustomerReview | undefined>;
+  updateReview(id: number, updates: Partial<CustomerReview>): Promise<CustomerReview | undefined>;
+  deleteReview(id: number): Promise<boolean>;
+  markReviewHelpful(reviewId: number): Promise<void>;
+  reportReview(reviewId: number): Promise<void>;
+
+  // Rating summary operations
+  getDealRating(dealId: number): Promise<DealRating | undefined>;
+  getVendorRating(vendorId: number): Promise<VendorRating | undefined>;
+  updateDealRating(dealId: number): Promise<DealRating>;
+  updateVendorRating(vendorId: number): Promise<VendorRating>;
+  
+  // Get deals with ratings
+  getDealsWithRatings(): Promise<(Deal & { rating?: DealRating })[]>;
+  getVendorsWithRatings(): Promise<(Vendor & { rating?: VendorRating })[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -129,6 +156,9 @@ export class MemStorage implements IStorage {
   private posSessions: Map<number, PosSession> = new Map();
   private posTransactions: Map<number, PosTransaction> = new Map();
   private posInventory: Map<number, PosInventory> = new Map();
+  private customerReviews: Map<number, CustomerReview> = new Map();
+  private dealRatings: Map<number, DealRating> = new Map();
+  private vendorRatings: Map<number, VendorRating> = new Map();
 
   private currentUserId = 1;
   private currentVendorId = 1;
@@ -140,6 +170,9 @@ export class MemStorage implements IStorage {
   private currentPosSessionId = 1;
   private currentPosTransactionId = 1;
   private currentPosInventoryId = 1;
+  private currentReviewId = 1;
+  private currentDealRatingId = 1;
+  private currentVendorRatingId = 1;
 
   constructor() {
     this.initializeWithSampleData();
@@ -1221,6 +1254,259 @@ export class MemStorage implements IStorage {
   async getPosInventoryByDeal(dealId: number): Promise<PosInventory | undefined> {
     return Array.from(this.posInventory.values())
       .find(inventory => inventory.dealId === dealId);
+  }
+
+  // Review and Rating operations
+  async createCustomerReview(insertReview: InsertCustomerReview): Promise<CustomerReview> {
+    const review: CustomerReview = {
+      id: this.currentReviewId++,
+      ...insertReview,
+      helpfulVotes: 0,
+      reportedCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.customerReviews.set(review.id, review);
+    
+    // Update rating summaries after review creation
+    await this.updateDealRating(review.dealId);
+    await this.updateVendorRating(review.vendorId);
+    
+    return review;
+  }
+
+  async getReviewsByDeal(dealId: number): Promise<CustomerReview[]> {
+    return Array.from(this.customerReviews.values())
+      .filter(review => review.dealId === dealId && review.isVisible)
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async getReviewsByVendor(vendorId: number): Promise<CustomerReview[]> {
+    return Array.from(this.customerReviews.values())
+      .filter(review => review.vendorId === vendorId && review.isVisible)
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async getReviewsByUser(userId: number): Promise<CustomerReview[]> {
+    return Array.from(this.customerReviews.values())
+      .filter(review => review.userId === userId)
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async getReviewByDealClaim(dealClaimId: number): Promise<CustomerReview | undefined> {
+    return Array.from(this.customerReviews.values())
+      .find(review => review.dealClaimId === dealClaimId);
+  }
+
+  async updateReview(id: number, updates: Partial<CustomerReview>): Promise<CustomerReview | undefined> {
+    const review = this.customerReviews.get(id);
+    if (review) {
+      const updatedReview = { ...review, ...updates, updatedAt: new Date() };
+      this.customerReviews.set(id, updatedReview);
+      return updatedReview;
+    }
+    return undefined;
+  }
+
+  async deleteReview(id: number): Promise<boolean> {
+    const review = this.customerReviews.get(id);
+    if (review) {
+      const deleted = this.customerReviews.delete(id);
+      if (deleted) {
+        // Update rating summaries after review deletion
+        await this.updateDealRating(review.dealId);
+        await this.updateVendorRating(review.vendorId);
+      }
+      return deleted;
+    }
+    return false;
+  }
+
+  async markReviewHelpful(reviewId: number): Promise<void> {
+    const review = this.customerReviews.get(reviewId);
+    if (review) {
+      review.helpfulVotes = (review.helpfulVotes || 0) + 1;
+      this.customerReviews.set(reviewId, review);
+    }
+  }
+
+  async reportReview(reviewId: number): Promise<void> {
+    const review = this.customerReviews.get(reviewId);
+    if (review) {
+      review.reportedCount = (review.reportedCount || 0) + 1;
+      this.customerReviews.set(reviewId, review);
+    }
+  }
+
+  // Rating summary operations
+  async getDealRating(dealId: number): Promise<DealRating | undefined> {
+    return this.dealRatings.get(dealId);
+  }
+
+  async getVendorRating(vendorId: number): Promise<VendorRating | undefined> {
+    return this.vendorRatings.get(vendorId);
+  }
+
+  async updateDealRating(dealId: number): Promise<DealRating> {
+    const reviews = await this.getReviewsByDeal(dealId);
+    
+    if (reviews.length === 0) {
+      const emptyRating: DealRating = {
+        id: this.currentDealRatingId++,
+        dealId,
+        avgDealQuality: "0",
+        avgValueForMoney: "0",
+        avgDealAccuracy: "0",
+        avgOverallRating: "0",
+        totalReviews: 0,
+        recommendationPercentage: "0",
+        oneStarCount: 0,
+        twoStarCount: 0,
+        threeStarCount: 0,
+        fourStarCount: 0,
+        fiveStarCount: 0,
+        lastUpdated: new Date(),
+      };
+      this.dealRatings.set(dealId, emptyRating);
+      return emptyRating;
+    }
+
+    // Calculate averages
+    const totalReviews = reviews.length;
+    const avgDealQuality = (reviews.reduce((sum, r) => sum + r.dealQualityRating, 0) / totalReviews).toFixed(2);
+    const avgValueForMoney = (reviews.reduce((sum, r) => sum + r.valueForMoneyRating, 0) / totalReviews).toFixed(2);
+    const avgDealAccuracy = (reviews.reduce((sum, r) => sum + r.dealAccuracyRating, 0) / totalReviews).toFixed(2);
+    const avgOverallRating = (reviews.reduce((sum, r) => sum + r.overallRating, 0) / totalReviews).toFixed(2);
+    
+    // Calculate recommendation percentage
+    const recommendCount = reviews.filter(r => r.wouldRecommend).length;
+    const recommendationPercentage = ((recommendCount / totalReviews) * 100).toFixed(2);
+    
+    // Calculate star distribution
+    const starCounts = [0, 0, 0, 0, 0];
+    reviews.forEach(r => {
+      if (r.overallRating >= 1 && r.overallRating <= 5) {
+        starCounts[r.overallRating - 1]++;
+      }
+    });
+
+    const rating: DealRating = {
+      id: this.currentDealRatingId++,
+      dealId,
+      avgDealQuality,
+      avgValueForMoney,
+      avgDealAccuracy,
+      avgOverallRating,
+      totalReviews,
+      recommendationPercentage,
+      oneStarCount: starCounts[0],
+      twoStarCount: starCounts[1],
+      threeStarCount: starCounts[2],
+      fourStarCount: starCounts[3],
+      fiveStarCount: starCounts[4],
+      lastUpdated: new Date(),
+    };
+
+    this.dealRatings.set(dealId, rating);
+    return rating;
+  }
+
+  async updateVendorRating(vendorId: number): Promise<VendorRating> {
+    const reviews = await this.getReviewsByVendor(vendorId);
+    
+    if (reviews.length === 0) {
+      const emptyRating: VendorRating = {
+        id: this.currentVendorRatingId++,
+        vendorId,
+        avgServiceRating: "0",
+        avgResponseRating: "0",
+        avgProfessionalismRating: "0",
+        avgOverallRating: "0",
+        totalReviews: 0,
+        totalDealsRated: 0,
+        recommendationPercentage: "0",
+        dealFulfillmentRate: "100",
+        avgResponseTime: 0,
+        oneStarCount: 0,
+        twoStarCount: 0,
+        threeStarCount: 0,
+        fourStarCount: 0,
+        fiveStarCount: 0,
+        lastUpdated: new Date(),
+      };
+      this.vendorRatings.set(vendorId, emptyRating);
+      return emptyRating;
+    }
+
+    // Calculate averages
+    const totalReviews = reviews.length;
+    const avgServiceRating = (reviews.reduce((sum, r) => sum + r.vendorServiceRating, 0) / totalReviews).toFixed(2);
+    const avgResponseRating = (reviews.reduce((sum, r) => sum + r.vendorResponseRating, 0) / totalReviews).toFixed(2);
+    const avgProfessionalismRating = (reviews.reduce((sum, r) => sum + r.vendorProfessionalismRating, 0) / totalReviews).toFixed(2);
+    const avgOverallRating = (reviews.reduce((sum, r) => sum + r.overallRating, 0) / totalReviews).toFixed(2);
+    
+    // Calculate recommendation percentage
+    const recommendCount = reviews.filter(r => r.wouldRecommend).length;
+    const recommendationPercentage = ((recommendCount / totalReviews) * 100).toFixed(2);
+    
+    // Calculate unique deals rated
+    const uniqueDeals = new Set(reviews.map(r => r.dealId));
+    const totalDealsRated = uniqueDeals.size;
+    
+    // Calculate star distribution
+    const starCounts = [0, 0, 0, 0, 0];
+    reviews.forEach(r => {
+      if (r.overallRating >= 1 && r.overallRating <= 5) {
+        starCounts[r.overallRating - 1]++;
+      }
+    });
+
+    const rating: VendorRating = {
+      id: this.currentVendorRatingId++,
+      vendorId,
+      avgServiceRating,
+      avgResponseRating,
+      avgProfessionalismRating,
+      avgOverallRating,
+      totalReviews,
+      totalDealsRated,
+      recommendationPercentage,
+      dealFulfillmentRate: "100", // This would need to be calculated from actual redemption data
+      avgResponseTime: 24, // Default value in hours
+      oneStarCount: starCounts[0],
+      twoStarCount: starCounts[1],
+      threeStarCount: starCounts[2],
+      fourStarCount: starCounts[3],
+      fiveStarCount: starCounts[4],
+      lastUpdated: new Date(),
+    };
+
+    this.vendorRatings.set(vendorId, rating);
+    
+    // Update vendor's overall rating in vendor record
+    const vendor = this.vendors.get(vendorId);
+    if (vendor) {
+      vendor.rating = avgOverallRating;
+      this.vendors.set(vendorId, vendor);
+    }
+    
+    return rating;
+  }
+
+  async getDealsWithRatings(): Promise<(Deal & { rating?: DealRating })[]> {
+    const deals = Array.from(this.deals.values());
+    return Promise.all(deals.map(async deal => ({
+      ...deal,
+      rating: await this.getDealRating(deal.id)
+    })));
+  }
+
+  async getVendorsWithRatings(): Promise<(Vendor & { rating?: VendorRating })[]> {
+    const vendors = Array.from(this.vendors.values());
+    return Promise.all(vendors.map(async vendor => ({
+      ...vendor,
+      rating: await this.getVendorRating(vendor.id)
+    })));
   }
 }
 
