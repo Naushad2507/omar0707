@@ -115,6 +115,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### July 5, 2025 - Dynamic Category Carousel & Enhanced Navigation
+- **Auto-Scrolling Category Carousel**: Implemented smooth auto-scrolling carousel for homepage category browsing with 25-second infinite loop animation
+- **Enhanced Category Icons**: Added beautiful gradient-colored icons for all 18 categories with unique color schemes (electronics: blue, fashion: pink, restaurants: orange, etc.)
+- **Dynamic Category Cards**: Enhanced visual appeal with larger 16x16 icons, gradient backgrounds, hover animations, and improved typography
+- **Browse All Categories Button**: Moved "Browse All Categories" button below carousel with total deal count badge for better UX
+- **Seamless Category Navigation**: Categories now properly redirect both authenticated users (/customer/deals?category=X) and unauthenticated users (/deals?category=X)
+- **Pause on Hover**: Added animation pause functionality when users hover over the carousel for better interaction
+- **Category Filtering Verification**: Confirmed API properly handles category filtering with existing dummy data across 8 main categories
+- **Duplicate Category Loop**: Implemented seamless infinite scroll with duplicated categories for smooth continuous animation
+- **Enhanced Visual Design**: Added shadow effects, scale transitions, and gradient backgrounds for premium look and feel
+
 ### July 5, 2025 - Mobile UX Optimization & Deal Button Positioning Enhancement
 - **Mobile Carousel Improvements**: Fixed navigation arrows positioning on mobile - arrows now inside container (left-2/right-2) instead of outside where they were cut off
 - **Responsive Carousel Cards**: Added dynamic cards per view (1 mobile, 2 tablet, 3 desktop) with proper window resize handling

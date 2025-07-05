@@ -14,6 +14,20 @@
   display: none;
 }
 
+/* Auto-scroll animation for category carousel */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.category-carousel:hover {
+  animation-play-state: paused;
+}
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(20, 14.3%, 4.1%);

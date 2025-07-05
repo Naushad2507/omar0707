@@ -126,10 +126,12 @@ export default function Home() {
   };
 
   const handleCategoryClick = (categoryId: string) => {
+    // Allow both authenticated and unauthenticated users to browse deals by category
     if (isAuthenticated) {
       navigate(`/customer/deals?category=${categoryId}`);
     } else {
-      navigate("/login");
+      // Redirect to public deals page with category filter
+      navigate(`/deals?category=${categoryId}`);
     }
   };
 
@@ -229,52 +231,125 @@ export default function Home() {
           
           {categories && (
             <div className="relative">
-              {/* Category Carousel */}
-              <div className="overflow-hidden">
-                <div className="flex space-x-6 pb-4 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
-                  {/* View All Categories Card */}
-                  <div className="flex-none w-44 snap-start">
-                    <Card 
-                      className="h-full cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-dashed border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20"
-                      onClick={handleViewAllDeals}
-                    >
-                      <CardContent className="p-6 text-center h-full flex flex-col justify-center">
-                        <div className="flex justify-center mb-3">
-                          <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                            <TrendingUp className="w-6 h-6 text-primary" />
-                          </div>
-                        </div>
-                        <h3 className="font-semibold text-gray-900 mb-2">View All</h3>
-                        <p className="text-sm text-gray-600 mb-2">Browse all categories</p>
-                        <Badge variant="secondary" className="text-xs">
-                          {categories.reduce((total: number, cat: any) => total + (cat.dealCount || 0), 0)} deals
-                        </Badge>
-                      </CardContent>
-                    </Card>
-                  </div>
-
+              {/* Auto-scrolling Category Carousel */}
+              <div className="overflow-hidden category-carousel">
+                <div 
+                  className="flex space-x-6 pb-4"
+                  style={{
+                    width: `${(categories.length * 2 * 200)}px`,
+                    animation: 'scroll 25s linear infinite'
+                  }}
+                >
                   {/* Category Cards */}
                   {categories.map((category: any) => {
                     const IconComponent = categoryIcons[category.id as keyof typeof categoryIcons] || Building;
+                    
+                    // Enhanced color mapping for better visual appeal
+                    const categoryColors = {
+                      electronics: 'bg-gradient-to-br from-blue-500 to-blue-600',
+                      fashion: 'bg-gradient-to-br from-pink-500 to-rose-600',
+                      beauty: 'bg-gradient-to-br from-purple-500 to-purple-600',
+                      luxury: 'bg-gradient-to-br from-amber-500 to-yellow-600',
+                      horoscope: 'bg-gradient-to-br from-indigo-500 to-purple-600',
+                      health: 'bg-gradient-to-br from-green-500 to-emerald-600',
+                      restaurants: 'bg-gradient-to-br from-orange-500 to-red-600',
+                      entertainment: 'bg-gradient-to-br from-violet-500 to-purple-600',
+                      home: 'bg-gradient-to-br from-teal-500 to-cyan-600',
+                      events: 'bg-gradient-to-br from-rose-500 to-pink-600',
+                      realestate: 'bg-gradient-to-br from-slate-500 to-gray-600',
+                      education: 'bg-gradient-to-br from-blue-500 to-indigo-600',
+                      freelancers: 'bg-gradient-to-br from-emerald-500 to-teal-600',
+                      consultants: 'bg-gradient-to-br from-amber-500 to-orange-600',
+                      travel: 'bg-gradient-to-br from-cyan-500 to-blue-600',
+                      automotive: 'bg-gradient-to-br from-red-500 to-rose-600',
+                      services: 'bg-gradient-to-br from-gray-500 to-slate-600',
+                      others: 'bg-gradient-to-br from-violet-500 to-indigo-600'
+                    };
+
                     return (
-                      <div key={category.id} className="flex-none w-44 snap-start">
+                      <div key={category.id} className="flex-none w-44">
                         <Card 
-                          className="h-full cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
+                          className="h-full cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 border-0 shadow-lg"
                           onClick={() => handleCategoryClick(category.id)}
                         >
-                          <CardContent className="p-6 text-center h-full flex flex-col justify-center">
-                            <div className="flex justify-center mb-3">
-                              <div className={`w-12 h-12 rounded-full ${category.color || 'bg-primary/20'} flex items-center justify-center`}>
-                                <IconComponent className="w-6 h-6 text-white" />
+                          <CardContent className="p-6 text-center h-full flex flex-col justify-center relative overflow-hidden">
+                            {/* Animated background gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 opacity-50"></div>
+                            
+                            <div className="relative z-10">
+                              <div className="flex justify-center mb-4">
+                                <div className={`w-16 h-16 rounded-full ${categoryColors[category.id as keyof typeof categoryColors] || 'bg-gradient-to-br from-primary to-primary/80'} flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:rotate-12`}>
+                                  <IconComponent className="w-8 h-8 text-white" />
+                                </div>
                               </div>
+                              <h3 className="font-bold text-gray-900 mb-2 text-sm">{category.name}</h3>
+                              <p className="text-xs text-gray-600 mb-3">
+                                {category.dealCount > 0 ? `${category.dealCount} deals available` : 'Coming soon'}
+                              </p>
+                              <Badge 
+                                variant="secondary" 
+                                className="text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white transition-colors duration-300"
+                              >
+                                Explore Now
+                              </Badge>
                             </div>
-                            <h3 className="font-semibold text-gray-900 mb-2">{category.name}</h3>
-                            <p className="text-sm text-gray-600 mb-2">
-                              {category.dealCount > 0 ? `${category.dealCount} deals` : 'New category'}
-                            </p>
-                            <Badge variant="outline" className="text-xs">
-                              Explore
-                            </Badge>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Duplicate categories for seamless loop */}
+                  {categories.map((category: any) => {
+                    const IconComponent = categoryIcons[category.id as keyof typeof categoryIcons] || Building;
+                    
+                    const categoryColors = {
+                      electronics: 'bg-gradient-to-br from-blue-500 to-blue-600',
+                      fashion: 'bg-gradient-to-br from-pink-500 to-rose-600',
+                      beauty: 'bg-gradient-to-br from-purple-500 to-purple-600',
+                      luxury: 'bg-gradient-to-br from-amber-500 to-yellow-600',
+                      horoscope: 'bg-gradient-to-br from-indigo-500 to-purple-600',
+                      health: 'bg-gradient-to-br from-green-500 to-emerald-600',
+                      restaurants: 'bg-gradient-to-br from-orange-500 to-red-600',
+                      entertainment: 'bg-gradient-to-br from-violet-500 to-purple-600',
+                      home: 'bg-gradient-to-br from-teal-500 to-cyan-600',
+                      events: 'bg-gradient-to-br from-rose-500 to-pink-600',
+                      realestate: 'bg-gradient-to-br from-slate-500 to-gray-600',
+                      education: 'bg-gradient-to-br from-blue-500 to-indigo-600',
+                      freelancers: 'bg-gradient-to-br from-emerald-500 to-teal-600',
+                      consultants: 'bg-gradient-to-br from-amber-500 to-orange-600',
+                      travel: 'bg-gradient-to-br from-cyan-500 to-blue-600',
+                      automotive: 'bg-gradient-to-br from-red-500 to-rose-600',
+                      services: 'bg-gradient-to-br from-gray-500 to-slate-600',
+                      others: 'bg-gradient-to-br from-violet-500 to-indigo-600'
+                    };
+
+                    return (
+                      <div key={`${category.id}-duplicate`} className="flex-none w-44">
+                        <Card 
+                          className="h-full cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 border-0 shadow-lg"
+                          onClick={() => handleCategoryClick(category.id)}
+                        >
+                          <CardContent className="p-6 text-center h-full flex flex-col justify-center relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 opacity-50"></div>
+                            
+                            <div className="relative z-10">
+                              <div className="flex justify-center mb-4">
+                                <div className={`w-16 h-16 rounded-full ${categoryColors[category.id as keyof typeof categoryColors] || 'bg-gradient-to-br from-primary to-primary/80'} flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:rotate-12`}>
+                                  <IconComponent className="w-8 h-8 text-white" />
+                                </div>
+                              </div>
+                              <h3 className="font-bold text-gray-900 mb-2 text-sm">{category.name}</h3>
+                              <p className="text-xs text-gray-600 mb-3">
+                                {category.dealCount > 0 ? `${category.dealCount} deals available` : 'Coming soon'}
+                              </p>
+                              <Badge 
+                                variant="secondary" 
+                                className="text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary hover:text-white transition-colors duration-300"
+                              >
+                                Explore Now
+                              </Badge>
+                            </div>
                           </CardContent>
                         </Card>
                       </div>
@@ -283,16 +358,19 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Navigation Hint */}
-              <div className="flex justify-center mt-4">
-                <div className="text-sm text-gray-500 flex items-center">
-                  <span className="mr-2">Swipe to explore more categories</span>
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 rounded-full bg-primary/40"></div>
-                    <div className="w-2 h-2 rounded-full bg-primary/20"></div>
-                    <div className="w-2 h-2 rounded-full bg-primary/20"></div>
-                  </div>
-                </div>
+              {/* Browse All Categories Button */}
+              <div className="text-center mt-8">
+                <Button 
+                  onClick={handleViewAllDeals} 
+                  size="lg" 
+                  className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <TrendingUp className="w-5 h-5 mr-2" />
+                  Browse All Categories
+                  <Badge variant="secondary" className="ml-2 bg-white/20 text-white border-white/30">
+                    {categories.reduce((total: number, cat: any) => total + (cat.dealCount || 0), 0)} deals
+                  </Badge>
+                </Button>
               </div>
             </div>
           )}
