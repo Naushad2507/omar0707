@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import DealCard from "@/components/ui/deal-card";
-import CategoryCard from "@/components/ui/category-card";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,52 +16,11 @@ import { useAuth, hasMembershipLevel } from "@/lib/auth";
 import { 
   Search, 
   Filter, 
-  Shirt, 
-  Laptop, 
-  Plane, 
-  Utensils, 
-  Home as HomeIcon, 
-  Dumbbell,
   Loader2,
-  MapPin,
-  Smartphone,
-  Sparkles,
-  Gem,
-  Star,
-  Wand2,
-  Heart,
-  Camera,
-  Music,
-  Calendar,
-  Building,
-  GraduationCap,
-  PenTool,
-  Briefcase,
-  Car,
-  Wrench,
-  Gift
+  MapPin
 } from "lucide-react";
 
-const categoryIcons = {
-  electronics: Smartphone,
-  fashion: Shirt,
-  beauty: Sparkles,
-  luxury: Gem,
-  horoscope: Star,
-  health: Heart,
-  restaurants: Utensils,
-  entertainment: Camera,
-  home: HomeIcon,
-  events: Calendar,
-  realestate: Building,
-  education: GraduationCap,
-  freelancers: PenTool,
-  consultants: Briefcase,
-  travel: Plane,
-  automotive: Car,
-  services: Wrench,
-  others: Gift,
-};
+
 
 export default function CustomerDeals() {
   const [selectedCity, setSelectedCity] = useState("Mumbai");
@@ -96,9 +55,7 @@ export default function CustomerDeals() {
     }
   }, [location]);
 
-  const { data: categories } = useQuery({
-    queryKey: ["/api/categories"],
-  });
+
 
   const { data: deals = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/deals", selectedCity, selectedCategory],
@@ -181,9 +138,7 @@ export default function CustomerDeals() {
     },
   });
 
-  const handleCategoryClick = (categoryId: string) => {
-    setSelectedCategory(selectedCategory === categoryId ? "" : categoryId);
-  };
+
 
   const handleClaimDeal = async (deal: any) => {
     if (!user) {
@@ -274,24 +229,7 @@ export default function CustomerDeals() {
           </div>
         </div>
 
-        {/* Categories */}
-        {categories && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Browse by Category</h2>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-              {categories.map((category: any) => (
-                <CategoryCard
-                  key={category.id}
-                  name={category.name}
-                  icon={categoryIcons[category.id as keyof typeof categoryIcons]}
-                  dealCount={category.dealCount}
-                  color={category.color}
-                  onClick={() => handleCategoryClick(category.id)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+
 
         {/* Filters and Search */}
         <Card className="mb-8">
