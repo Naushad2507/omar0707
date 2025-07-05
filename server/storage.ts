@@ -1508,6 +1508,142 @@ export class MemStorage implements IStorage {
       rating: await this.getVendorRating(vendor.id)
     })));
   }
+
+  // Review methods
+  async createReview(review: InsertCustomerReview): Promise<CustomerReview> {
+    const newReview: CustomerReview = {
+      id: this.currentReviewId++,
+      ...review,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    this.customerReviews.set(newReview.id, newReview);
+    
+    // Update ratings after creating review
+    await this.updateDealRating(review.dealId);
+    await this.updateVendorRating(review.vendorId);
+    
+    return newReview;
+  }
+
+  async getReviewById(id: number): Promise<CustomerReview | null> {
+    return this.customerReviews.get(id) || null;
+  }
+
+  async getReviewsByUser(userId: number): Promise<CustomerReview[]> {
+    return Array.from(this.customerReviews.values())
+      .filter(review => review.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getReviewsByDeal(dealId: number): Promise<CustomerReview[]> {
+    return Array.from(this.customerReviews.values())
+      .filter(review => review.dealId === dealId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getReviewsByVendor(vendorId: number): Promise<CustomerReview[]> {
+    return Array.from(this.customerReviews.values())
+      .filter(review => review.vendorId === vendorId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getAllReviews(): Promise<CustomerReview[]> {
+    return Array.from(this.customerReviews.values())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async updateReview(id: number, updates: Partial<InsertCustomerReview>): Promise<CustomerReview | null> {
+    const review = this.customerReviews.get(id);
+    if (!review) return null;
+
+    const updatedReview: CustomerReview = {
+      ...review,
+      ...updates,
+      updatedAt: new Date(),
+    };
+
+    this.customerReviews.set(id, updatedReview);
+    
+    // Update ratings after updating review
+    await this.updateDealRating(updatedReview.dealId);
+    await this.updateVendorRating(updatedReview.vendorId);
+    
+    return updatedReview;
+  }
+
+  async deleteReview(id: number): Promise<boolean> {
+    const review = this.customerReviews.get(id);
+    if (!review) return false;
+
+    this.customerReviews.delete(id);
+    
+    // Update ratings after deleting review
+    await this.updateDealRating(review.dealId);
+    await this.updateVendorRating(review.vendorId);
+    
+    return true;
+  }
+
+  async getUserReviewForDeal(userId: number, dealId: number): Promise<CustomerReview | null> {
+    return Array.from(this.customerReviews.values())
+      .find(review => review.userId === userId && review.dealId === dealId) || null;
+  }
+
+  async getReviewStats(): Promise<{
+    totalReviews: number;
+    avgOverallRating: number;
+    avgDealRating: number;
+    avgVendorServiceRating: number;
+    avgVendorResponseRating: number;
+    avgVendorProfessionalismRating: number;
+    recommendationPercentage: number;
+    starDistribution: { [key: number]: number };
+  }> {
+    const reviews = Array.from(this.customerReviews.values());
+    const totalReviews = reviews.length;
+
+    if (totalReviews === 0) {
+      return {
+        totalReviews: 0,
+        avgOverallRating: 0,
+        avgDealRating: 0,
+        avgVendorServiceRating: 0,
+        avgVendorResponseRating: 0,
+        avgVendorProfessionalismRating: 0,
+        recommendationPercentage: 0,
+        starDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      };
+    }
+
+    const avgOverallRating = reviews.reduce((sum, r) => sum + r.overallRating, 0) / totalReviews;
+    const avgDealRating = reviews.reduce((sum, r) => sum + r.dealRating, 0) / totalReviews;
+    const avgVendorServiceRating = reviews.reduce((sum, r) => sum + r.vendorServiceRating, 0) / totalReviews;
+    const avgVendorResponseRating = reviews.reduce((sum, r) => sum + r.vendorResponseRating, 0) / totalReviews;
+    const avgVendorProfessionalismRating = reviews.reduce((sum, r) => sum + r.vendorProfessionalismRating, 0) / totalReviews;
+    
+    const recommendCount = reviews.filter(r => r.wouldRecommend).length;
+    const recommendationPercentage = (recommendCount / totalReviews) * 100;
+
+    const starDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    reviews.forEach(r => {
+      if (r.overallRating >= 1 && r.overallRating <= 5) {
+        starDistribution[r.overallRating]++;
+      }
+    });
+
+    return {
+      totalReviews,
+      avgOverallRating: Math.round(avgOverallRating * 100) / 100,
+      avgDealRating: Math.round(avgDealRating * 100) / 100,
+      avgVendorServiceRating: Math.round(avgVendorServiceRating * 100) / 100,
+      avgVendorResponseRating: Math.round(avgVendorResponseRating * 100) / 100,
+      avgVendorProfessionalismRating: Math.round(avgVendorProfessionalismRating * 100) / 100,
+      recommendationPercentage: Math.round(recommendationPercentage * 100) / 100,
+      starDistribution,
+    };
+  }
 }
 
 export const storage = new MemStorage();
