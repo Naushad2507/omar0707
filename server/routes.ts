@@ -1852,7 +1852,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin report download endpoints
   app.get('/api/admin/reports/users', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
-      const users = await storage.getAllUsers();
+      const { from, to } = req.query;
+      let users = await storage.getAllUsers();
+      
+      // Apply date filtering if provided
+      if (from || to) {
+        users = users.filter(user => {
+          if (!user.createdAt) return false;
+          const userDate = new Date(user.createdAt);
+          const fromDate = from ? new Date(from as string) : null;
+          const toDate = to ? new Date(to as string) : null;
+          
+          if (fromDate && userDate < fromDate) return false;
+          if (toDate && userDate > toDate) return false;
+          return true;
+        });
+      }
       
       // Convert users data to CSV format
       const csvHeaders = 'ID,Name,Email,Role,Membership Plan,Total Savings,Deals Claimed,Join Date\n';
@@ -1860,8 +1875,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `${user.id},"${user.name || 'N/A'}","${user.email}","${user.role}","${user.membershipPlan || 'basic'}","₹${user.totalSavings || 0}","${user.dealsClaimed || 0}","${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}"`
       ).join('\n');
 
+      const dateRange = (from || to) ? ` (${from || 'start'} to ${to || 'end'})` : '';
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="users-report.csv"');
+      res.setHeader('Content-Disposition', `attachment; filename="users-report${dateRange}.csv"`);
       res.send(csvHeaders + csvData);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate users report" });
@@ -1870,7 +1886,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/admin/reports/vendors', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
-      const vendors = await storage.getAllVendors();
+      const { from, to } = req.query;
+      let vendors = await storage.getAllVendors();
+      
+      // Apply date filtering if provided
+      if (from || to) {
+        vendors = vendors.filter(vendor => {
+          if (!vendor.createdAt) return false;
+          const vendorDate = new Date(vendor.createdAt);
+          const fromDate = from ? new Date(from as string) : null;
+          const toDate = to ? new Date(to as string) : null;
+          
+          if (fromDate && vendorDate < fromDate) return false;
+          if (toDate && vendorDate > toDate) return false;
+          return true;
+        });
+      }
       
       // Convert vendors data to CSV format
       const csvHeaders = 'ID,Business Name,Contact Name,Email,Status,City,State,Deals Created,Registration Date\n';
@@ -1878,8 +1909,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `${vendor.id},"${vendor.businessName || 'N/A'}","N/A","N/A","${vendor.isApproved ? 'Approved' : 'Pending'}","${vendor.city || 'N/A'}","${vendor.state || 'N/A'}","${vendor.totalDeals || 0}","${vendor.createdAt ? new Date(vendor.createdAt).toLocaleDateString() : 'N/A'}"`
       ).join('\n');
 
+      const dateRange = (from || to) ? ` (${from || 'start'} to ${to || 'end'})` : '';
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="vendors-report.csv"');
+      res.setHeader('Content-Disposition', `attachment; filename="vendors-report${dateRange}.csv"`);
       res.send(csvHeaders + csvData);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate vendors report" });
@@ -1888,7 +1920,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/admin/reports/deals', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
-      const deals = await storage.getAllDeals();
+      const { from, to } = req.query;
+      let deals = await storage.getAllDeals();
+      
+      // Apply date filtering if provided
+      if (from || to) {
+        deals = deals.filter((deal: any) => {
+          if (!deal.createdAt) return false;
+          const dealDate = new Date(deal.createdAt);
+          const fromDate = from ? new Date(from as string) : null;
+          const toDate = to ? new Date(to as string) : null;
+          
+          if (fromDate && dealDate < fromDate) return false;
+          if (toDate && dealDate > toDate) return false;
+          return true;
+        });
+      }
       
       // Convert deals data to CSV format
       const csvHeaders = 'ID,Title,Category,Discount %,Vendor,City,Status,Claims,Valid Until,Created Date\n';
@@ -1896,8 +1943,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `${deal.id},"${deal.title}","${deal.category}","${deal.discountPercentage}%","${deal.vendor?.businessName || 'N/A'}","${deal.vendor?.city || 'N/A'}","${deal.isActive ? 'Active' : 'Inactive'}","${deal.currentRedemptions || 0}","${deal.validUntil ? new Date(deal.validUntil).toLocaleDateString() : 'N/A'}","${deal.createdAt ? new Date(deal.createdAt).toLocaleDateString() : 'N/A'}"`
       ).join('\n');
 
+      const dateRange = (from || to) ? ` (${from || 'start'} to ${to || 'end'})` : '';
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="deals-report.csv"');
+      res.setHeader('Content-Disposition', `attachment; filename="deals-report${dateRange}.csv"`);
       res.send(csvHeaders + csvData);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate deals report" });
@@ -1932,7 +1980,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/admin/reports/claims', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
-      const claims = await storage.getAllDealClaims();
+      const { from, to } = req.query;
+      let claims = await storage.getAllDealClaims();
+      
+      // Apply date filtering if provided
+      if (from || to) {
+        claims = claims.filter((claim: any) => {
+          if (!claim.claimedAt) return false;
+          const claimDate = new Date(claim.claimedAt);
+          const fromDate = from ? new Date(from as string) : null;
+          const toDate = to ? new Date(to as string) : null;
+          
+          if (fromDate && claimDate < fromDate) return false;
+          if (toDate && claimDate > toDate) return false;
+          return true;
+        });
+      }
       
       // Convert claims data to CSV format
       const csvHeaders = 'ID,User Email,Deal Title,Vendor,Savings Amount,Status,Claim Date,Verification Date\n';
@@ -1940,8 +2003,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `${claim.id},"${claim.user?.email || 'N/A'}","${claim.deal?.title || 'N/A'}","${claim.deal?.vendor?.businessName || 'N/A'}","₹${claim.savingsAmount || 0}","${claim.status}","${claim.claimedAt ? new Date(claim.claimedAt).toLocaleDateString() : 'N/A'}","${claim.usedAt ? new Date(claim.usedAt).toLocaleDateString() : 'N/A'}"`
       ).join('\n');
 
+      const dateRange = (from || to) ? ` (${from || 'start'} to ${to || 'end'})` : '';
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="claims-report.csv"');
+      res.setHeader('Content-Disposition', `attachment; filename="claims-report${dateRange}.csv"`);
       res.send(csvHeaders + csvData);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate claims report" });
@@ -1950,9 +2014,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/admin/reports/revenue', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
-      const claims = await storage.getAllDealClaims();
+      const { from, to } = req.query;
+      let claims = await storage.getAllDealClaims();
       const vendors = await storage.getAllVendors();
       const deals = await storage.getAllDeals();
+      
+      // Apply date filtering to claims if provided
+      if (from || to) {
+        claims = claims.filter((claim: any) => {
+          if (!claim.usedAt) return false;
+          const claimDate = new Date(claim.usedAt);
+          const fromDate = from ? new Date(from as string) : null;
+          const toDate = to ? new Date(to as string) : null;
+          
+          if (fromDate && claimDate < fromDate) return false;
+          if (toDate && claimDate > toDate) return false;
+          return true;
+        });
+      }
       
       // Calculate revenue metrics by vendor and time period
       const revenueData = vendors.map((vendor: any) => {
@@ -1998,8 +2077,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add summary row
       const summaryRow = `\n"TOTAL","Platform Summary","All Cities","${totalTransactions}","₹${totalSavings}","₹${totalRevenue}","${deals.length}","Platform Revenue Summary"`;
 
+      const dateRange = (from || to) ? ` (${from || 'start'} to ${to || 'end'})` : '';
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="revenue-report.csv"');
+      res.setHeader('Content-Disposition', `attachment; filename="revenue-report${dateRange}.csv"`);
       res.send(csvHeaders + csvData + summaryRow);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate revenue report" });

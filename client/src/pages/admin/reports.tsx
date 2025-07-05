@@ -8,6 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -34,10 +37,66 @@ export default function AdminReports() {
   const [viewingReport, setViewingReport] = useState<string | null>(null);
   const [reportData, setReportData] = useState<any[]>([]);
   const [reportColumns, setReportColumns] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<{from: string, to: string}>({
+    from: '',
+    to: new Date().toISOString().split('T')[0] // Today's date
+  });
+  const [filterPreset, setFilterPreset] = useState<string>('all');
 
   const { data: analytics } = useQuery({
     queryKey: ["/api/admin/analytics"],
   });
+
+  // Handle filter preset changes
+  const handleFilterPresetChange = (preset: string) => {
+    setFilterPreset(preset);
+    const today = new Date();
+    let fromDate = '';
+    
+    switch (preset) {
+      case 'today':
+        fromDate = today.toISOString().split('T')[0];
+        break;
+      case 'week':
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        fromDate = weekAgo.toISOString().split('T')[0];
+        break;
+      case 'month':
+        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        fromDate = monthAgo.toISOString().split('T')[0];
+        break;
+      case 'quarter':
+        const quarterAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+        fromDate = quarterAgo.toISOString().split('T')[0];
+        break;
+      case 'year':
+        const yearAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
+        fromDate = yearAgo.toISOString().split('T')[0];
+        break;
+      case 'all':
+      default:
+        fromDate = '';
+        break;
+    }
+    
+    setDateRange({
+      from: fromDate,
+      to: today.toISOString().split('T')[0]
+    });
+  };
+
+  // Build query parameters for date filtering
+  const buildDateFilter = () => {
+    if (filterPreset === 'all' || !dateRange.from) {
+      return '';
+    }
+    
+    const params = new URLSearchParams();
+    if (dateRange.from) params.append('from', dateRange.from);
+    if (dateRange.to) params.append('to', dateRange.to);
+    
+    return `?${params.toString()}`;
+  };
 
   // Function to handle report viewing
   const viewReport = async (reportType: string) => {
@@ -118,7 +177,8 @@ export default function AdminReports() {
           return;
       }
 
-      const response = await fetch(endpoint, {
+      const dateFilter = buildDateFilter();
+      const response = await fetch(`${endpoint}${dateFilter}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -231,7 +291,8 @@ export default function AdminReports() {
         return;
       }
 
-      const response = await fetch(`/api/admin/reports/${reportType}`, {
+      const dateFilter = buildDateFilter();
+      const response = await fetch(`/api/admin/reports/${reportType}${dateFilter}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -402,6 +463,93 @@ export default function AdminReports() {
             </div>
           </div>
         </div>
+
+        {/* Date Filter Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+              Date Filter
+            </CardTitle>
+            <p className="text-sm text-gray-600">
+              Filter reports by date range for more targeted analysis
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Filter Presets */}
+              <div className="space-y-2">
+                <Label htmlFor="filter-preset">Quick Filters</Label>
+                <Select value={filterPreset} onValueChange={handleFilterPresetChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select time period" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Time</SelectItem>
+                    <SelectItem value="today">Today</SelectItem>
+                    <SelectItem value="week">Last 7 Days</SelectItem>
+                    <SelectItem value="month">Last 30 Days</SelectItem>
+                    <SelectItem value="quarter">Last 90 Days</SelectItem>
+                    <SelectItem value="year">Last Year</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* From Date */}
+              <div className="space-y-2">
+                <Label htmlFor="from-date">From Date</Label>
+                <Input
+                  id="from-date"
+                  type="date"
+                  value={dateRange.from}
+                  onChange={(e) => {
+                    setDateRange(prev => ({ ...prev, from: e.target.value }));
+                    setFilterPreset('custom');
+                  }}
+                />
+              </div>
+
+              {/* To Date */}
+              <div className="space-y-2">
+                <Label htmlFor="to-date">To Date</Label>
+                <Input
+                  id="to-date"
+                  type="date"
+                  value={dateRange.to}
+                  onChange={(e) => {
+                    setDateRange(prev => ({ ...prev, to: e.target.value }));
+                    setFilterPreset('custom');
+                  }}
+                />
+              </div>
+
+              {/* Clear Filter */}
+              <div className="space-y-2">
+                <Label>&nbsp;</Label>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => handleFilterPresetChange('all')}
+                >
+                  Clear Filter
+                </Button>
+              </div>
+            </div>
+
+            {/* Filter Summary */}
+            {filterPreset !== 'all' && (
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-800">
+                  <strong>Active Filter:</strong> {
+                    filterPreset === 'custom' ? 
+                      `Custom range: ${dateRange.from || 'Start'} to ${dateRange.to}` :
+                      `${filterPreset.charAt(0).toUpperCase() + filterPreset.slice(1)} (${dateRange.from} to ${dateRange.to})`
+                  }
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Reports Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
