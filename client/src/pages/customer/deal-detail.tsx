@@ -550,8 +550,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                     <h4 className="font-semibold text-blue-900">Offline-Friendly Verification</h4>
                   </div>
                   <p className="text-blue-800 text-sm">
-                    This deal uses a 4-digit PIN verification system. Ask the vendor for their PIN when redeeming in-store. 
-                    Works even without internet connection!
+                    Please ask the merchant/store for 4-digit PIN when redeeming in-store.
                   </p>
                   {process.env.NODE_ENV === 'development' && (
                     <div className="mt-2 p-2 bg-yellow-100 border border-yellow-300 rounded text-yellow-800 text-sm">
