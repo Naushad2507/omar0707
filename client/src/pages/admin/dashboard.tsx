@@ -480,14 +480,22 @@ export default function AdminDashboard() {
         {/* Reports Section */}
         <div className="mt-8">
           <Card className="glass-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gradient-text">
-                <Database className="h-5 w-5 mr-2 text-blue-600" />
-                Data Reports & Analytics
-              </CardTitle>
-              <p className="text-sm text-gray-600">
-                Download comprehensive CSV reports for analysis and record-keeping. All reports include the latest data.
-              </p>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gradient-text">
+                  <Database className="h-5 w-5 mr-2 text-blue-600" />
+                  Data Reports & Analytics
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Download comprehensive CSV reports for analysis and record-keeping. All reports include the latest data.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/admin/reports">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View All Reports
+                </Link>
+              </Button>
             </CardHeader>
             <CardContent>
               {/* Report Info Grid */}

@@ -43,6 +43,7 @@ import AdminDashboard from "@/pages/admin/dashboard";
 import AdminUsers from "@/pages/admin/users";
 import AdminVendors from "@/pages/admin/vendors";
 import AdminDeals from "@/pages/admin/deals";
+import AdminReports from "@/pages/admin/reports";
 import AdminDealDistribution from "@/pages/admin/deal-distribution";
 
 // Super Admin pages
@@ -142,6 +143,7 @@ function Router() {
   const [matchAdminUsers] = useRoute("/admin/users");
   const [matchAdminVendors] = useRoute("/admin/vendors");
   const [matchAdminDeals] = useRoute("/admin/deals");
+  const [matchAdminReports] = useRoute("/admin/reports");
 
   // Super Admin routes
   const [matchSuperAdmin] = useRoute("/superadmin");
@@ -350,6 +352,13 @@ function Router() {
     return (
       <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
         <AdminDeals />
+      </RoleProtectedRoute>
+    );
+  }
+  if (matchAdminReports) {
+    return (
+      <RoleProtectedRoute allowedRoles={['admin', 'superadmin']}>
+        <AdminReports />
       </RoleProtectedRoute>
     );
   }

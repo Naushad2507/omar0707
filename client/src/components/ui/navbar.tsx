@@ -70,6 +70,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
           { label: "Users", href: "/admin/users", icon: Users },
           { label: "Vendors", href: "/admin/vendors", icon: Store },
           { label: "Deals", href: "/admin/deals", icon: Tag },
+          { label: "Reports", href: "/admin/reports", icon: FileText },
         ];
       case 'superadmin':
         return [
