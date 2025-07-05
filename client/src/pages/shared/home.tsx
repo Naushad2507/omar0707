@@ -228,17 +228,72 @@ export default function Home() {
           </div>
           
           {categories && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {categories.map((category: any) => (
-                <CategoryCard
-                  key={category.id}
-                  name={category.name}
-                  icon={categoryIcons[category.id as keyof typeof categoryIcons] || Building}
-                  dealCount={category.dealCount}
-                  color={category.color}
-                  onClick={() => handleCategoryClick(category.id)}
-                />
-              ))}
+            <div className="relative">
+              {/* Category Carousel */}
+              <div className="overflow-hidden">
+                <div className="flex space-x-6 pb-4 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
+                  {/* View All Categories Card */}
+                  <div className="flex-none w-44 snap-start">
+                    <Card 
+                      className="h-full cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-dashed border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20"
+                      onClick={handleViewAllDeals}
+                    >
+                      <CardContent className="p-6 text-center h-full flex flex-col justify-center">
+                        <div className="flex justify-center mb-3">
+                          <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                            <TrendingUp className="w-6 h-6 text-primary" />
+                          </div>
+                        </div>
+                        <h3 className="font-semibold text-gray-900 mb-2">View All</h3>
+                        <p className="text-sm text-gray-600 mb-2">Browse all categories</p>
+                        <Badge variant="secondary" className="text-xs">
+                          {categories.reduce((total: number, cat: any) => total + (cat.dealCount || 0), 0)} deals
+                        </Badge>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Category Cards */}
+                  {categories.map((category: any) => {
+                    const IconComponent = categoryIcons[category.id as keyof typeof categoryIcons] || Building;
+                    return (
+                      <div key={category.id} className="flex-none w-44 snap-start">
+                        <Card 
+                          className="h-full cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
+                          onClick={() => handleCategoryClick(category.id)}
+                        >
+                          <CardContent className="p-6 text-center h-full flex flex-col justify-center">
+                            <div className="flex justify-center mb-3">
+                              <div className={`w-12 h-12 rounded-full ${category.color || 'bg-primary/20'} flex items-center justify-center`}>
+                                <IconComponent className="w-6 h-6 text-white" />
+                              </div>
+                            </div>
+                            <h3 className="font-semibold text-gray-900 mb-2">{category.name}</h3>
+                            <p className="text-sm text-gray-600 mb-2">
+                              {category.dealCount > 0 ? `${category.dealCount} deals` : 'New category'}
+                            </p>
+                            <Badge variant="outline" className="text-xs">
+                              Explore
+                            </Badge>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Navigation Hint */}
+              <div className="flex justify-center mt-4">
+                <div className="text-sm text-gray-500 flex items-center">
+                  <span className="mr-2">Swipe to explore more categories</span>
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 rounded-full bg-primary/40"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary/20"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary/20"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
