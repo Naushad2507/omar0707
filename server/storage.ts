@@ -43,6 +43,7 @@ export interface IStorage {
   // Deal operations
   getDeal(id: number): Promise<Deal | undefined>;
   getDealsBy(filters: Partial<Deal>): Promise<Deal[]>;
+  getAllDeals(): Promise<Deal[]>;
   createDeal(deal: InsertDeal): Promise<Deal>;
   updateDeal(id: number, updates: Partial<Deal>): Promise<Deal | undefined>;
   deleteDeal(id: number): Promise<boolean>;
@@ -58,6 +59,7 @@ export interface IStorage {
   createDealClaim(claim: InsertDealClaim): Promise<DealClaim>;
   getUserClaims(userId: number): Promise<DealClaim[]>;
   getDealClaims(dealId: number): Promise<DealClaim[]>;
+  getAllDealClaims(): Promise<DealClaim[]>;
   updateClaimStatus(id: number, status: string, usedAt?: Date): Promise<DealClaim | undefined>;
   updateDealClaim(id: number, updates: Partial<DealClaim>): Promise<DealClaim | undefined>;
   incrementDealRedemptions(dealId: number): Promise<void>;
@@ -88,6 +90,8 @@ export interface IStorage {
     cityStats: Array<{ city: string; dealCount: number; userCount: number }>;
     categoryStats: Array<{ category: string; dealCount: number; claimCount: number }>;
   }>;
+
+  getAdminAnalytics(): Promise<any>;
 
   // Get deals ordered by claims (most claimed first)
   getMostClaimedDeals(): Promise<Deal[]>;
@@ -794,6 +798,13 @@ export class MemStorage implements IStorage {
     return Array.from(this.deals.values()).filter(deal => deal.vendorId === vendorId);
   }
 
+  async getAllDeals(): Promise<Deal[]> {
+    return Array.from(this.deals.values()).map(deal => {
+      const vendor = this.vendors.get(deal.vendorId);
+      return { ...deal, vendor };
+    });
+  }
+
   async getPendingDeals(): Promise<Deal[]> {
     return Array.from(this.deals.values()).filter(deal => !deal.isApproved);
   }
@@ -843,6 +854,23 @@ export class MemStorage implements IStorage {
 
   async getDealClaims(dealId: number): Promise<DealClaim[]> {
     return Array.from(this.dealClaims.values()).filter(claim => claim.dealId === dealId);
+  }
+
+  async getAllDealClaims(): Promise<DealClaim[]> {
+    return Array.from(this.dealClaims.values()).map(claim => {
+      const user = this.users.get(claim.userId);
+      const deal = this.deals.get(claim.dealId);
+      const vendor = deal ? this.vendors.get(deal.vendorId) : undefined;
+      
+      return {
+        ...claim,
+        user: user,
+        deal: deal ? {
+          ...deal,
+          vendor: vendor
+        } : undefined
+      };
+    });
   }
 
   async updateClaimStatus(id: number, status: string, usedAt?: Date): Promise<DealClaim | undefined> {
@@ -1051,6 +1079,25 @@ export class MemStorage implements IStorage {
       revenueEstimate: totalClaims * 150, // Rough estimate
       cityStats,
       categoryStats,
+    };
+  }
+
+  async getAdminAnalytics() {
+    const analytics = await this.getAnalytics();
+    const activeDeals = Array.from(this.deals.values()).filter(deal => deal.isActive).length;
+    const pendingVendors = Array.from(this.vendors.values()).filter(vendor => !vendor.isApproved).length;
+    const pendingDeals = Array.from(this.deals.values()).filter(deal => !deal.isApproved).length;
+    const totalSavings = Array.from(this.dealClaims.values())
+      .reduce((sum, claim) => sum + parseFloat(claim.actualSavings || claim.savingsAmount || "0"), 0);
+
+    return {
+      ...analytics,
+      activeDeals,
+      pendingVendors,
+      pendingDeals,
+      totalSavings,
+      monthlyRevenue: 0, // Can be calculated based on business logic
+      growthRate: 0, // Can be calculated based on historical data
     };
   }
 

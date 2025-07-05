@@ -19,7 +19,10 @@ import {
   AlertCircle,
   BarChart3,
   Eye,
-  DollarSign
+  DollarSign,
+  Download,
+  FileText,
+  Database
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from "recharts";
 
@@ -406,6 +409,74 @@ export default function AdminDashboard() {
                   <p className="text-gray-600">No pending deal approvals</p>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Reports Section */}
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Database className="h-5 w-5 mr-2 text-blue-600" />
+                Data Reports & Analytics
+              </CardTitle>
+              <p className="text-sm text-gray-600">
+                Download comprehensive reports for users, vendors, deals, and analytics data
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Users Report */}
+                <Button 
+                  variant="outline" 
+                  className="h-20 flex-col space-y-2"
+                  onClick={() => downloadReport('users')}
+                >
+                  <Users className="h-6 w-6 text-blue-600" />
+                  <span className="text-sm">Users Report</span>
+                </Button>
+
+                {/* Vendors Report */}
+                <Button 
+                  variant="outline" 
+                  className="h-20 flex-col space-y-2"
+                  onClick={() => downloadReport('vendors')}
+                >
+                  <Store className="h-6 w-6 text-green-600" />
+                  <span className="text-sm">Vendors Report</span>
+                </Button>
+
+                {/* Deals Report */}
+                <Button 
+                  variant="outline" 
+                  className="h-20 flex-col space-y-2"
+                  onClick={() => downloadReport('deals')}
+                >
+                  <Ticket className="h-6 w-6 text-orange-600" />
+                  <span className="text-sm">Deals Report</span>
+                </Button>
+
+                {/* Analytics Report */}
+                <Button 
+                  variant="outline" 
+                  className="h-20 flex-col space-y-2"
+                  onClick={() => downloadReport('analytics')}
+                >
+                  <BarChart3 className="h-6 w-6 text-purple-600" />
+                  <span className="text-sm">Analytics Report</span>
+                </Button>
+
+                {/* Claims Report */}
+                <Button 
+                  variant="outline" 
+                  className="h-20 flex-col space-y-2"
+                  onClick={() => downloadReport('claims')}
+                >
+                  <FileText className="h-6 w-6 text-red-600" />
+                  <span className="text-sm">Claims Report</span>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

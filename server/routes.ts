@@ -1849,6 +1849,105 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin report download endpoints
+  app.get('/api/admin/reports/users', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      
+      // Convert users data to CSV format
+      const csvHeaders = 'ID,Name,Email,Role,Membership Plan,Total Savings,Deals Claimed,Join Date\n';
+      const csvData = users.map(user => 
+        `${user.id},"${user.name || 'N/A'}","${user.email}","${user.role}","${user.membershipPlan || 'basic'}","₹${user.totalSavings || 0}","${user.dealsClaimed || 0}","${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}"`
+      ).join('\n');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="users-report.csv"');
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate users report" });
+    }
+  });
+
+  app.get('/api/admin/reports/vendors', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const vendors = await storage.getAllVendors();
+      
+      // Convert vendors data to CSV format
+      const csvHeaders = 'ID,Business Name,Contact Name,Email,Status,City,State,Deals Created,Registration Date\n';
+      const csvData = vendors.map(vendor => 
+        `${vendor.id},"${vendor.businessName || 'N/A'}","N/A","N/A","${vendor.isApproved ? 'Approved' : 'Pending'}","${vendor.city || 'N/A'}","${vendor.state || 'N/A'}","${vendor.totalDeals || 0}","${vendor.createdAt ? new Date(vendor.createdAt).toLocaleDateString() : 'N/A'}"`
+      ).join('\n');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="vendors-report.csv"');
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate vendors report" });
+    }
+  });
+
+  app.get('/api/admin/reports/deals', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const deals = await storage.getAllDeals();
+      
+      // Convert deals data to CSV format
+      const csvHeaders = 'ID,Title,Category,Discount %,Vendor,City,Status,Claims,Valid Until,Created Date\n';
+      const csvData = deals.map((deal: any) => 
+        `${deal.id},"${deal.title}","${deal.category}","${deal.discountPercentage}%","${deal.vendor?.businessName || 'N/A'}","${deal.vendor?.city || 'N/A'}","${deal.isActive ? 'Active' : 'Inactive'}","${deal.currentRedemptions || 0}","${deal.validUntil ? new Date(deal.validUntil).toLocaleDateString() : 'N/A'}","${deal.createdAt ? new Date(deal.createdAt).toLocaleDateString() : 'N/A'}"`
+      ).join('\n');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="deals-report.csv"');
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate deals report" });
+    }
+  });
+
+  app.get('/api/admin/reports/analytics', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const analytics = await storage.getAdminAnalytics();
+      
+      // Convert analytics data to CSV format
+      const csvHeaders = 'Metric,Value,Description\n';
+      const csvData = [
+        `"Total Users","${analytics.totalUsers}","Total registered users"`,
+        `"Total Vendors","${analytics.totalVendors}","Total registered vendors"`,
+        `"Active Deals","${analytics.activeDeals}","Currently active deals"`,
+        `"Total Claims","${analytics.totalClaims}","Total deal claims"`,
+        `"Total Savings","₹${analytics.totalSavings}","Total savings generated"`,
+        `"Pending Vendors","${analytics.pendingVendors}","Vendors awaiting approval"`,
+        `"Pending Deals","${analytics.pendingDeals}","Deals awaiting approval"`,
+        `"Monthly Revenue","₹${analytics.monthlyRevenue || 0}","Current month revenue"`,
+        `"Growth Rate","${analytics.growthRate || 0}%","Month-over-month growth"`
+      ].join('\n');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="analytics-report.csv"');
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate analytics report" });
+    }
+  });
+
+  app.get('/api/admin/reports/claims', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const claims = await storage.getAllDealClaims();
+      
+      // Convert claims data to CSV format
+      const csvHeaders = 'ID,User Email,Deal Title,Vendor,Savings Amount,Status,Claim Date,Verification Date\n';
+      const csvData = claims.map((claim: any) => 
+        `${claim.id},"${claim.user?.email || 'N/A'}","${claim.deal?.title || 'N/A'}","${claim.deal?.vendor?.businessName || 'N/A'}","₹${claim.savingsAmount || 0}","${claim.status}","${claim.claimedAt ? new Date(claim.claimedAt).toLocaleDateString() : 'N/A'}","${claim.usedAt ? new Date(claim.usedAt).toLocaleDateString() : 'N/A'}"`
+      ).join('\n');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="claims-report.csv"');
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate claims report" });
+    }
+  });
+
   app.post('/api/admin/deals/reset', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
       const success = await storage.resetAllDeals();
