@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
 import { useAuth } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { 
   Users, 
@@ -25,9 +26,12 @@ import {
   Database
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from "recharts";
+import { useState } from "react";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [downloadingReport, setDownloadingReport] = useState<string | null>(null);
 
   const { data: analytics } = useQuery({
     queryKey: ["/api/admin/analytics"],
@@ -40,6 +44,66 @@ export default function AdminDashboard() {
   const { data: pendingDeals } = useQuery({
     queryKey: ["/api/admin/deals/pending"],
   });
+
+  // Function to handle report downloads
+  const downloadReport = async (reportType: string) => {
+    try {
+      setDownloadingReport(reportType);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast({
+          title: "Authentication Error",
+          description: "Please log in to download reports",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await fetch(`/api/admin/reports/${reportType}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to download ${reportType} report`);
+      }
+
+      // Get the filename from the response headers
+      const contentDisposition = response.headers.get('content-disposition');
+      const filename = contentDisposition 
+        ? contentDisposition.split('filename=')[1]?.replace(/"/g, '') 
+        : `${reportType}-report.csv`;
+
+      // Convert response to blob and trigger download
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Download Complete",
+        description: `${reportType.charAt(0).toUpperCase() + reportType.slice(1)} report downloaded successfully`,
+      });
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      toast({
+        title: "Download Failed",
+        description: `Failed to download ${reportType} report. Please try again.`,
+        variant: "destructive",
+      });
+    } finally {
+      setDownloadingReport(null);
+    }
+  };
 
   if (!user) return null;
 
@@ -415,26 +479,57 @@ export default function AdminDashboard() {
 
         {/* Reports Section */}
         <div className="mt-8">
-          <Card>
+          <Card className="glass-card">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center gradient-text">
                 <Database className="h-5 w-5 mr-2 text-blue-600" />
                 Data Reports & Analytics
               </CardTitle>
               <p className="text-sm text-gray-600">
-                Download comprehensive reports for users, vendors, deals, and analytics data
+                Download comprehensive CSV reports for analysis and record-keeping. All reports include the latest data.
               </p>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Report Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-6 text-xs text-gray-500">
+                <div className="text-center">
+                  <span className="font-semibold text-blue-600">Users Report</span>
+                  <p>All user data, memberships, savings</p>
+                </div>
+                <div className="text-center">
+                  <span className="font-semibold text-green-600">Vendors Report</span>
+                  <p>Business profiles, approval status</p>
+                </div>
+                <div className="text-center">
+                  <span className="font-semibold text-orange-600">Deals Report</span>
+                  <p>All deals, discounts, vendors</p>
+                </div>
+                <div className="text-center">
+                  <span className="font-semibold text-purple-600">Analytics Report</span>
+                  <p>Platform statistics, KPIs</p>
+                </div>
+                <div className="text-center">
+                  <span className="font-semibold text-red-600">Claims Report</span>
+                  <p>Deal redemptions, savings data</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {/* Users Report */}
                 <Button 
                   variant="outline" 
                   className="h-20 flex-col space-y-2"
                   onClick={() => downloadReport('users')}
+                  disabled={downloadingReport === 'users'}
                 >
-                  <Users className="h-6 w-6 text-blue-600" />
-                  <span className="text-sm">Users Report</span>
+                  {downloadingReport === 'users' ? (
+                    <Download className="h-6 w-6 text-blue-600 animate-bounce" />
+                  ) : (
+                    <Users className="h-6 w-6 text-blue-600" />
+                  )}
+                  <span className="text-sm">
+                    {downloadingReport === 'users' ? 'Downloading...' : 'Users Report'}
+                  </span>
                 </Button>
 
                 {/* Vendors Report */}
@@ -442,9 +537,16 @@ export default function AdminDashboard() {
                   variant="outline" 
                   className="h-20 flex-col space-y-2"
                   onClick={() => downloadReport('vendors')}
+                  disabled={downloadingReport === 'vendors'}
                 >
-                  <Store className="h-6 w-6 text-green-600" />
-                  <span className="text-sm">Vendors Report</span>
+                  {downloadingReport === 'vendors' ? (
+                    <Download className="h-6 w-6 text-green-600 animate-bounce" />
+                  ) : (
+                    <Store className="h-6 w-6 text-green-600" />
+                  )}
+                  <span className="text-sm">
+                    {downloadingReport === 'vendors' ? 'Downloading...' : 'Vendors Report'}
+                  </span>
                 </Button>
 
                 {/* Deals Report */}
@@ -452,9 +554,16 @@ export default function AdminDashboard() {
                   variant="outline" 
                   className="h-20 flex-col space-y-2"
                   onClick={() => downloadReport('deals')}
+                  disabled={downloadingReport === 'deals'}
                 >
-                  <Ticket className="h-6 w-6 text-orange-600" />
-                  <span className="text-sm">Deals Report</span>
+                  {downloadingReport === 'deals' ? (
+                    <Download className="h-6 w-6 text-orange-600 animate-bounce" />
+                  ) : (
+                    <Ticket className="h-6 w-6 text-orange-600" />
+                  )}
+                  <span className="text-sm">
+                    {downloadingReport === 'deals' ? 'Downloading...' : 'Deals Report'}
+                  </span>
                 </Button>
 
                 {/* Analytics Report */}
@@ -462,9 +571,16 @@ export default function AdminDashboard() {
                   variant="outline" 
                   className="h-20 flex-col space-y-2"
                   onClick={() => downloadReport('analytics')}
+                  disabled={downloadingReport === 'analytics'}
                 >
-                  <BarChart3 className="h-6 w-6 text-purple-600" />
-                  <span className="text-sm">Analytics Report</span>
+                  {downloadingReport === 'analytics' ? (
+                    <Download className="h-6 w-6 text-purple-600 animate-bounce" />
+                  ) : (
+                    <BarChart3 className="h-6 w-6 text-purple-600" />
+                  )}
+                  <span className="text-sm">
+                    {downloadingReport === 'analytics' ? 'Downloading...' : 'Analytics Report'}
+                  </span>
                 </Button>
 
                 {/* Claims Report */}
@@ -472,9 +588,16 @@ export default function AdminDashboard() {
                   variant="outline" 
                   className="h-20 flex-col space-y-2"
                   onClick={() => downloadReport('claims')}
+                  disabled={downloadingReport === 'claims'}
                 >
-                  <FileText className="h-6 w-6 text-red-600" />
-                  <span className="text-sm">Claims Report</span>
+                  {downloadingReport === 'claims' ? (
+                    <Download className="h-6 w-6 text-red-600 animate-bounce" />
+                  ) : (
+                    <FileText className="h-6 w-6 text-red-600" />
+                  )}
+                  <span className="text-sm">
+                    {downloadingReport === 'claims' ? 'Downloading...' : 'Claims Report'}
+                  </span>
                 </Button>
               </div>
             </CardContent>
