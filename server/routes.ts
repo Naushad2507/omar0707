@@ -1948,6 +1948,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/admin/reports/revenue', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const claims = await storage.getAllDealClaims();
+      const vendors = await storage.getAllVendors();
+      const deals = await storage.getAllDeals();
+      
+      // Calculate revenue metrics by vendor and time period
+      const revenueData = vendors.map((vendor: any) => {
+        const vendorClaims = claims.filter((claim: any) => 
+          claim.deal?.vendor?.id === vendor.id && claim.status === 'used'
+        );
+        
+        const totalSavings = vendorClaims.reduce((sum: number, claim: any) => 
+          sum + (claim.savingsAmount || 0), 0
+        );
+        
+        const totalTransactions = vendorClaims.length;
+        const activeDeals = deals.filter((deal: any) => 
+          deal.vendor?.id === vendor.id && deal.isActive
+        ).length;
+        
+        // Estimate platform revenue (5% commission on savings)
+        const estimatedRevenue = totalSavings * 0.05;
+        
+        return {
+          vendorId: vendor.id,
+          businessName: vendor.businessName || 'N/A',
+          city: vendor.city || 'N/A',
+          totalTransactions,
+          totalSavings,
+          estimatedRevenue: Math.round(estimatedRevenue),
+          activeDeals,
+          registrationDate: vendor.createdAt ? new Date(vendor.createdAt).toLocaleDateString() : 'N/A'
+        };
+      });
+      
+      // Add summary row
+      const totalSavings = revenueData.reduce((sum, vendor) => sum + vendor.totalSavings, 0);
+      const totalRevenue = revenueData.reduce((sum, vendor) => sum + vendor.estimatedRevenue, 0);
+      const totalTransactions = revenueData.reduce((sum, vendor) => sum + vendor.totalTransactions, 0);
+      
+      // Convert revenue data to CSV format
+      const csvHeaders = 'Vendor ID,Business Name,City,Total Transactions,Total Savings (₹),Estimated Platform Revenue (₹),Active Deals,Registration Date\n';
+      const csvData = revenueData.map(vendor => 
+        `${vendor.vendorId},"${vendor.businessName}","${vendor.city}","${vendor.totalTransactions}","₹${vendor.totalSavings}","₹${vendor.estimatedRevenue}","${vendor.activeDeals}","${vendor.registrationDate}"`
+      ).join('\n');
+      
+      // Add summary row
+      const summaryRow = `\n"TOTAL","Platform Summary","All Cities","${totalTransactions}","₹${totalSavings}","₹${totalRevenue}","${deals.length}","Platform Revenue Summary"`;
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="revenue-report.csv"');
+      res.send(csvHeaders + csvData + summaryRow);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate revenue report" });
+    }
+  });
+
   app.post('/api/admin/deals/reset', requireAuth, requireRole(['admin', 'superadmin']), async (req: AuthenticatedRequest, res) => {
     try {
       const success = await storage.resetAllDeals();

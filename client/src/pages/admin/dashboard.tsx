@@ -499,7 +499,7 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               {/* Report Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-6 text-xs text-gray-500">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6 text-xs text-gray-500">
                 <div className="text-center">
                   <span className="font-semibold text-blue-600">Users Report</span>
                   <p>All user data, memberships, savings</p>
@@ -520,9 +520,13 @@ export default function AdminDashboard() {
                   <span className="font-semibold text-red-600">Claims Report</span>
                   <p>Deal redemptions, savings data</p>
                 </div>
+                <div className="text-center">
+                  <span className="font-semibold text-emerald-600">Revenue Report</span>
+                  <p>Platform revenue, commissions</p>
+                </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {/* Users Report */}
                 <Button 
                   variant="outline" 
@@ -605,6 +609,23 @@ export default function AdminDashboard() {
                   )}
                   <span className="text-sm">
                     {downloadingReport === 'claims' ? 'Downloading...' : 'Claims Report'}
+                  </span>
+                </Button>
+
+                {/* Revenue Report */}
+                <Button 
+                  variant="outline" 
+                  className="h-20 flex-col space-y-2"
+                  onClick={() => downloadReport('revenue')}
+                  disabled={downloadingReport === 'revenue'}
+                >
+                  {downloadingReport === 'revenue' ? (
+                    <Download className="h-6 w-6 text-emerald-600 animate-bounce" />
+                  ) : (
+                    <DollarSign className="h-6 w-6 text-emerald-600" />
+                  )}
+                  <span className="text-sm">
+                    {downloadingReport === 'revenue' ? 'Downloading...' : 'Revenue Report'}
                   </span>
                 </Button>
               </div>

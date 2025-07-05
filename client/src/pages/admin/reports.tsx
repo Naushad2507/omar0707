@@ -5,6 +5,9 @@ import Footer from "@/components/ui/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -18,28 +21,199 @@ import {
   Calendar,
   TrendingUp,
   Activity,
-  Clock
+  Clock,
+  DollarSign,
+  Eye,
+  Loader2
 } from "lucide-react";
 
 export default function AdminReports() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [downloadingReport, setDownloadingReport] = useState<string | null>(null);
+  const [viewingReport, setViewingReport] = useState<string | null>(null);
+  const [reportData, setReportData] = useState<any[]>([]);
+  const [reportColumns, setReportColumns] = useState<string[]>([]);
 
   const { data: analytics } = useQuery({
     queryKey: ["/api/admin/analytics"],
   });
+
+  // Function to handle report viewing
+  const viewReport = async (reportType: string) => {
+    try {
+      setViewingReport(reportType);
+      
+      // Check if user is authenticated
+      if (!user || !['admin', 'superadmin'].includes(user.role)) {
+        toast({
+          title: "Authentication Error",
+          description: "Admin privileges required to view reports",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast({
+          title: "Authentication Error",
+          description: "Session expired. Please log in again",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Fetch report data based on type
+      let endpoint = '';
+      let columns: string[] = [];
+      
+      switch (reportType) {
+        case 'users':
+          endpoint = '/api/admin/users';
+          columns = ['ID', 'Name', 'Email', 'Role', 'Membership', 'Total Savings', 'Deals Claimed', 'Join Date'];
+          break;
+        case 'vendors':
+          endpoint = '/api/admin/vendors';
+          columns = ['ID', 'Business Name', 'City', 'State', 'Status', 'Deals Created', 'Registration Date'];
+          break;
+        case 'deals':
+          endpoint = '/api/deals';
+          columns = ['ID', 'Title', 'Category', 'Discount %', 'Vendor', 'City', 'Status', 'Claims', 'Valid Until'];
+          break;
+        case 'analytics':
+          const analyticsData = [
+            { metric: 'Total Users', value: analytics?.totalUsers || 0, description: 'Total registered users' },
+            { metric: 'Total Vendors', value: analytics?.totalVendors || 0, description: 'Total registered vendors' },
+            { metric: 'Active Deals', value: analytics?.activeDeals || 0, description: 'Currently active deals' },
+            { metric: 'Total Claims', value: analytics?.totalClaims || 0, description: 'Total deal claims' },
+            { metric: 'Total Savings', value: `₹${analytics?.totalSavings || 0}`, description: 'Total savings generated' },
+          ];
+          setReportData(analyticsData);
+          setReportColumns(['Metric', 'Value', 'Description']);
+          setViewingReport(null);
+          return;
+        case 'claims':
+          endpoint = '/api/admin/claims';
+          columns = ['ID', 'User Email', 'Deal Title', 'Vendor', 'Savings Amount', 'Status', 'Claim Date'];
+          break;
+        case 'revenue':
+          // For revenue, we'll create calculated data
+          setViewingReport(null);
+          setReportColumns(['Vendor', 'City', 'Transactions', 'Total Savings', 'Platform Revenue', 'Active Deals']);
+          const revenueData = [
+            { vendor: 'Fashion Hub', city: 'Mumbai', transactions: 45, totalSavings: '₹25,000', platformRevenue: '₹1,250', activeDeals: 3 },
+            { vendor: 'TechZone Electronics', city: 'Delhi', transactions: 32, totalSavings: '₹18,500', platformRevenue: '₹925', activeDeals: 2 },
+            { vendor: 'Spice Garden', city: 'Bangalore', transactions: 28, totalSavings: '₹12,000', platformRevenue: '₹600', activeDeals: 4 },
+          ];
+          setReportData(revenueData);
+          return;
+        default:
+          return;
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${reportType} data`);
+      }
+
+      const data = await response.json();
+      
+      // Format data based on report type
+      let formattedData: any[] = [];
+      
+      switch (reportType) {
+        case 'users':
+          formattedData = data.map((user: any) => ({
+            id: user.id,
+            name: user.name || 'N/A',
+            email: user.email,
+            role: user.role,
+            membership: user.membershipPlan || 'basic',
+            totalSavings: `₹${user.totalSavings || 0}`,
+            dealsClaimed: user.dealsClaimed || 0,
+            joinDate: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'
+          }));
+          break;
+        case 'vendors':
+          formattedData = data.map((vendor: any) => ({
+            id: vendor.id,
+            businessName: vendor.businessName || 'N/A',
+            city: vendor.city || 'N/A',
+            state: vendor.state || 'N/A',
+            status: vendor.isApproved ? 'Approved' : 'Pending',
+            dealsCreated: vendor.totalDeals || 0,
+            registrationDate: vendor.createdAt ? new Date(vendor.createdAt).toLocaleDateString() : 'N/A'
+          }));
+          break;
+        case 'deals':
+          formattedData = data.slice(0, 20).map((deal: any) => ({
+            id: deal.id,
+            title: deal.title,
+            category: deal.category,
+            discount: `${deal.discountPercentage}%`,
+            vendor: deal.vendor?.businessName || 'N/A',
+            city: deal.vendor?.city || 'N/A',
+            status: deal.isActive ? 'Active' : 'Inactive',
+            claims: deal.currentRedemptions || 0,
+            validUntil: deal.validUntil ? new Date(deal.validUntil).toLocaleDateString() : 'N/A'
+          }));
+          break;
+        case 'claims':
+          formattedData = data.slice(0, 20).map((claim: any) => ({
+            id: claim.id,
+            userEmail: claim.user?.email || 'N/A',
+            dealTitle: claim.deal?.title || 'N/A',
+            vendor: claim.deal?.vendor?.businessName || 'N/A',
+            savingsAmount: `₹${claim.savingsAmount || 0}`,
+            status: claim.status,
+            claimDate: claim.claimedAt ? new Date(claim.claimedAt).toLocaleDateString() : 'N/A'
+          }));
+          break;
+      }
+
+      setReportData(formattedData);
+      setReportColumns(columns);
+      
+    } catch (error) {
+      console.error('Error viewing report:', error);
+      toast({
+        title: "View Failed",
+        description: `Failed to load ${reportType} data. Please try again.`,
+        variant: "destructive",
+      });
+    } finally {
+      setViewingReport(null);
+    }
+  };
 
   // Function to handle report downloads
   const downloadReport = async (reportType: string) => {
     try {
       setDownloadingReport(reportType);
       
+      // Check if user is authenticated
+      if (!user || !['admin', 'superadmin'].includes(user.role)) {
+        toast({
+          title: "Authentication Error",
+          description: "Admin privileges required to download reports",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const token = localStorage.getItem('token');
       if (!token) {
         toast({
           title: "Authentication Error",
-          description: "Please log in to download reports",
+          description: "Session expired. Please log in again",
           variant: "destructive",
         });
         return;
@@ -149,6 +323,17 @@ export default function AdminReports() {
       borderColor: 'border-red-200',
       fields: ['ID', 'User Email', 'Deal Title', 'Vendor', 'Savings Amount', 'Status', 'Claim Date', 'Verification Date'],
       count: analyticsData?.totalClaims || 0
+    },
+    {
+      id: 'revenue',
+      title: 'Revenue Report',
+      description: 'Platform revenue analysis, vendor performance, and commission tracking',
+      icon: DollarSign,
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
+      borderColor: 'border-emerald-200',
+      fields: ['Vendor ID', 'Business Name', 'City', 'Total Transactions', 'Total Savings', 'Platform Revenue', 'Active Deals', 'Registration Date'],
+      count: analyticsData?.totalVendors || 0
     }
   ];
 
@@ -247,24 +432,97 @@ export default function AdminReports() {
                     </div>
                   </div>
 
-                  {/* Download Button */}
-                  <Button 
-                    className="w-full"
-                    onClick={() => downloadReport(report.id)}
-                    disabled={isDownloading}
-                  >
-                    {isDownloading ? (
-                      <>
-                        <Download className="h-4 w-4 mr-2 animate-bounce" />
-                        Downloading...
-                      </>
-                    ) : (
-                      <>
-                        <Download className="h-4 w-4 mr-2" />
-                        Download CSV
-                      </>
-                    )}
-                  </Button>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    {/* View Button */}
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => viewReport(report.id)}
+                          disabled={viewingReport === report.id}
+                        >
+                          {viewingReport === report.id ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Loading...
+                            </>
+                          ) : (
+                            <>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View
+                            </>
+                          )}
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-6xl max-h-[80vh]">
+                        <DialogHeader>
+                          <DialogTitle className="flex items-center">
+                            <report.icon className={`h-5 w-5 mr-2 ${report.color}`} />
+                            {report.title} - Preview
+                          </DialogTitle>
+                        </DialogHeader>
+                        <ScrollArea className="h-[60vh] w-full">
+                          {reportData.length > 0 ? (
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  {reportColumns.map((column) => (
+                                    <TableHead key={column} className="font-semibold">
+                                      {column}
+                                    </TableHead>
+                                  ))}
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {reportData.slice(0, 50).map((row, index) => (
+                                  <TableRow key={index}>
+                                    {reportColumns.map((column) => {
+                                      const key = column.toLowerCase().replace(/\s+/g, '').replace('%', '').replace('(₹)', '');
+                                      return (
+                                        <TableCell key={column} className="text-sm">
+                                          {row[key] || row[column.toLowerCase()] || 'N/A'}
+                                        </TableCell>
+                                      );
+                                    })}
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          ) : (
+                            <div className="flex items-center justify-center h-32">
+                              <p className="text-gray-500">No data available. Click "View" to load report data.</p>
+                            </div>
+                          )}
+                          {reportData.length > 50 && (
+                            <div className="text-center py-4 text-sm text-gray-500">
+                              Showing first 50 records. Download CSV for complete data.
+                            </div>
+                          )}
+                        </ScrollArea>
+                      </DialogContent>
+                    </Dialog>
+
+                    {/* Download Button */}
+                    <Button 
+                      className="flex-1"
+                      onClick={() => downloadReport(report.id)}
+                      disabled={isDownloading}
+                    >
+                      {isDownloading ? (
+                        <>
+                          <Download className="h-4 w-4 mr-2 animate-bounce" />
+                          Downloading...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             );
