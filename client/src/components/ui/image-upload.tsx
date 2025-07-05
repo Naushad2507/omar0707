@@ -167,17 +167,15 @@ export default function ImageUpload({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="space-y-2">
-        <Label>Deal Image</Label>
-        
         {/* Image URL Input */}
         <div className="space-y-2">
           <Input
             placeholder="Enter image URL (optional)"
             value={value && !value.startsWith('data:') ? value : ''}
             onChange={handleUrlChange}
-            className="w-full"
+            className="w-full p-3 text-sm sm:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <p className="text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-gray-500">
             Or upload/capture an image below
             {isMobileDevice() && " (Camera available on mobile)"}
           </p>
@@ -232,12 +230,12 @@ export default function ImageUpload({
                   </p>
                 </div>
                 
-                <div className="flex justify-center space-x-2">
+                <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
                     onClick={() => fileInputRef.current?.click()}
+                    className="w-full sm:w-auto py-3 text-sm sm:text-base"
                   >
                     <Upload className="h-4 w-4 mr-2" />
                     Upload File
@@ -247,9 +245,8 @@ export default function ImageUpload({
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
                       onClick={handleCameraClick}
-                      className="hover:bg-blue-50 hover:border-blue-300"
+                      className="w-full sm:w-auto py-3 text-sm sm:text-base hover:bg-blue-50 hover:border-blue-300"
                     >
                       <Camera className="h-4 w-4 mr-2" />
                       {isMobileDevice() ? "Take Photo" : "Camera"}

@@ -58,13 +58,13 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-royal/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-[90vw] sm:max-w-md mx-auto">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <Link to="/">
-            <h1 className="text-3xl font-bold text-primary">Instoredealz</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Instoredealz</h1>
           </Link>
-          <p className="text-gray-600 mt-2">Welcome back to your deals platform</p>
+          <p className="text-sm sm:text-base text-gray-600 mt-2 px-4">Welcome back to your deals platform</p>
         </div>
 
         <Card>
@@ -84,7 +84,7 @@ export default function Login() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -93,11 +93,12 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
                   required
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <PasswordInput
                   id="password"
                   placeholder="Enter your password"
@@ -105,6 +106,7 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                   required
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
@@ -121,7 +123,7 @@ export default function Login() {
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full py-3 text-sm sm:text-base font-medium" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Sign In
               </Button>

@@ -267,13 +267,13 @@ const VendorPortal = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="w-full max-w-[90vw] sm:max-w-4xl lg:max-w-6xl mx-auto p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+      <div className="text-center space-y-3 sm:space-y-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
           🏪 Vendor Portal
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
           Join our platform as a vendor and start creating amazing deals for customers
         </p>
       </div>

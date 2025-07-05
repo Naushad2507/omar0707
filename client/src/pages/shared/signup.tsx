@@ -90,13 +90,13 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-royal/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-[90vw] sm:max-w-md mx-auto">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <Link to="/">
-            <h1 className="text-3xl font-bold text-primary">Instoredealz</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary">Instoredealz</h1>
           </Link>
-          <p className="text-gray-600 mt-2">Join India's fastest-growing deals platform</p>
+          <p className="text-sm sm:text-base text-gray-600 mt-2 px-4">Join India's fastest-growing deals platform</p>
         </div>
 
         <Card>
@@ -117,9 +117,9 @@ export default function Signup() {
 
               {/* Role Selection */}
               <div className="space-y-2">
-                <Label>Account Type</Label>
+                <Label className="text-sm font-medium">Account Type</Label>
                 <Select value={formData.role} onValueChange={(value) => handleInputChange("role", value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full py-3 px-3 text-sm sm:text-base">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -131,7 +131,7 @@ export default function Signup() {
 
               {/* Basic Info */}
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name *</Label>
+                <Label htmlFor="name" className="text-sm font-medium">Full Name *</Label>
                 <Input
                   id="name"
                   placeholder="Enter your full name"
@@ -139,11 +139,12 @@ export default function Signup() {
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   disabled={isLoading}
                   required
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -152,11 +153,12 @@ export default function Signup() {
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   disabled={isLoading}
                   required
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="username">Username *</Label>
+                <Label htmlFor="username" className="text-sm font-medium">Username *</Label>
                 <Input
                   id="username"
                   placeholder="Choose a username"
@@ -164,11 +166,12 @@ export default function Signup() {
                   onChange={(e) => handleInputChange("username", e.target.value)}
                   disabled={isLoading}
                   required
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -176,15 +179,16 @@ export default function Signup() {
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   disabled={isLoading}
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               {/* Location */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
-                  <Label>State</Label>
+                  <Label className="text-sm font-medium">State</Label>
                   <Select value={formData.state} onValueChange={(value) => handleInputChange("state", value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full py-3 px-3 text-sm sm:text-base">
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                     <SelectContent>
@@ -198,13 +202,13 @@ export default function Signup() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>City</Label>
+                  <Label className="text-sm font-medium">City</Label>
                   <Select 
                     value={formData.city} 
                     onValueChange={(value) => handleInputChange("city", value)}
                     disabled={!formData.state}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full py-3 px-3 text-sm sm:text-base">
                       <SelectValue placeholder="Select city" />
                     </SelectTrigger>
                     <SelectContent>
@@ -220,7 +224,7 @@ export default function Signup() {
 
               {/* Password */}
               <div className="space-y-2">
-                <Label htmlFor="password">Password *</Label>
+                <Label htmlFor="password" className="text-sm font-medium">Password *</Label>
                 <PasswordInput
                   id="password"
                   placeholder="Create a password"
@@ -230,11 +234,12 @@ export default function Signup() {
                   required
                   showStrengthIndicator={true}
                   showRequirements={true}
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password *</Label>
                 <PasswordInput
                   id="confirmPassword"
                   placeholder="Confirm your password"
@@ -242,6 +247,7 @@ export default function Signup() {
                   onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                   disabled={isLoading}
                   required
+                  className="w-full py-3 px-3 text-sm sm:text-base border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
 
@@ -255,7 +261,7 @@ export default function Signup() {
             </CardContent>
 
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full py-3 text-sm sm:text-base font-medium" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create Account
               </Button>

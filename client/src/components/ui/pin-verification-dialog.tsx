@@ -145,7 +145,7 @@ export function PinVerificationDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md max-w-[95vw] mx-4">
+      <DialogContent className="w-full max-w-[90vw] sm:max-w-md md:max-w-lg mx-auto p-4 sm:p-6 overflow-y-auto max-h-[80vh]">
         {!showBillDialog ? (
           // PIN Verification Dialog
           <>
@@ -212,14 +212,19 @@ export function PinVerificationDialog({
               </div>
             </div>
 
-            <DialogFooter className="flex gap-2">
-              <Button variant="outline" onClick={handleClose} disabled={verifyPinMutation.isPending}>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <Button 
+                variant="outline" 
+                onClick={handleClose} 
+                disabled={verifyPinMutation.isPending}
+                className="w-full py-3 text-sm sm:text-base"
+              >
                 Cancel
               </Button>
               <Button 
                 onClick={handleVerify} 
                 disabled={pin.length !== 4 || verifyPinMutation.isPending}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="w-full py-3 text-sm sm:text-base bg-blue-600 hover:bg-blue-700"
               >
                 {verifyPinMutation.isPending ? (
                   <>
@@ -233,7 +238,7 @@ export function PinVerificationDialog({
                   </>
                 )}
               </Button>
-            </DialogFooter>
+            </div>
           </>
         ) : (
           // Bill Amount Dialog
@@ -307,8 +312,13 @@ export function PinVerificationDialog({
               </div>
             </div>
 
-            <DialogFooter className="flex gap-2">
-              <Button variant="outline" onClick={handleSkipBillAmount} disabled={updateBillMutation.isPending}>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <Button 
+                variant="outline" 
+                onClick={handleSkipBillAmount} 
+                disabled={updateBillMutation.isPending}
+                className="w-full py-3 text-sm sm:text-base"
+              >
                 Skip for Now
               </Button>
               <Button 
@@ -321,7 +331,7 @@ export function PinVerificationDialog({
                   }
                 }}
                 disabled={!billAmount || calculatedSavings <= 0 || updateBillMutation.isPending}
-                className="bg-green-600 hover:bg-green-700"
+                className="w-full py-3 text-sm sm:text-base bg-green-600 hover:bg-green-700"
               >
                 {updateBillMutation.isPending ? (
                   <>
@@ -335,7 +345,7 @@ export function PinVerificationDialog({
                   </>
                 )}
               </Button>
-            </DialogFooter>
+            </div>
           </>
         )}
       </DialogContent>
