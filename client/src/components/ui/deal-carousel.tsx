@@ -32,8 +32,59 @@ interface DealCarouselProps {
 export default function DealCarousel({ deals, onDealClick, showClaims = false, className = "", autoPlay = false, interval = 4000 }: DealCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [, navigate] = useLocation();
-  const cardsPerView = 3;
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  
+  // Responsive cards per view
+  const getCardsPerView = () => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 640) return 1; // Mobile: 1 card
+      if (window.innerWidth < 1024) return 2; // Tablet: 2 cards
+      return 3; // Desktop: 3 cards
+    }
+    return 3;
+  };
+  
+  const [cardsPerView, setCardsPerView] = useState(getCardsPerView());
   const maxIndex = Math.max(0, deals.length - cardsPerView);
+  
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+  
+  // Update cards per view on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setCardsPerView(getCardsPerView());
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  // Touch event handlers for swipe navigation
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+  
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe && currentIndex < maxIndex) {
+      goToNext();
+    }
+    if (isRightSwipe && currentIndex > 0) {
+      goToPrevious();
+    }
+  };
 
   // Auto-play functionality
   useEffect(() => {
@@ -65,15 +116,21 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
   return (
     <div className={`relative ${className}`}>
       {/* Carousel Container */}
-      <div className="overflow-hidden">
+      <div 
+        className="overflow-hidden"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         <div 
-          className="flex transition-transform duration-300 ease-in-out gap-6"
+          className="flex transition-transform duration-300 ease-in-out gap-4 sm:gap-6"
           style={{ transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)` }}
         >
           {deals.map((deal) => (
             <div 
               key={deal.id} 
-              className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3"
+              className="flex-shrink-0"
+              style={{ width: `${100 / cardsPerView}%` }}
             >
               <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border" onClick={(e) => {
                 e.stopPropagation();
@@ -155,40 +212,41 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows - Mobile Optimized */}
       {deals.length > cardsPerView && (
         <>
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white shadow-lg hover:bg-gray-50 h-12 w-12 z-10"
+            className="absolute left-2 sm:left-0 sm:-translate-x-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white h-10 w-10 sm:h-12 sm:w-12 z-10 border"
             onClick={goToPrevious}
             disabled={currentIndex === 0}
           >
-            <ChevronLeft className="h-6 w-6" />
+            <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white shadow-lg hover:bg-gray-50 h-12 w-12 z-10"
+            className="absolute right-2 sm:right-0 sm:translate-x-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white h-10 w-10 sm:h-12 sm:w-12 z-10 border"
             onClick={goToNext}
             disabled={currentIndex >= maxIndex}
           >
-            <ChevronRight className="h-6 w-6" />
+            <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
           </Button>
         </>
       )}
 
-      {/* Dots Indicator */}
+      {/* Dots Indicator - Mobile Optimized */}
       {deals.length > cardsPerView && (
-        <div className="flex justify-center mt-6 space-x-2">
+        <div className="flex justify-center mt-4 sm:mt-6 space-x-2">
           {Array.from({ length: maxIndex + 1 }).map((_, index) => (
             <button
               key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
+              className={`w-3 h-3 sm:w-2 sm:h-2 rounded-full transition-colors touch-manipulation ${
                 index === currentIndex ? "bg-primary" : "bg-gray-300"
               }`}
               onClick={() => setCurrentIndex(index)}
+              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
