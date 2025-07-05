@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -193,19 +193,22 @@ export default function VendorDealsEnhanced() {
                   Add New Deal
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto p-2">
+              <DialogContent className="max-w-[95vw] sm:max-w-[90vw] lg:max-w-6xl max-h-[90vh] overflow-y-auto p-3 sm:p-4 lg:p-6">
               <DialogHeader>
                 <DialogTitle>Create New Deal</DialogTitle>
+                <DialogDescription>
+                  Fill out the form below to create a new deal for your business. All deals require admin approval before going live.
+                </DialogDescription>
               </DialogHeader>
               
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
                   
                   {/* Top Row - Basic Information */}
-                  <div className="grid lg:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                     
                     {/* Left Column - Deal Information */}
-                    <div className="border rounded-lg p-2">
+                    <div className="border rounded-lg p-3 sm:p-4">
                       <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
                         <FileText className="h-4 w-4 mr-1" />
                         Deal Information
@@ -330,7 +333,7 @@ export default function VendorDealsEnhanced() {
                     </div>
                     
                     {/* Right Column - Deal Availability */}
-                    <div className="border rounded-lg p-2">
+                    <div className="border rounded-lg p-3 sm:p-4">
                       <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
                         Deal Availability
@@ -407,10 +410,10 @@ export default function VendorDealsEnhanced() {
                   </div>
 
                   {/* Second Row - Image Upload and Validity */}
-                  <div className="grid lg:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                     
                     {/* Left Column - Deal Image Upload */}
-                    <div className="border rounded-lg p-2">
+                    <div className="border rounded-lg p-3 sm:p-4">
                       <FormField
                         control={form.control}
                         name="imageUrl"
@@ -433,7 +436,7 @@ export default function VendorDealsEnhanced() {
                     </div>
                     
                     {/* Right Column - Validity & Terms */}
-                    <div className="border rounded-lg p-2">
+                    <div className="border rounded-lg p-3 sm:p-4">
                       <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
                         <Clock className="h-4 w-4 mr-1" />
                         Validity & Terms
@@ -487,7 +490,7 @@ export default function VendorDealsEnhanced() {
                   </div>
                   
                   {/* Agreement */}
-                  <div className="border rounded-lg p-2">
+                  <div className="border rounded-lg p-3 sm:p-4">
                     <FormField
                       control={form.control}
                       name="agreeToTerms"
@@ -513,17 +516,19 @@ export default function VendorDealsEnhanced() {
                     <FormMessage />
                   </div>
 
-                  <div className="flex justify-end space-x-2 mt-2">
+                  <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4 pt-4 border-t sticky bottom-0 bg-white">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setIsCreateOpen(false)}
+                      className="w-full sm:w-auto min-h-[44px]"
                     >
                       Cancel
                     </Button>
                     <Button 
                       type="submit" 
                       disabled={createDealMutation.isPending}
+                      className="w-full sm:w-auto min-h-[44px]"
                     >
                       {createDealMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Submit Deal for Approval
