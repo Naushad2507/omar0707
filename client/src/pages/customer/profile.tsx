@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,6 +40,11 @@ interface UserData {
 export default function CustomerProfile() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   // Fetch current user data
   const { data: user, isLoading } = useQuery<UserData>({

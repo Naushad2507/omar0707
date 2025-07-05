@@ -32,7 +32,7 @@ export default function CustomerDeals() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Parse URL parameters
+  // Parse URL parameters and handle page navigation
   useEffect(() => {
     const urlParams = new URLSearchParams(location.split('?')[1] || '');
     const category = urlParams.get('category');
@@ -52,6 +52,9 @@ export default function CustomerDeals() {
           setTimeout(() => element.classList.remove('animate-pulse'), 2000);
         }
       }, 500);
+    } else {
+      // Scroll to top when navigating normally (no highlight)
+      window.scrollTo(0, 0);
     }
   }, [location]);
 

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +33,11 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [downloadingReport, setDownloadingReport] = useState<string | null>(null);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { data: analytics } = useQuery({
     queryKey: ["/api/admin/analytics"],

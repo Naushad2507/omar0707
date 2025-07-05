@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import Tutorial from "@/components/ui/tutorial";
@@ -29,6 +30,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, PieChart, 
 export default function VendorDashboard() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { data: vendor } = useQuery({
     queryKey: ["/api/vendors/me"],

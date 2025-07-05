@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import MembershipCard from "@/components/ui/membership-card";
@@ -25,6 +26,11 @@ import {
 export default function CustomerDashboard() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { data: userDetails } = useQuery({
     queryKey: ["/api/auth/me"],

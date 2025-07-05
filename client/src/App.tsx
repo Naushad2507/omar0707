@@ -51,6 +51,7 @@ import SuperAdminDashboard from "@/pages/superadmin/dashboard";
 import SystemLogs from "@/pages/superadmin/logs";
 
 import NotFound from "@/pages/not-found";
+import AccessDenied from "@/pages/access-denied";
 import TestFlows from "@/pages/test-flows";
 import DealList from "@/components/DealList";
 import SubscriptionButton from "@/components/Subscription";
@@ -77,7 +78,7 @@ const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
     if (!isLoading && !isAuthenticated) {
       navigate(fallbackPath);
     } else if (!isLoading && user && !allowedRoles.includes(user.role)) {
-      navigate("/unauthorized");
+      navigate("/access-denied");
     }
   }, [isAuthenticated, isLoading, user, allowedRoles, fallbackPath, navigate]);
 
@@ -152,6 +153,7 @@ function Router() {
 
   // Special routes
   const [matchUnauthorized] = useRoute("/unauthorized");
+  const [matchAccessDenied] = useRoute("/access-denied");
 
   // Public routes - Deal detail must be checked first to avoid conflicts
   if (matchDealDetail) return <DealDetail params={dealParams} />;
@@ -386,20 +388,14 @@ function Router() {
     );
   }
 
-  // Unauthorized page
+  // Unauthorized page (legacy support)
   if (matchUnauthorized) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <h1 className="text-4xl font-bold text-red-600 mb-4">Access Denied</h1>
-        <p className="text-lg text-gray-600 mb-8">You don't have permission to access this page.</p>
-        <button 
-          onClick={() => window.history.back()} 
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Go Back
-        </button>
-      </div>
-    );
+    return <AccessDenied />;
+  }
+
+  // Access denied page
+  if (matchAccessDenied) {
+    return <AccessDenied />;
   }
 
   // Fallback to 404
