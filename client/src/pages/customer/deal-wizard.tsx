@@ -193,18 +193,18 @@ export default function DealRecommendationWizard() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {Array.isArray(categories) ? categories.map((category: any, index: number) => {
                 const colors = [
-                  'bg-blue-50 hover:bg-blue-100 border-blue-200',
-                  'bg-green-50 hover:bg-green-100 border-green-200',
-                  'bg-purple-50 hover:bg-purple-100 border-purple-200',
-                  'bg-orange-50 hover:bg-orange-100 border-orange-200',
-                  'bg-pink-50 hover:bg-pink-100 border-pink-200',
-                  'bg-indigo-50 hover:bg-indigo-100 border-indigo-200',
-                  'bg-yellow-50 hover:bg-yellow-100 border-yellow-200',
-                  'bg-red-50 hover:bg-red-100 border-red-200',
-                  'bg-teal-50 hover:bg-teal-100 border-teal-200',
-                  'bg-cyan-50 hover:bg-cyan-100 border-cyan-200',
-                  'bg-emerald-50 hover:bg-emerald-100 border-emerald-200',
-                  'bg-violet-50 hover:bg-violet-100 border-violet-200'
+                  'bg-blue-50 hover:bg-blue-100 border-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:border-blue-800',
+                  'bg-green-50 hover:bg-green-100 border-green-200 dark:bg-green-900/30 dark:hover:bg-green-900/50 dark:border-green-800',
+                  'bg-purple-50 hover:bg-purple-100 border-purple-200 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 dark:border-purple-800',
+                  'bg-orange-50 hover:bg-orange-100 border-orange-200 dark:bg-orange-900/30 dark:hover:bg-orange-900/50 dark:border-orange-800',
+                  'bg-pink-50 hover:bg-pink-100 border-pink-200 dark:bg-pink-900/30 dark:hover:bg-pink-900/50 dark:border-pink-800',
+                  'bg-indigo-50 hover:bg-indigo-100 border-indigo-200 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:border-indigo-800',
+                  'bg-yellow-50 hover:bg-yellow-100 border-yellow-200 dark:bg-yellow-900/30 dark:hover:bg-yellow-900/50 dark:border-yellow-800',
+                  'bg-red-50 hover:bg-red-100 border-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:border-red-800',
+                  'bg-teal-50 hover:bg-teal-100 border-teal-200 dark:bg-teal-900/30 dark:hover:bg-teal-900/50 dark:border-teal-800',
+                  'bg-cyan-50 hover:bg-cyan-100 border-cyan-200 dark:bg-cyan-900/30 dark:hover:bg-cyan-900/50 dark:border-cyan-800',
+                  'bg-emerald-50 hover:bg-emerald-100 border-emerald-200 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:border-emerald-800',
+                  'bg-violet-50 hover:bg-violet-100 border-violet-200 dark:bg-violet-900/30 dark:hover:bg-violet-900/50 dark:border-violet-800'
                 ];
                 const colorClass = colors[index % colors.length];
                 const isSelected = preferences.categories.includes(category.id);
