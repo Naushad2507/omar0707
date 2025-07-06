@@ -74,9 +74,18 @@
   transition: all 0.3s ease;
 }
 
+.dark .stat-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
 .stat-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.dark .stat-card:hover {
+  box-shadow: 0 8px 25px rgba(255,255,255,0.1);
 }
 
 .stat-card-primary {
@@ -107,6 +116,11 @@
   border: 1px solid rgba(255,255,255,0.3);
 }
 
+.dark .chart-container {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
 .metric-tile {
   background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
   border: 1px solid rgba(0,0,0,0.05);
@@ -115,9 +129,18 @@
   transition: all 0.3s ease;
 }
 
+.dark .metric-tile {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
 .metric-tile:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.dark .metric-tile:hover {
+  box-shadow: 0 12px 35px rgba(255,255,255,0.15);
 }
 
 .gradient-text {
@@ -133,6 +156,12 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
 }
 
 .dark {
@@ -161,6 +190,16 @@
   --saffron: hsl(16, 100%, 60%);
   --royal: hsl(238, 69%, 60%);
   --peacock: hsl(180, 100%, 35%);
+  --chart-1: hsl(217, 91%, 60%);
+  --chart-2: hsl(160, 84%, 39%);
+  --chart-3: hsl(32, 95%, 44%);
+  --chart-4: hsl(238, 69%, 60%);
+  --chart-5: hsl(345, 82%, 60%);
+  --chart-6: hsl(180, 62%, 55%);
+  --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(238, 69%, 60%) 100%);
+  --gradient-success: linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(180, 84%, 39%) 100%);
+  --gradient-warning: linear-gradient(135deg, hsl(32, 95%, 44%) 0%, hsl(16, 100%, 60%) 100%);
+  --gradient-danger: linear-gradient(135deg, hsl(0, 62.8%, 30.6%) 0%, hsl(345, 82%, 60%) 100%);
 }
 
 @layer base {

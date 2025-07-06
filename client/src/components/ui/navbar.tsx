@@ -9,6 +9,7 @@ import { majorCities } from "@/lib/cities";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import InstoredeelzLogo from "@/components/ui/instoredealz-logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface NavbarProps {
   selectedCity?: string;
@@ -123,7 +124,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
   const navigationItems = getNavigationItems();
 
   return (
-    <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
+    <nav className="bg-background shadow-sm border-b sticky top-0 z-50 dark:bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -142,7 +143,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                   <Link
                     key={item.href}
                     to={item.href}
-                    className={`flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors ${
+                    className={`flex items-center space-x-1 text-foreground hover:text-primary transition-colors ${
                       location === item.href ? "text-primary font-medium" : ""
                     }`}
                   >
@@ -177,6 +178,9 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Auth Buttons */}
             {isAuthenticated && user ? (
@@ -231,8 +235,9 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px]">
                 <div className="flex flex-col space-y-4">
-                  <div className="flex items-center space-x-2 pb-4 border-b">
+                  <div className="flex items-center justify-between pb-4 border-b">
                     <h2 className="text-lg font-semibold">Menu</h2>
+                    <ThemeToggle />
                   </div>
                   
                   {/* Navigation Items */}
@@ -243,7 +248,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                         key={item.href}
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 ${
+                        className={`flex items-center space-x-3 p-2 rounded-lg hover:bg-muted ${
                           location === item.href ? "bg-primary/10 text-primary" : ""
                         }`}
                       >
@@ -276,9 +281,9 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
                   
                   {isAuthenticated && user && (
                     <div className="pt-4 border-t">
-                      <div className="p-2 rounded-lg bg-gray-50">
+                      <div className="p-2 rounded-lg bg-muted">
                         <p className="font-medium">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
                         <p className="text-xs text-primary capitalize">{user.membershipPlan} Member</p>
                       </div>
                       <Button 
