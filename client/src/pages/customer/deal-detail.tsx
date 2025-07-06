@@ -465,27 +465,22 @@ export default function DealDetail({ params }: DealDetailProps) {
 
                 {/* Action Buttons - Moved above validity section */}
                 <div className="space-y-4">
-                  {/* Claim Deal Button */}
+                  {/* Unified PIN Verification to Claim Deal Button */}
                   {canAccessDeal() ? (
                     <Button
-                      onClick={handleClaimDeal}
-                      disabled={claimDealMutation.isPending || isExpired || !!isFullyRedeemed}
-                      className="w-full"
+                      onClick={() => setShowPinDialog(true)}
+                      disabled={isExpired || !!isFullyRedeemed || !deal?.isActive}
+                      className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
                       size="lg"
                     >
-                      {claimDealMutation.isPending ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Claiming Deal...
-                        </>
-                      ) : isExpired ? (
+                      {isExpired ? (
                         "Deal Expired"
                       ) : isFullyRedeemed ? (
                         "Fully Redeemed"
                       ) : (
                         <>
-                          <CheckCircle2 className="w-4 h-4 mr-2" />
-                          Claim Deal
+                          <Shield className="w-4 h-4 mr-2" />
+                          Verify with PIN to Claim Deal
                         </>
                       )}
                     </Button>
@@ -504,21 +499,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                     </Button>
                   )}
 
-                  {/* PIN Verification Button - Only show when user can access the deal */}
-                  {canAccessDeal() && (
-                    <Button
-                      onClick={() => setShowPinDialog(true)}
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                      disabled={!isAuthenticated || isExpired || !deal?.isActive}
-                    >
-                      <Shield className="w-4 h-4 mr-2" />
-                      Verify with PIN
-                    </Button>
-                  )}
-
-                  {/* Deal Claiming Process Instructions - Show right after PIN button */}
+                  {/* Deal Claiming Process Instructions - Updated for merged button */}
                   {canAccessDeal() && (
                     <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-2">
@@ -526,7 +507,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                         <h4 className="font-semibold text-blue-900 dark:text-blue-100">How do I claim a deal?</h4>
                       </div>
                       <p className="text-blue-800 dark:text-blue-200 text-sm">
-                        Claiming deals is a secure three-step process: 1) Click 'Claim Deal' online to reserve it, 2) Visit the store and ask for the 4-digit PIN to verify your redemption in the app. 3) Click on Verify & Redeem and add the bill amount and update savings. Only verified redemptions count toward your savings.
+                        Click "Verify with PIN to Claim Deal" above, then visit the store and ask for the 4-digit PIN. Enter the PIN in the verification dialog to complete your claim and add the bill amount to track your actual savings.
                       </p>
                       {process.env.NODE_ENV === 'development' && (
                         <div className="mt-2 p-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded text-yellow-800 dark:text-yellow-200 text-sm">

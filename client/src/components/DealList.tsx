@@ -10,7 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Gift, Star, MapPin, Calendar, QrCode, Calculator, Receipt } from 'lucide-react';
+import { Loader2, Gift, Star, MapPin, Calendar, QrCode, Calculator, Receipt, Shield } from 'lucide-react';
+import { PinVerificationDialog } from '@/components/ui/pin-verification-dialog';
 
 interface Deal {
   id: number;
@@ -46,6 +47,8 @@ const DealList = () => {
   const [billingDeal, setBillingDeal] = useState<Deal | null>(null);
   const [billAmount, setBillAmount] = useState<string>('');
   const [calculatedSavings, setCalculatedSavings] = useState<number>(0);
+  const [showPinDialog, setShowPinDialog] = useState(false);
+  const [pinDialogDeal, setPinDialogDeal] = useState<Deal | null>(null);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -104,74 +107,8 @@ const DealList = () => {
     }
   });
 
-  // Claim deal mutation
-  const claimMutation = useMutation({
-    mutationFn: async (dealId: number) => {
-      return apiRequest(`/api/deals/${dealId}/claim`, 'POST');
-    },
-    onSuccess: async (claimData: any, dealId) => {
-      // Generate QR code for the claim
-      try {
-        const qrCodeImage = await generateDealClaimQR(dealId, claimData.id);
-        setQrCode(qrCodeImage);
-        
-        toast({
-          title: "Deal Claimed Successfully!",
-          description: `Deal claimed! Visit store to redeem and calculate your actual savings.`,
-          variant: "default",
-        });
-        
-        // Comprehensive data refresh to update user profile and deal listings
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['/api/deals'] }),
-          queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
-          queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
-          queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
-        ]);
-        
-        // Force refetch user data to update dashboard statistics
-        queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
-      } catch (qrError) {
-        console.error('Error generating QR code:', qrError);
-        toast({
-          title: "Deal Claimed Successfully!",
-          description: `You saved ₹${claimData.savingsAmount}! (QR code generation failed)`,
-          variant: "default",
-        });
-        
-        // Comprehensive data refresh even if QR generation fails
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['/api/deals'] }),
-          queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
-          queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
-          queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
-        ]);
-        
-        queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
-      }
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Failed to Claim Deal",
-        description: error.message || "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleClaimDeal = (deal: Deal) => {
-    setSelectedDeal(deal);
-    setQrCode(null);
-    claimMutation.mutate(deal.id);
-  };
-
   const handleDealClick = (dealId: number) => {
     setLocation(`/deals/${dealId}`);
-  };
-
-  const closeDialog = () => {
-    setSelectedDeal(null);
-    setQrCode(null);
   };
 
   if (isLoading || isLoadingClaims) {
@@ -290,25 +227,21 @@ const DealList = () => {
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleClaimDeal(deal);
+                          setPinDialogDeal(deal);
+                          setShowPinDialog(true);
                         }}
-                        disabled={!canClaim || claimMutation.isPending}
+                        disabled={!canClaim}
                         className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                         size="lg"
                       >
-                        {claimMutation.isPending ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                            Claiming...
-                          </>
-                        ) : !canClaim ? (
+                        {!canClaim ? (
                           isExpired ? "⏰ Expired" : 
                           isLimitReached ? "🚫 Limit Reached" : 
                           "❌ Unavailable"
                         ) : (
                           <>
-                            <Gift className="h-4 w-4 mr-2" />
-                            🎉 Claim Deal
+                            <Shield className="h-4 w-4 mr-2" />
+                            Verify with PIN to Claim Deal
                           </>
                         )}
                       </Button>
@@ -499,6 +432,27 @@ const DealList = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* PIN Verification Dialog */}
+      <PinVerificationDialog
+        open={showPinDialog}
+        onOpenChange={setShowPinDialog}
+        dealId={pinDialogDeal?.id || 0}
+        dealTitle={pinDialogDeal?.title || ''}
+        dealDiscountPercentage={pinDialogDeal?.discountPercentage || 0}
+        onSuccess={async () => {
+          setShowPinDialog(false);
+          setPinDialogDeal(null);
+          // Refresh all relevant data
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['/api/deals'] }),
+            queryClient.invalidateQueries({ queryKey: ["/api/users/claims"] }),
+            queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] }),
+            queryClient.invalidateQueries({ queryKey: ["/api/wishlist"] }),
+          ]);
+          queryClient.refetchQueries({ queryKey: ["/api/auth/me"] });
+        }}
+      />
     </div>
   );
 };

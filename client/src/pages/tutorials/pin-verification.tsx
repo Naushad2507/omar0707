@@ -83,11 +83,11 @@ export default function PinVerificationTutorial() {
                 <div className="grid md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Eye className="w-8 h-8 text-blue-600" />
+                      <Shield className="w-8 h-8 text-blue-600" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">1. Claim Deal Online</h3>
+                    <h3 className="font-semibold text-lg mb-2">1. Click "Verify with PIN to Claim Deal"</h3>
                     <p className="text-muted-foreground text-sm">
-                      Find deals you love and click "Claim Deal" to reserve them. This creates a pending claim with no savings yet - you must visit the store to complete redemption.
+                      Find deals you love and click the "Verify with PIN to Claim Deal" button. This opens the PIN verification dialog where you'll enter the store's PIN.
                     </p>
                   </div>
 
@@ -95,31 +95,19 @@ export default function PinVerificationTutorial() {
                     <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <MessageSquare className="w-8 h-8 text-green-600" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">2. Visit Store</h3>
+                    <h3 className="font-semibold text-lg mb-2">2. Visit Store & Get PIN</h3>
                     <p className="text-muted-foreground text-sm">
-                      Go to the vendor's store with your claimed deal. Make your purchase and ask them for their 4-digit verification PIN to complete the redemption.
+                      Go to the vendor's store and make your purchase. Ask them for their 4-digit verification PIN to complete the deal redemption.
                     </p>
                   </div>
 
                   <div className="text-center">
                     <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Shield className="w-8 h-8 text-purple-600" />
+                      <Calculator className="w-8 h-8 text-purple-600" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">3. Verify PIN & Get Savings</h3>
+                    <h3 className="font-semibold text-lg mb-2">3. Enter PIN & Bill Amount</h3>
                     <p className="text-muted-foreground text-sm">
-                      Enter the 4-digit PIN in the verification dialog to complete your redemption. Only verified purchases update your savings and dashboard statistics.
-                    </p>
-                  </div>
-
-                  <ArrowRight className="w-6 h-6 text-gray-400 mx-auto" />
-
-                  <div className="text-center">
-                    <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Calculator className="w-8 h-8 text-green-600" />
-                    </div>
-                    <h3 className="font-semibold text-lg mb-2">4. Add Bill Amount (Optional)</h3>
-                    <p className="text-muted-foreground text-sm">
-                      After PIN verification, enter your actual bill amount to calculate precise savings. This provides accurate spending insights and real savings tracking.
+                      Enter the 4-digit PIN in the dialog to claim your deal, then add your actual bill amount to track precise savings and update your dashboard.
                     </p>
                   </div>
                 </div>
@@ -135,8 +123,8 @@ export default function PinVerificationTutorial() {
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
-                        <p className="font-medium">Secure Two-Phase Process</p>
-                        <p className="text-sm text-muted-foreground">Claim online first, then verify in-store for authentic savings tracking</p>
+                        <p className="font-medium">Streamlined PIN Verification</p>
+                        <p className="text-sm text-muted-foreground">One button initiates the entire process - just visit the store for the PIN to complete claiming</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">

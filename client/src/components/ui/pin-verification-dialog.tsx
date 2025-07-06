@@ -203,9 +203,9 @@ export function PinVerificationDialog({
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5" />
                   <div className="text-sm text-blue-800 dark:text-blue-200">
-                    <p className="font-medium mb-1">How do I claim a deal?</p>
+                    <p className="font-medium mb-1">How PIN verification works</p>
                     <p className="text-xs">
-                      Claiming deals is a secure three-step process: 1) Click 'Claim Deal' online to reserve it, 2) Visit the store and ask for the 4-digit PIN to verify your redemption in the app. 3) Click on Verify & Redeem and add the bill amount and update savings. Only verified redemptions count toward your savings.
+                      Visit the store and ask for the 4-digit PIN from the vendor. Enter it below to claim the deal and add your bill amount to track actual savings. PIN verification ensures authentic store visits.
                     </p>
                   </div>
                 </div>

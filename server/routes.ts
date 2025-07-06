@@ -752,31 +752,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Check if user has a pending claim for this deal
+      // Check if user has existing claims for this deal
       const existingClaims = await storage.getUserClaims(userId);
-      const pendingClaim = existingClaims.find(claim => claim.dealId === dealId && claim.status === "pending");
-      const alreadyUsed = existingClaims.some(claim => claim.dealId === dealId && claim.status === "used");
+      const existingClaim = existingClaims.find(claim => claim.dealId === dealId);
       
       Logger.debug("User Claims Check", {
         userId,
         dealId,
         totalClaims: existingClaims.length,
-        hasPendingClaim: !!pendingClaim,
-        hasUsedClaim: alreadyUsed,
+        hasExistingClaim: !!existingClaim,
+        existingClaimStatus: existingClaim?.status,
         allClaims: existingClaims.map(c => ({ dealId: c.dealId, status: c.status }))
       });
       
-      if (alreadyUsed) {
+      if (existingClaim && existingClaim.status === "used") {
         return res.status(400).json({
           success: false,
           error: "You have already redeemed this deal"
         });
       }
 
-      if (!pendingClaim) {
-        return res.status(400).json({
-          success: false,
-          error: "Please claim this deal first before verifying PIN"
+      // Create claim automatically if none exists (merged workflow)
+      let currentClaim = existingClaim;
+      if (!currentClaim) {
+        currentClaim = await storage.createDealClaim({
+          dealId,
+          userId,
+          status: "pending",
+          savingsAmount: "0",
+          claimedAt: new Date()
+        });
+        Logger.debug("Auto-created claim for merged workflow", {
+          claimId: currentClaim.id,
+          dealId,
+          userId
         });
       }
 
@@ -804,8 +813,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         savingsAmount = 50;
       }
 
-      // Update the existing claim to "used" status with actual savings
-      const updatedClaim = await storage.updateDealClaim(pendingClaim.id, {
+      // Update the claim to "used" status with actual savings
+      const updatedClaim = await storage.updateDealClaim(currentClaim.id, {
         status: "used",
         savingsAmount: savingsAmount.toString(),
         usedAt: new Date()
