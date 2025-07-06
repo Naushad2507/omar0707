@@ -167,6 +167,18 @@ Preferred communication style: Simple, everyday language.
 - **Streamlined Category Navigation**: Removed redundant "Browse by Category" section from deals pages to prevent confusion after category selection
 - **Simplified Deal Card Actions**: Removed redundant "Claim Deal" button from deal cards, keeping only "View Details" button to reduce confusion and improve user flow
 
+### July 6, 2025 - Merged PIN Workflow & Comprehensive Dark Theme Fix
+- **Merged PIN Workflow Implementation**: Successfully merged "Claim Deal" and "Verify PIN" buttons into single "Verify with PIN to Claim Deal" button for streamlined user experience
+- **Backend Auto-Claim Integration**: Modified PIN verification API to automatically create deal claims when PIN is verified, eliminating need for separate claim step
+- **Enhanced PIN Verification Dialog**: Updated PIN dialog with proper success callbacks and data refresh for seamless deal claiming workflow
+- **Comprehensive Dark Theme Fix**: Identified and resolved CSS conflicts with `!important` overrides that prevented proper dark mode functionality
+- **Bill Amount Dialog Dark Theme**: Fixed bill amount input dialog background colors, text colors, and info boxes for proper dark theme support
+- **Deal Card Dark Theme Support**: Resolved deal card background issues by fixing CSS variable conflicts in card components
+- **Status Badge Dark Theme**: Updated claimed/pending status badges with proper dark mode colors (green/amber backgrounds and text)
+- **Component-Wide Dark Theme**: Fixed dark theme support across DealList, help page, home page, nearby deals, and PIN verification components
+- **CSS Variable System**: Ensured proper CSS variable cascade for bg-card, bg-background, and theme-aware colors throughout application
+- **Mobile Dark Theme**: Verified dark theme functionality works consistently across mobile and desktop viewports
+
 ### July 5, 2025 - Comprehensive Deal Claiming Process Instructions Update
 - **Universal Claiming Instructions**: Updated all deal components and vendor forms with new 3-step claiming process instructions
 - **Vendor Deal Creation Forms**: Modified deals.tsx, deals-compact.tsx, and deals-enhanced.tsx to show new claiming process in PIN field descriptions
