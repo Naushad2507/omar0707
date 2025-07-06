@@ -41,7 +41,7 @@ export default function Login() {
       if (userData?.role === 'vendor') {
         navigate("/vendor/dashboard");
       } else if (userData?.role === 'customer') {
-        navigate("/customer/dashboard");
+        navigate("/customer/deals");
       } else if (userData?.role === 'admin') {
         navigate("/admin/dashboard");
       } else if (userData?.role === 'superadmin') {

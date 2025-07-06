@@ -245,6 +245,158 @@
     color: hsl(0, 0%, 98%);
   }
 
+  /* Neon colors for category icons in dark mode */
+  .dark .category-icon-electronics {
+    color: #00D4FF !important;
+    text-shadow: 0 0 10px #00D4FF, 0 0 20px #00D4FF, 0 0 30px #00D4FF;
+    filter: drop-shadow(0 0 5px #00D4FF);
+  }
+
+  .dark .category-icon-fashion {
+    color: #FF00D4 !important;
+    text-shadow: 0 0 10px #FF00D4, 0 0 20px #FF00D4, 0 0 30px #FF00D4;
+    filter: drop-shadow(0 0 5px #FF00D4);
+  }
+
+  .dark .category-icon-beauty {
+    color: #D400FF !important;
+    text-shadow: 0 0 10px #D400FF, 0 0 20px #D400FF, 0 0 30px #D400FF;
+    filter: drop-shadow(0 0 5px #D400FF);
+  }
+
+  .dark .category-icon-luxury {
+    color: #FFD700 !important;
+    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700;
+    filter: drop-shadow(0 0 5px #FFD700);
+  }
+
+  .dark .category-icon-horoscope {
+    color: #4D00FF !important;
+    text-shadow: 0 0 10px #4D00FF, 0 0 20px #4D00FF, 0 0 30px #4D00FF;
+    filter: drop-shadow(0 0 5px #4D00FF);
+  }
+
+  .dark .category-icon-health {
+    color: #00FF6B !important;
+    text-shadow: 0 0 10px #00FF6B, 0 0 20px #00FF6B, 0 0 30px #00FF6B;
+    filter: drop-shadow(0 0 5px #00FF6B);
+  }
+
+  .dark .category-icon-restaurants {
+    color: #FF6B00 !important;
+    text-shadow: 0 0 10px #FF6B00, 0 0 20px #FF6B00, 0 0 30px #FF6B00;
+    filter: drop-shadow(0 0 5px #FF6B00);
+  }
+
+  .dark .category-icon-entertainment {
+    color: #00FFFF !important;
+    text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+    filter: drop-shadow(0 0 5px #00FFFF);
+  }
+
+  .dark .category-icon-home {
+    color: #FF9500 !important;
+    text-shadow: 0 0 10px #FF9500, 0 0 20px #FF9500, 0 0 30px #FF9500;
+    filter: drop-shadow(0 0 5px #FF9500);
+  }
+
+  .dark .category-icon-events {
+    color: #9500FF !important;
+    text-shadow: 0 0 10px #9500FF, 0 0 20px #9500FF, 0 0 30px #9500FF;
+    filter: drop-shadow(0 0 5px #9500FF);
+  }
+
+  .dark .category-icon-realestate {
+    color: #FF0095 !important;
+    text-shadow: 0 0 10px #FF0095, 0 0 20px #FF0095, 0 0 30px #FF0095;
+    filter: drop-shadow(0 0 5px #FF0095);
+  }
+
+  .dark .category-icon-education {
+    color: #00FF95 !important;
+    text-shadow: 0 0 10px #00FF95, 0 0 20px #00FF95, 0 0 30px #00FF95;
+    filter: drop-shadow(0 0 5px #00FF95);
+  }
+
+  .dark .category-icon-freelancers {
+    color: #95FF00 !important;
+    text-shadow: 0 0 10px #95FF00, 0 0 20px #95FF00, 0 0 30px #95FF00;
+    filter: drop-shadow(0 0 5px #95FF00);
+  }
+
+  .dark .category-icon-consultants {
+    color: #0095FF !important;
+    text-shadow: 0 0 10px #0095FF, 0 0 20px #0095FF, 0 0 30px #0095FF;
+    filter: drop-shadow(0 0 5px #0095FF);
+  }
+
+  .dark .category-icon-travel {
+    color: #FF5500 !important;
+    text-shadow: 0 0 10px #FF5500, 0 0 20px #FF5500, 0 0 30px #FF5500;
+    filter: drop-shadow(0 0 5px #FF5500);
+  }
+
+  .dark .category-icon-automotive {
+    color: #0055FF !important;
+    text-shadow: 0 0 10px #0055FF, 0 0 20px #0055FF, 0 0 30px #0055FF;
+    filter: drop-shadow(0 0 5px #0055FF);
+  }
+
+  .dark .category-icon-services {
+    color: #55FF00 !important;
+    text-shadow: 0 0 10px #55FF00, 0 0 20px #55FF00, 0 0 30px #55FF00;
+    filter: drop-shadow(0 0 5px #55FF00);
+  }
+
+  .dark .category-icon-others {
+    color: #FF0055 !important;
+    text-shadow: 0 0 10px #FF0055, 0 0 20px #FF0055, 0 0 30px #FF0055;
+    filter: drop-shadow(0 0 5px #FF0055);
+  }
+
+  /* Neon theme toggle in dark mode */
+  .dark .theme-toggle-button {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 1px solid #00FFFF;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .dark .theme-toggle-button:hover {
+    border-color: #00D4FF;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 20px rgba(0, 212, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .dark .theme-toggle-sun {
+    color: #FFD700 !important;
+    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+    filter: drop-shadow(0 0 5px #FFD700);
+  }
+
+  .dark .theme-toggle-moon {
+    color: #00FFFF !important;
+    text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
+    filter: drop-shadow(0 0 5px #00FFFF);
+  }
+
+  .dark .theme-dropdown {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 1px solid #00FFFF;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  }
+
+  .dark .theme-dropdown-item {
+    color: #00FFFF !important;
+    transition: all 0.3s ease;
+  }
+
+  .dark .theme-dropdown-item:hover {
+    background: linear-gradient(135deg, #00FFFF20, #00D4FF20);
+    color: #00D4FF !important;
+    text-shadow: 0 0 5px #00D4FF;
+  }
+
   .dark .category-card p {
     color: hsl(0, 0%, 75%) !important;
   }

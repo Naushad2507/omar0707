@@ -279,7 +279,7 @@ export default function Home() {
                             <div className="relative z-10">
                               <div className="flex justify-center mb-4">
                                 <div className={`w-16 h-16 rounded-full ${categoryColors[category.id as keyof typeof categoryColors] || 'bg-gradient-to-br from-primary to-primary/80'} flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:rotate-12`}>
-                                  <IconComponent className="w-8 h-8 text-white" />
+                                  <IconComponent className={`w-8 h-8 text-white category-icon-${category.id}`} />
                                 </div>
                               </div>
                               <h3 className="font-bold text-foreground mb-2 text-sm">{category.name}</h3>
@@ -336,7 +336,7 @@ export default function Home() {
                             <div className="relative z-10">
                               <div className="flex justify-center mb-4">
                                 <div className={`w-16 h-16 rounded-full ${categoryColors[category.id as keyof typeof categoryColors] || 'bg-gradient-to-br from-primary to-primary/80'} flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:rotate-12`}>
-                                  <IconComponent className="w-8 h-8 text-white" />
+                                  <IconComponent className={`w-8 h-8 text-white category-icon-${category.id}`} />
                                 </div>
                               </div>
                               <h3 className="font-bold text-foreground mb-2 text-sm">{category.name}</h3>

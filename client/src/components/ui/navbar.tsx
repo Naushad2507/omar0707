@@ -29,7 +29,7 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
   const getDashboardLink = () => {
     if (!user) return "/";
     switch (user.role) {
-      case "customer": return "/customer/dashboard";
+      case "customer": return "/customer/deals";
       case "vendor": return "/vendor/dashboard";
       case "admin": return "/admin/dashboard";
       case "superadmin": return "/superadmin/dashboard";
@@ -58,11 +58,11 @@ export default function Navbar({ selectedCity, onCityChange }: NavbarProps) {
         ];
       case 'customer':
         return [
-          { label: "Dashboard", href: "/customer/dashboard", icon: Home },
           { label: "Deals", href: "/customer/deals", icon: Tag },
           { label: "Deal Wizard", href: "/customer/deal-wizard", icon: Wand2 },
           { label: "Wishlist", href: "/customer/wishlist", icon: Heart },
           { label: "Claims", href: "/customer/claims", icon: Clock },
+          { label: "Dashboard", href: "/customer/dashboard", icon: Home },
           { label: "Help", href: "/help", icon: HelpCircle },
         ];
       case 'admin':
