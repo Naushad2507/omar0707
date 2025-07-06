@@ -217,156 +217,32 @@
     transition: background-color 0.3s ease;
   }
 
-  /* Force light background application */
+  /* Natural light theme - no forced overrides */
   :root {
     color-scheme: light;
   }
 
-  /* Light theme overrides */
-  body {
-    background-color: hsl(260, 25%, 97%) !important;
-    color: hsl(260, 20%, 15%) !important;
-  }
-
-  html {
-    background-color: hsl(260, 25%, 97%) !important;
-  }
-
-  /* Ensure all root elements have light background */
-  #root {
-    background-color: hsl(260, 25%, 97%) !important;
-    color: hsl(260, 20%, 15%) !important;
-    min-height: 100vh;
-  }
-
-  /* Force light background on main containers */
-  .min-h-screen {
-    background-color: hsl(260, 25%, 97%) !important;
-  }
-
-  /* Light mode card backgrounds */
-  [class*="bg-card"] {
-    background-color: hsl(260, 30%, 99%) !important;
-  }
-
-  [class*="bg-background"] {
-    background-color: hsl(260, 25%, 97%) !important;
-  }
-
-  /* Force dark background application */
+  /* Clean dark theme implementation */
   .dark {
     color-scheme: dark;
   }
 
-  .dark body {
-    background-color: hsl(0, 0%, 15%) !important;
-    color: hsl(0, 0%, 98%) !important;
-  }
-
-  .dark html {
-    background-color: hsl(0, 0%, 15%) !important;
-  }
-
-  /* Ensure all root elements have dark background */
-  .dark #root {
-    background-color: hsl(0, 0%, 15%) !important;
-    color: hsl(0, 0%, 98%) !important;
-    min-height: 100vh;
-  }
-
-  /* Force dark background on main containers */
-  .dark .min-h-screen {
-    background-color: hsl(0, 0%, 15%) !important;
-  }
-
-  .dark div[class*="max-w"] {
-    background-color: transparent;
-  }
-
-  /* Additional dark mode overrides */
-  .dark * {
-    border-color: hsl(0, 0%, 25%);
-  }
-
-  /* Override any remaining white backgrounds in dark mode */
-  .dark [class*="bg-card"] {
-    background-color: hsl(0, 0%, 18%) !important;
-  }
-
-  .dark [class*="bg-background"] {
-    background-color: hsl(0, 0%, 15%) !important;
-  }
-
-  /* Force main content areas to be dark */
-  .dark main,
-  .dark section,
-  .dark article {
-    background-color: transparent;
-  }
-
   /* Dark mode category carousel cards */
   .dark .category-card {
-    background-color: hsl(0, 0%, 22%) !important;
-    border: 1px solid hsl(0, 0%, 30%) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    background-color: hsl(0, 0%, 22%);
+    border: 1px solid hsl(0, 0%, 30%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .dark .category-card:hover {
-    background-color: hsl(0, 0%, 25%) !important;
+    background-color: hsl(0, 0%, 25%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
-  /* Dark mode category card text */
   .dark .category-card h3,
   .dark .category-card p {
-    color: hsl(0, 0%, 98%) !important;
-  }
-
-  /* Dark mode deal cards */
-  .dark .deal-card,
-  .dark [data-card="true"] {
-    background-color: hsl(0, 0%, 18%) !important;
-    border: 1px solid hsl(0, 0%, 30%) !important;
-    color: hsl(0, 0%, 98%) !important;
-  }
-
-  /* Dark mode deal card content */
-  .dark .deal-card h3,
-  .dark .deal-card h4,
-  .dark .deal-card p,
-  .dark .deal-card span {
-    color: hsl(0, 0%, 98%) !important;
-  }
-
-  /* Dark mode deal card muted text */
-  .dark .deal-card .text-muted-foreground {
-    color: hsl(0, 0%, 64%) !important;
-  }
-
-  /* Dark mode shadcn card components */
-  .dark .card,
-  .dark [class*="card"] {
-    background-color: hsl(0, 0%, 18%) !important;
-    border: 1px solid hsl(0, 0%, 30%) !important;
-    color: hsl(0, 0%, 98%) !important;
-  }
-
-  .dark .card-header,
-  .dark .card-content,
-  .dark .card-footer {
-    color: hsl(0, 0%, 98%) !important;
-  }
-
-  .dark .card-title {
-    color: hsl(0, 0%, 98%) !important;
-  }
-
-  .dark .card-description {
-    color: hsl(0, 0%, 64%) !important;
-  }
-  .dark .category-card h3 {
-    color: hsl(0, 0%, 98%) !important;
+    color: hsl(0, 0%, 98%);
   }
 
   .dark .category-card p {

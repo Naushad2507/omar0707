@@ -167,11 +167,12 @@ Preferred communication style: Simple, everyday language.
 - **Streamlined Category Navigation**: Removed redundant "Browse by Category" section from deals pages to prevent confusion after category selection
 - **Simplified Deal Card Actions**: Removed redundant "Claim Deal" button from deal cards, keeping only "View Details" button to reduce confusion and improve user flow
 
-### July 6, 2025 - Authentication Fix & Merged PIN Workflow & Comprehensive Dark Theme Fix
+### July 6, 2025 - Authentication Fix & Theme Restoration & Merged PIN Workflow
 - **Authentication Bug Fix**: Resolved login issues on Render deployment by adding proper string handling and trimming for password comparison
 - **Enhanced Debug Logging**: Added comprehensive debug logging for password storage and comparison to identify authentication issues
 - **Password Consistency**: Ensured consistent password handling between signup and login endpoints with proper data type conversion
 - **Production Deployment**: Fixed authentication flow for newly created accounts on production environment (Render free tier)
+- **Theme Restoration**: Restored original clean white theme for light mode by removing forced CSS overrides and maintaining natural theme switching
 - **Merged PIN Workflow Implementation**: Successfully merged "Claim Deal" and "Verify PIN" buttons into single "Verify with PIN to Claim Deal" button for streamlined user experience
 - **Backend Auto-Claim Integration**: Modified PIN verification API to automatically create deal claims when PIN is verified, eliminating need for separate claim step
 - **Enhanced PIN Verification Dialog**: Updated PIN dialog with proper success callbacks and data refresh for seamless deal claiming workflow
