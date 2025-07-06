@@ -29,22 +29,22 @@
 }
 
 :root {
-  --background: hsl(220, 30%, 97%);
-  --foreground: hsl(222, 84%, 4.9%);
-  --muted: hsl(220, 14.3%, 95.9%);
-  --muted-foreground: hsl(220, 8.9%, 46.1%);
-  --popover: hsl(220, 30%, 97%);
-  --popover-foreground: hsl(222, 84%, 4.9%);
-  --card: hsl(220, 30%, 99%);
-  --card-foreground: hsl(222, 84%, 4.9%);
-  --border: hsl(220, 13%, 91%);
-  --input: hsl(220, 13%, 91%);
+  --background: hsl(260, 25%, 97%);
+  --foreground: hsl(260, 20%, 15%);
+  --muted: hsl(260, 20%, 95%);
+  --muted-foreground: hsl(260, 10%, 50%);
+  --popover: hsl(260, 25%, 97%);
+  --popover-foreground: hsl(260, 20%, 15%);
+  --card: hsl(260, 30%, 99%);
+  --card-foreground: hsl(260, 20%, 15%);
+  --border: hsl(260, 15%, 90%);
+  --input: hsl(260, 15%, 90%);
   --primary: hsl(217, 91%, 60%);
   --primary-foreground: hsl(213, 100%, 99%);
-  --secondary: hsl(220, 14.3%, 95.9%);
-  --secondary-foreground: hsl(220, 8.9%, 46.1%);
-  --accent: hsl(220, 14.3%, 95.9%);
-  --accent-foreground: hsl(222, 84%, 4.9%);
+  --secondary: hsl(260, 20%, 94%);
+  --secondary-foreground: hsl(260, 15%, 40%);
+  --accent: hsl(260, 20%, 94%);
+  --accent-foreground: hsl(260, 20%, 15%);
   --destructive: hsl(0, 84.2%, 60.2%);
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
   --ring: hsl(20, 14.3%, 4.1%);
@@ -224,33 +224,33 @@
 
   /* Light theme overrides */
   body {
-    background-color: hsl(220, 30%, 97%) !important;
-    color: hsl(222, 84%, 4.9%) !important;
+    background-color: hsl(260, 25%, 97%) !important;
+    color: hsl(260, 20%, 15%) !important;
   }
 
   html {
-    background-color: hsl(220, 30%, 97%) !important;
+    background-color: hsl(260, 25%, 97%) !important;
   }
 
   /* Ensure all root elements have light background */
   #root {
-    background-color: hsl(220, 30%, 97%) !important;
-    color: hsl(222, 84%, 4.9%) !important;
+    background-color: hsl(260, 25%, 97%) !important;
+    color: hsl(260, 20%, 15%) !important;
     min-height: 100vh;
   }
 
   /* Force light background on main containers */
   .min-h-screen {
-    background-color: hsl(220, 30%, 97%) !important;
+    background-color: hsl(260, 25%, 97%) !important;
   }
 
   /* Light mode card backgrounds */
   [class*="bg-card"] {
-    background-color: hsl(220, 30%, 99%) !important;
+    background-color: hsl(260, 30%, 99%) !important;
   }
 
   [class*="bg-background"] {
-    background-color: hsl(220, 30%, 97%) !important;
+    background-color: hsl(260, 25%, 97%) !important;
   }
 
   /* Force dark background application */
