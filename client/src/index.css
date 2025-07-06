@@ -318,6 +318,53 @@
   }
 
   /* Dark mode category card text */
+  .dark .category-card h3,
+  .dark .category-card p {
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  /* Dark mode deal cards */
+  .dark .deal-card,
+  .dark [data-card="true"] {
+    background-color: hsl(0, 0%, 18%) !important;
+    border: 1px solid hsl(0, 0%, 30%) !important;
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  /* Dark mode deal card content */
+  .dark .deal-card h3,
+  .dark .deal-card h4,
+  .dark .deal-card p,
+  .dark .deal-card span {
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  /* Dark mode deal card muted text */
+  .dark .deal-card .text-muted-foreground {
+    color: hsl(0, 0%, 64%) !important;
+  }
+
+  /* Dark mode shadcn card components */
+  .dark .card,
+  .dark [class*="card"] {
+    background-color: hsl(0, 0%, 18%) !important;
+    border: 1px solid hsl(0, 0%, 30%) !important;
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  .dark .card-header,
+  .dark .card-content,
+  .dark .card-footer {
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  .dark .card-title {
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  .dark .card-description {
+    color: hsl(0, 0%, 64%) !important;
+  }
   .dark .category-card h3 {
     color: hsl(0, 0%, 98%) !important;
   }

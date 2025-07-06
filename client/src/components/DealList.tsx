@@ -183,10 +183,10 @@ const DealList = () => {
             return (
               <Card 
                 key={`deal-${deal.id}-${index}`} 
-                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/20 cursor-pointer"
+                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-primary/20 cursor-pointer bg-card dark:bg-card text-card-foreground dark:text-card-foreground"
                 onClick={() => handleDealClick(deal.id)}
               >
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-3 text-card-foreground dark:text-card-foreground">
                   <div className="flex justify-between items-start mb-2">
                     <Badge variant="secondary" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                       {deal.category}
@@ -196,15 +196,15 @@ const DealList = () => {
                       <span className="text-sm font-medium">{deal.discountPercentage}% OFF</span>
                     </div>
                   </div>
-                  <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                  <CardTitle className="text-lg group-hover:text-primary transition-colors text-card-foreground dark:text-card-foreground">
                     {deal.title}
                   </CardTitle>
-                  <CardDescription className="line-clamp-2">
+                  <CardDescription className="line-clamp-2 text-muted-foreground dark:text-muted-foreground">
                     {deal.description}
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 text-card-foreground dark:text-card-foreground">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
