@@ -359,7 +359,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // For demo purposes, compare plain text passwords
       // In production, use bcrypt to compare hashed passwords
-      if (user.password !== password) {
+      
+      // Debug logging for password comparison
+      Logger.debug("Login password comparison", {
+        email: email,
+        storedPassword: user.password,
+        providedPassword: password,
+        storedPasswordType: typeof user.password,
+        providedPasswordType: typeof password,
+        passwordsMatch: user.password === password,
+        storedPasswordLength: user.password?.length,
+        providedPasswordLength: password?.length
+      });
+      
+      // Ensure both passwords are strings and trim any whitespace
+      const storedPassword = String(user.password || '').trim();
+      const providedPassword = String(password || '').trim();
+      
+      if (storedPassword !== providedPassword) {
+        Logger.warn("Password mismatch", {
+          email: email,
+          storedPasswordPreview: storedPassword.substring(0, 3) + '***',
+          providedPasswordPreview: providedPassword.substring(0, 3) + '***'
+        });
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
@@ -402,10 +424,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create user
       // For demo purposes, store plain text passwords
       // In production, hash passwords with bcrypt before storing
-      const user = await storage.createUser({
-        ...userData,
-        password: userData.password,
+      
+      // Debug logging for signup
+      Logger.debug("User signup password storage", {
+        email: userData.email,
+        passwordProvided: userData.password,
+        passwordType: typeof userData.password,
+        passwordLength: userData.password?.length
       });
+      
+      // Ensure password is properly trimmed string
+      const cleanedUserData = {
+        ...userData,
+        password: String(userData.password || '').trim(),
+      };
+      
+      const user = await storage.createUser(cleanedUserData);
       
       const token = `${user.id}|${user.role}|${user.email}`;
       
