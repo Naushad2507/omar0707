@@ -165,21 +165,21 @@
 }
 
 .dark {
-  --background: hsl(0, 0%, 8%);
+  --background: hsl(0, 0%, 15%);
   --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(0, 0%, 12%);
+  --muted: hsl(0, 0%, 20%);
   --muted-foreground: hsl(0, 0%, 64%);
-  --popover: hsl(0, 0%, 8%);
+  --popover: hsl(0, 0%, 15%);
   --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(0, 0%, 10%);
+  --card: hsl(0, 0%, 18%);
   --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(0, 0%, 18%);
-  --input: hsl(0, 0%, 15%);
+  --border: hsl(0, 0%, 25%);
+  --input: hsl(0, 0%, 22%);
   --primary: hsl(217, 91%, 60%);
   --primary-foreground: hsl(213, 100%, 99%);
-  --secondary: hsl(0, 0%, 15%);
+  --secondary: hsl(0, 0%, 22%);
   --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(0, 0%, 15%);
+  --accent: hsl(0, 0%, 22%);
   --accent-foreground: hsl(0, 0%, 98%);
   --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(0, 0%, 98%);
@@ -259,24 +259,24 @@
   }
 
   .dark body {
-    background-color: hsl(0, 0%, 8%) !important;
+    background-color: hsl(0, 0%, 15%) !important;
     color: hsl(0, 0%, 98%) !important;
   }
 
   .dark html {
-    background-color: hsl(0, 0%, 8%) !important;
+    background-color: hsl(0, 0%, 15%) !important;
   }
 
   /* Ensure all root elements have dark background */
   .dark #root {
-    background-color: hsl(0, 0%, 8%) !important;
+    background-color: hsl(0, 0%, 15%) !important;
     color: hsl(0, 0%, 98%) !important;
     min-height: 100vh;
   }
 
   /* Force dark background on main containers */
   .dark .min-h-screen {
-    background-color: hsl(0, 0%, 8%) !important;
+    background-color: hsl(0, 0%, 15%) !important;
   }
 
   .dark div[class*="max-w"] {
@@ -285,16 +285,16 @@
 
   /* Additional dark mode overrides */
   .dark * {
-    border-color: hsl(0, 0%, 18%);
+    border-color: hsl(0, 0%, 25%);
   }
 
   /* Override any remaining white backgrounds in dark mode */
   .dark [class*="bg-card"] {
-    background-color: hsl(0, 0%, 10%) !important;
+    background-color: hsl(0, 0%, 18%) !important;
   }
 
   .dark [class*="bg-background"] {
-    background-color: hsl(0, 0%, 8%) !important;
+    background-color: hsl(0, 0%, 15%) !important;
   }
 
   /* Force main content areas to be dark */
