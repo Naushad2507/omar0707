@@ -1,0 +1,3 @@
+2025-07-05T03:45:44.121Z [INFO] Starting Render monitoring system | {"serviceUrl":"https://your-app.onrender.com","checkInterval":"840s","uptimeRobotEnabled":false}
+2025-07-05T03:45:44.510Z [ERROR] Health check failed | {"error":"Request failed with status code 404","code":"ERR_BAD_REQUEST","responseTime":"385ms","consecutiveFailures":1,"errorType":"client_error"}
+2025-07-05T03:45:49.160Z [INFO] Status report updated | {"status":"degraded","uptime":"0h 0m","successRate":"0.00%","avgResponseTime":"0ms"}
