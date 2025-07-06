@@ -355,7 +355,7 @@ export default function Help() {
             ].map((topic, index) => (
               <div 
                 key={index} 
-                className="flex items-center space-x-3 p-3 bg-card rounded-lg hover:shadow-md hover:bg-gray-50 transition-all cursor-pointer"
+                className="flex items-center space-x-3 p-3 bg-card rounded-lg hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-all cursor-pointer"
                 onClick={() => {
                   const element = document.getElementById(topic.anchor);
                   if (element) {

@@ -298,10 +298,10 @@ export function PinVerificationDialog({
                   </div>
                 )}
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
                   <div className="flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5" />
-                    <div className="text-sm text-blue-800">
+                    <div className="text-sm text-blue-800 dark:text-blue-200">
                       <p className="font-medium mb-1">Why add bill amount?</p>
                       <p className="text-xs">
                         This helps us calculate your exact savings and gives you accurate spending insights.

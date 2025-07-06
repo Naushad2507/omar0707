@@ -33,9 +33,9 @@ export default function NearbyDealsSection({ dealId }: NearbyDealsSectionProps) 
   });
 
   const membershipColors = {
-    basic: "bg-gray-100 text-gray-800 border-gray-200",
-    premium: "bg-blue-50 text-blue-700 border-blue-200",
-    ultimate: "bg-purple-50 text-purple-700 border-purple-200",
+    basic: "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700",
+    premium: "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800",
+    ultimate: "bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800",
   };
 
   const categoryColors = {
