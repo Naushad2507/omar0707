@@ -733,7 +733,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { pin } = req.body;
       const userId = req.user!.id;
 
-      if (!pin || pin.length !== 4) {
+      // Enhanced PIN validation with detailed debugging
+      const cleanPin = String(pin || '').trim();
+      
+      Logger.debug("PIN Input Validation", {
+        originalPin: pin,
+        cleanPin: cleanPin,
+        pinLength: cleanPin.length,
+        pinType: typeof pin
+      });
+      
+      if (!cleanPin || cleanPin.length !== 4 || !/^\d{4}$/.test(cleanPin)) {
+        Logger.warn("Invalid PIN format", {
+          pin: cleanPin,
+          length: cleanPin.length,
+          isNumeric: /^\d{4}$/.test(cleanPin)
+        });
         return res.status(400).json({
           success: false,
           error: "Please enter a valid 4-digit PIN"
@@ -765,20 +780,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verify PIN
+      // Verify PIN with proper type handling
+      const storedPin = String(deal.verificationPin || '').trim();
+      const providedPin = cleanPin;
+      
       Logger.debug("PIN Verification", {
         dealId,
         dealTitle: deal.title,
-        storedPin: deal.verificationPin,
-        providedPin: pin,
-        pinTypes: `stored: ${typeof deal.verificationPin}, provided: ${typeof pin}`
+        storedPin: storedPin,
+        providedPin: providedPin,
+        storedPinType: typeof storedPin,
+        providedPinType: typeof providedPin,
+        pinsMatch: storedPin === providedPin
       });
       
-      if (deal.verificationPin !== pin) {
+      if (storedPin !== providedPin) {
         Logger.warn("PIN Mismatch", {
           dealId,
-          storedPin: deal.verificationPin,
-          providedPin: pin
+          storedPin: storedPin.substring(0, 2) + '**',
+          providedPin: providedPin.substring(0, 2) + '**'
         });
         return res.status(400).json({
           success: false,
