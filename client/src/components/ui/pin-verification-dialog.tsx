@@ -165,7 +165,7 @@ export function PinVerificationDialog({
                 <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
                   <Shield className="w-8 h-8 text-blue-600" />
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Ask the vendor for their verification PIN to complete your redemption
                 </p>
               </div>
@@ -259,7 +259,7 @@ export function PinVerificationDialog({
                 <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
                   <Calculator className="w-8 h-8 text-green-600" />
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Deal redeemed successfully! Add your bill amount for accurate savings calculation.
                 </p>
               </div>

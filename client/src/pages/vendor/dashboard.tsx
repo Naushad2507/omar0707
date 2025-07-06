@@ -138,7 +138,7 @@ export default function VendorDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -146,10 +146,10 @@ export default function VendorDashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-foreground">
                 {(vendor as any) ? `Welcome, ${(vendor as any).businessName}!` : 'Vendor Dashboard'}
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-muted-foreground mt-1">
                 Manage your deals and track your business performance
               </p>
             </div>
@@ -173,8 +173,8 @@ export default function VendorDashboard() {
                 <div className="flex items-center space-x-3">
                   <Clock className="h-6 w-6 text-warning" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">Account Under Review</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-foreground">Account Under Review</h3>
+                    <p className="text-muted-foreground">
                       Your vendor account is currently being reviewed. You'll be able to create deals once approved.
                     </p>
                   </div>
@@ -193,8 +193,8 @@ export default function VendorDashboard() {
                 <div className="flex items-center space-x-3">
                   <Store className="h-6 w-6 text-primary" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">Complete Your Registration</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-foreground">Complete Your Registration</h3>
+                    <p className="text-muted-foreground">
                       Register your business to start offering deals to customers
                     </p>
                   </div>
@@ -232,7 +232,7 @@ export default function VendorDashboard() {
                         )}
                       </div>
                     </div>
-                    <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                    <div className="bg-card/20 p-4 rounded-full backdrop-blur-sm">
                       <Icon className="h-8 w-8 text-white" />
                     </div>
                   </div>
@@ -363,17 +363,17 @@ export default function VendorDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Average Views per Deal</span>
+                    <span className="text-muted-foreground">Average Views per Deal</span>
                     <span className="font-semibold">{totalDeals > 0 ? Math.round(totalViews / totalDeals) : 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Conversion Rate</span>
+                    <span className="text-muted-foreground">Conversion Rate</span>
                     <span className="font-semibold">
                       {totalViews > 0 ? ((totalRedemptions / totalViews) * 100).toFixed(1) : 0}%
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Revenue per Deal</span>
+                    <span className="text-muted-foreground">Revenue per Deal</span>
                     <span className="font-semibold">₹{totalDeals > 0 ? Math.round(24500 / totalDeals) : 0}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -411,16 +411,16 @@ export default function VendorDashboard() {
                     )}
                     
                     <div>
-                      <h3 className="font-semibold text-gray-900">{vendor.businessName}</h3>
+                      <h3 className="font-semibold text-foreground">{vendor.businessName}</h3>
                       {vendor.description && (
-                        <p className="text-gray-600 text-sm mt-1">{vendor.description}</p>
+                        <p className="text-muted-foreground text-sm mt-1">{vendor.description}</p>
                       )}
                     </div>
                     
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-500">Location:</span>
-                        <span className="text-gray-900">{vendor.city}, {vendor.state}</span>
+                        <span className="text-foreground">{vendor.city}, {vendor.state}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Status:</span>
@@ -432,13 +432,13 @@ export default function VendorDashboard() {
                         <span className="text-gray-500">Rating:</span>
                         <div className="flex items-center">
                           <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                          <span className="text-gray-900">{vendor.rating || "0.0"}</span>
+                          <span className="text-foreground">{vendor.rating || "0.0"}</span>
                         </div>
                       </div>
                       {vendor.gstNumber && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">GST:</span>
-                          <span className="text-gray-900 font-mono text-xs">{vendor.gstNumber}</span>
+                          <span className="text-foreground font-mono text-xs">{vendor.gstNumber}</span>
                         </div>
                       )}
                     </div>
@@ -446,7 +446,7 @@ export default function VendorDashboard() {
                 ) : (
                   <div className="text-center py-8">
                     <Store className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-4">No business profile found</p>
+                    <p className="text-muted-foreground mb-4">No business profile found</p>
                     <Button asChild>
                       <Link to="/vendor/register">Complete Registration</Link>
                     </Button>
@@ -500,8 +500,8 @@ export default function VendorDashboard() {
                       <div key={deal.id} className="border border-gray-200 rounded-lg p-4">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{deal.title}</h4>
-                            <p className="text-sm text-gray-600 line-clamp-2">{deal.description}</p>
+                            <h4 className="font-medium text-foreground">{deal.title}</h4>
+                            <p className="text-sm text-muted-foreground line-clamp-2">{deal.description}</p>
                           </div>
                           {getDealStatusBadge(deal)}
                         </div>
@@ -509,22 +509,22 @@ export default function VendorDashboard() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                           <div>
                             <span className="text-gray-500">Discount:</span>
-                            <p className="font-medium text-gray-900">{deal.discountPercentage}%</p>
+                            <p className="font-medium text-foreground">{deal.discountPercentage}%</p>
                           </div>
                           <div>
                             <span className="text-gray-500">Views:</span>
-                            <p className="font-medium text-gray-900">{deal.viewCount || 0}</p>
+                            <p className="font-medium text-foreground">{deal.viewCount || 0}</p>
                           </div>
                           <div>
                             <span className="text-gray-500">Claims:</span>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-foreground">
                               {deal.currentRedemptions || 0}
                               {deal.maxRedemptions && `/${deal.maxRedemptions}`}
                             </p>
                           </div>
                           <div>
                             <span className="text-gray-500">Valid Until:</span>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-foreground">
                               {new Date(deal.validUntil).toLocaleDateString('en-IN')}
                             </p>
                           </div>
@@ -532,7 +532,7 @@ export default function VendorDashboard() {
                         
                         {deal.maxRedemptions && (
                           <div className="mt-3">
-                            <div className="flex justify-between text-sm text-gray-600 mb-1">
+                            <div className="flex justify-between text-sm text-muted-foreground mb-1">
                               <span>Redemption Progress</span>
                               <span>{deal.currentRedemptions || 0}/{deal.maxRedemptions}</span>
                             </div>
@@ -556,8 +556,8 @@ export default function VendorDashboard() {
                     {vendor && isApproved ? (
                       <>
                         <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No deals created yet</h3>
-                        <p className="text-gray-600 mb-4">Start creating deals to attract customers</p>
+                        <h3 className="text-lg font-medium text-foreground mb-2">No deals created yet</h3>
+                        <p className="text-muted-foreground mb-4">Start creating deals to attract customers</p>
                         <Button asChild>
                           <Link to="/vendor/deals">Create Your First Deal</Link>
                         </Button>
@@ -565,10 +565,10 @@ export default function VendorDashboard() {
                     ) : (
                       <>
                         <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        <h3 className="text-lg font-medium text-foreground mb-2">
                           {vendor ? "Awaiting Approval" : "Registration Required"}
                         </h3>
-                        <p className="text-gray-600">
+                        <p className="text-muted-foreground">
                           {vendor 
                             ? "Complete your registration and get approved to start creating deals"
                             : "Register your business to start offering deals"
@@ -593,30 +593,30 @@ export default function VendorDashboard() {
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-3">Deal Performance</h4>
+                      <h4 className="font-medium text-foreground mb-3">Deal Performance</h4>
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Conversion Rate</span>
+                          <span className="text-muted-foreground">Conversion Rate</span>
                           <span className="font-medium">
                             {totalViews > 0 ? ((totalRedemptions / totalViews) * 100).toFixed(1) : 0}%
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Avg. Views per Deal</span>
+                          <span className="text-muted-foreground">Avg. Views per Deal</span>
                           <span className="font-medium">
                             {totalDeals > 0 ? Math.round(totalViews / totalDeals) : 0}
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Pending Approvals</span>
+                          <span className="text-muted-foreground">Pending Approvals</span>
                           <span className="font-medium">{pendingDeals}</span>
                         </div>
                       </div>
                     </div>
                     
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-3">Quick Tips</h4>
-                      <div className="space-y-2 text-sm text-gray-600">
+                      <h4 className="font-medium text-foreground mb-3">Quick Tips</h4>
+                      <div className="space-y-2 text-sm text-muted-foreground">
                         <div className="flex items-start space-x-2">
                           <CheckCircle className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
                           <span>Add compelling images to increase views</span>

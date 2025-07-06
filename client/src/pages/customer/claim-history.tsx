@@ -171,14 +171,14 @@ export default function ClaimHistory() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Claim History</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold text-foreground mb-4">Claim History</h1>
+          <p className="text-muted-foreground">
             Track all your claimed deals and savings in one place
           </p>
         </div>
@@ -193,7 +193,7 @@ export default function ClaimHistory() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-500 text-sm">{stat.title}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
                     <div className={`${stat.bgColor} p-3 rounded-lg`}>
                       <Icon className={`h-6 w-6 ${stat.color}`} />
@@ -263,7 +263,7 @@ export default function ClaimHistory() {
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="text-gray-600 mt-2">Loading claims...</p>
+                <p className="text-muted-foreground mt-2">Loading claims...</p>
               </div>
             ) : sortedClaims.length > 0 ? (
               <div className="space-y-4">
@@ -282,10 +282,10 @@ export default function ClaimHistory() {
                         
                         {/* Deal Info */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 mb-1">
+                          <h3 className="font-semibold text-foreground mb-1">
                             {claim.deal?.title || "Deal not available"}
                           </h3>
-                          <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                          <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
                             {claim.deal?.description}
                           </p>
                           
@@ -318,7 +318,7 @@ export default function ClaimHistory() {
                               <p className="text-lg font-bold text-success">
                                 Actual Saved ₹{parseFloat(claim.actualSavings).toLocaleString('en-IN')}
                               </p>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-muted-foreground">
                                 Bill: ₹{parseFloat(claim.billAmount).toLocaleString('en-IN')}
                               </p>
                             </div>
@@ -358,10 +358,10 @@ export default function ClaimHistory() {
             ) : (
               <div className="text-center py-12">
                 <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="text-lg font-medium text-foreground mb-2">
                   {searchQuery || filterStatus !== "all" ? "No claims found" : "No claims yet"}
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   {searchQuery || filterStatus !== "all" 
                     ? "Try adjusting your search or filters"
                     : "Start claiming deals to see your history here"
@@ -393,7 +393,7 @@ export default function ClaimHistory() {
             <div className="space-y-4 py-4">
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-lg mb-1">{billingClaim.deal?.title}</h3>
-                <p className="text-sm text-gray-600">Discount: {billingClaim.deal?.discountPercentage}% OFF</p>
+                <p className="text-sm text-muted-foreground">Discount: {billingClaim.deal?.discountPercentage}% OFF</p>
               </div>
               
               <div className="space-y-2">

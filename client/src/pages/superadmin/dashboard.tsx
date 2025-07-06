@@ -208,14 +208,14 @@ export default function SuperAdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Super Admin Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Super Admin Dashboard</h1>
+          <p className="text-muted-foreground mt-1">
             Monitor platform operations, system health, and administrative functions
           </p>
         </div>
@@ -240,7 +240,7 @@ export default function SuperAdminDashboard() {
                       </span>
                     </div>
                   </div>
-                  <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                  <div className="bg-card/20 p-4 rounded-full backdrop-blur-sm">
                     <Icon className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -415,7 +415,7 @@ export default function SuperAdminDashboard() {
                         <Icon className="h-4 w-4" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{alert.title}</p>
+                        <p className="text-sm font-medium text-foreground">{alert.title}</p>
                         <p className="text-xs text-gray-500">{alert.description}</p>
                         <p className="text-xs text-gray-400 mt-1">{alert.time}</p>
                       </div>
@@ -452,7 +452,7 @@ export default function SuperAdminDashboard() {
                             #{index + 1}
                           </Badge>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                           <span>{city.dealCount} deals</span>
                           <span>•</span>
                           <span>{city.userCount} users</span>
@@ -484,7 +484,7 @@ export default function SuperAdminDashboard() {
                     <div key={log.id} className="flex items-start space-x-3 p-2 border border-gray-100 rounded-lg">
                       <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{log.action}</p>
+                        <p className="text-sm font-medium text-foreground">{log.action}</p>
                         {log.details && (
                           <p className="text-xs text-gray-500 line-clamp-1">
                             {typeof log.details === 'object' ? JSON.stringify(log.details) : log.details}
@@ -500,7 +500,7 @@ export default function SuperAdminDashboard() {
               ) : (
                 <div className="text-center py-4">
                   <Server className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-600">No recent system activity</p>
+                  <p className="text-muted-foreground">No recent system activity</p>
                 </div>
               )}
             </CardContent>
@@ -593,8 +593,8 @@ export default function SuperAdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-success font-medium">System Status</p>
-                  <p className="text-2xl font-bold text-gray-900">Operational</p>
-                  <p className="text-xs text-gray-600 mt-1">All systems running normally</p>
+                  <p className="text-2xl font-bold text-foreground">Operational</p>
+                  <p className="text-xs text-muted-foreground mt-1">All systems running normally</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-success" />
               </div>
@@ -606,8 +606,8 @@ export default function SuperAdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-primary font-medium">Active Sessions</p>
-                  <p className="text-2xl font-bold text-gray-900">1,247</p>
-                  <p className="text-xs text-gray-600 mt-1">Users currently online</p>
+                  <p className="text-2xl font-bold text-foreground">1,247</p>
+                  <p className="text-xs text-muted-foreground mt-1">Users currently online</p>
                 </div>
                 <Activity className="h-8 w-8 text-primary" />
               </div>
@@ -619,10 +619,10 @@ export default function SuperAdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-warning font-medium">Pending Actions</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-foreground">
                     {(analytics?.totalDeals || 0) - (analytics?.totalDeals || 0)}
                   </p>
-                  <p className="text-xs text-gray-600 mt-1">Items requiring review</p>
+                  <p className="text-xs text-muted-foreground mt-1">Items requiring review</p>
                 </div>
                 <Clock className="h-8 w-8 text-warning" />
               </div>

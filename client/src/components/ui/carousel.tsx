@@ -66,9 +66,9 @@ export default function Carousel({ slides, autoPlay = true, interval = 4000, cla
               alt={slide.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3">
-              <p className="font-semibold text-gray-900">{slide.title}</p>
-              <p className="text-sm text-gray-600">{slide.subtitle}</p>
+            <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm rounded-lg p-3">
+              <p className="font-semibold text-foreground">{slide.title}</p>
+              <p className="text-sm text-muted-foreground">{slide.subtitle}</p>
             </div>
           </div>
         ))}
@@ -80,7 +80,7 @@ export default function Carousel({ slides, autoPlay = true, interval = 4000, cla
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90 h-8 w-8"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-card/80 hover:bg-card/90 h-8 w-8"
             onClick={goToPrevious}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -88,7 +88,7 @@ export default function Carousel({ slides, autoPlay = true, interval = 4000, cla
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90 h-8 w-8"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-card/80 hover:bg-card/90 h-8 w-8"
             onClick={goToNext}
           >
             <ChevronRight className="h-4 w-4" />

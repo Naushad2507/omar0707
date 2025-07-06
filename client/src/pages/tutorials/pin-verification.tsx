@@ -26,7 +26,7 @@ export default function PinVerificationTutorial() {
   const [activeTab, setActiveTab] = useState("customer");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -36,10 +36,10 @@ export default function PinVerificationTutorial() {
               <Shield className="w-12 h-12 text-blue-600" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             PIN-Based Verification Guide
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Learn how our offline-friendly PIN verification system makes deal redemption simple, secure, and works anywhere
           </p>
           
@@ -86,7 +86,7 @@ export default function PinVerificationTutorial() {
                       <Eye className="w-8 h-8 text-blue-600" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">1. Claim Deal Online</h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       Find deals you love and click "Claim Deal" to reserve them. This creates a pending claim with no savings yet - you must visit the store to complete redemption.
                     </p>
                   </div>
@@ -96,7 +96,7 @@ export default function PinVerificationTutorial() {
                       <MessageSquare className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">2. Visit Store</h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       Go to the vendor's store with your claimed deal. Make your purchase and ask them for their 4-digit verification PIN to complete the redemption.
                     </p>
                   </div>
@@ -106,7 +106,7 @@ export default function PinVerificationTutorial() {
                       <Shield className="w-8 h-8 text-purple-600" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">3. Verify PIN & Get Savings</h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       Enter the 4-digit PIN in the verification dialog to complete your redemption. Only verified purchases update your savings and dashboard statistics.
                     </p>
                   </div>
@@ -118,7 +118,7 @@ export default function PinVerificationTutorial() {
                       <Calculator className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">4. Add Bill Amount (Optional)</h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       After PIN verification, enter your actual bill amount to calculate precise savings. This provides accurate spending insights and real savings tracking.
                     </p>
                   </div>
@@ -136,42 +136,42 @@ export default function PinVerificationTutorial() {
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Secure Two-Phase Process</p>
-                        <p className="text-sm text-gray-600">Claim online first, then verify in-store for authentic savings tracking</p>
+                        <p className="text-sm text-muted-foreground">Claim online first, then verify in-store for authentic savings tracking</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Real Savings Only</p>
-                        <p className="text-sm text-gray-600">Only verified purchases contribute to your savings and statistics</p>
+                        <p className="text-sm text-muted-foreground">Only verified purchases contribute to your savings and statistics</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Anti-Fraud Protection</p>
-                        <p className="text-sm text-gray-600">PIN verification prevents fake claims and ensures authentic redemptions</p>
+                        <p className="text-sm text-muted-foreground">PIN verification prevents fake claims and ensures authentic redemptions</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Accurate Tracking</p>
-                        <p className="text-sm text-gray-600">Dashboard statistics reflect only genuine store visits and purchases</p>
+                        <p className="text-sm text-muted-foreground">Dashboard statistics reflect only genuine store visits and purchases</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Bill Amount Tracking</p>
-                        <p className="text-sm text-gray-600">Add your actual purchase amount for precise savings calculation</p>
+                        <p className="text-sm text-muted-foreground">Add your actual purchase amount for precise savings calculation</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Optional but Recommended</p>
-                        <p className="text-sm text-gray-600">You can skip bill entry or add it later for convenience</p>
+                        <p className="text-sm text-muted-foreground">You can skip bill entry or add it later for convenience</p>
                       </div>
                     </div>
                   </div>
@@ -195,7 +195,7 @@ export default function PinVerificationTutorial() {
                       <Lock className="w-8 h-8 text-green-600" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">1. Set Your PIN</h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       When creating a deal, set a unique 4-digit PIN. Make it memorable but secure.
                     </p>
                   </div>
@@ -205,7 +205,7 @@ export default function PinVerificationTutorial() {
                       <Users className="w-8 h-8 text-blue-600" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">2. Share with Customers</h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       When customers visit your store for deals, provide them with your verification PIN.
                     </p>
                   </div>
@@ -215,7 +215,7 @@ export default function PinVerificationTutorial() {
                       <CheckCircle className="w-8 h-8 text-purple-600" />
                     </div>
                     <h3 className="font-semibold text-lg mb-2">3. Track Redemptions</h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       Monitor deal performance and redemptions in your vendor dashboard automatically.
                     </p>
                   </div>
@@ -233,28 +233,28 @@ export default function PinVerificationTutorial() {
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Unique PINs</p>
-                        <p className="text-sm text-gray-600">Use different PINs for different deals to track performance</p>
+                        <p className="text-sm text-muted-foreground">Use different PINs for different deals to track performance</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Train Your Staff</p>
-                        <p className="text-sm text-gray-600">Ensure all staff know the current deal PINs</p>
+                        <p className="text-sm text-muted-foreground">Ensure all staff know the current deal PINs</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">No Internet Required</p>
-                        <p className="text-sm text-gray-600">PIN verification works offline, perfect for all store environments</p>
+                        <p className="text-sm text-muted-foreground">PIN verification works offline, perfect for all store environments</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
                       <div>
                         <p className="font-medium">Instant Analytics</p>
-                        <p className="text-sm text-gray-600">Real-time tracking of deal redemptions and customer engagement</p>
+                        <p className="text-sm text-muted-foreground">Real-time tracking of deal redemptions and customer engagement</p>
                       </div>
                     </div>
                   </div>
@@ -308,24 +308,24 @@ export default function PinVerificationTutorial() {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-semibold mb-2">What if I forget my PIN?</h4>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Vendors can view their deal PINs in the vendor dashboard. Customers can ask the vendor for the PIN at the store.
                 </p>
                 
                 <h4 className="font-semibold mb-2">Does this work without internet?</h4>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Yes! PIN verification is designed to work offline. Customers can enter the PIN even without internet connection, and it will sync when connection is restored.
                 </p>
               </div>
               
               <div>
                 <h4 className="font-semibold mb-2">Can I change my PIN after creating a deal?</h4>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Currently, PINs are set when creating deals and cannot be changed. You can create a new deal with a different PIN if needed.
                 </p>
                 
                 <h4 className="font-semibold mb-2">Is my PIN secure?</h4>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Yes, PINs are encrypted and only known to the vendor. The system verifies the PIN without exposing it to customers in the interface.
                 </p>
               </div>

@@ -99,7 +99,7 @@ export default function PinTracker({ deals }: PinTrackerProps) {
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
           <div className="flex-1">
-            <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-1">
+            <h4 className="font-semibold text-sm text-foreground dark:text-gray-100 mb-1">
               {deal.title}
             </h4>
             <div className="flex items-center gap-2 text-xs text-gray-500">

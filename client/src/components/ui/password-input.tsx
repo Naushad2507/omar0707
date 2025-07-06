@@ -119,7 +119,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         {showStrengthIndicator && props.value && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Password strength:</span>
+              <span className="text-sm text-muted-foreground">Password strength:</span>
               <span className={cn("text-sm font-medium", strength.color)}>
                 {strength.label}
               </span>
@@ -150,7 +150,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         {/* Password Requirements */}
         {showRequirements && props.value && (
           <div className="space-y-1">
-            <p className="text-sm text-gray-600 font-medium">Password must contain:</p>
+            <p className="text-sm text-muted-foreground font-medium">Password must contain:</p>
             <div className="space-y-1">
               {Object.entries({
                 length: "At least 8 characters",

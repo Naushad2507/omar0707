@@ -154,7 +154,7 @@ export default function Signup() {
           <Link to="/">
             <h1 className="text-2xl sm:text-3xl font-bold text-primary">Instoredealz</h1>
           </Link>
-          <p className="text-sm sm:text-base text-gray-600 mt-2 px-4">Join India's fastest-growing deals platform</p>
+          <p className="text-sm sm:text-base text-muted-foreground mt-2 px-4">Join India's fastest-growing deals platform</p>
         </div>
 
         <Card>
@@ -464,7 +464,7 @@ export default function Signup() {
               </Button>
 
               <div className="text-center space-y-2">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
                   <Link to="/login" className="text-primary hover:underline">
                     Sign in

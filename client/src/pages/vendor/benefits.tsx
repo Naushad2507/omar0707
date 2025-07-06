@@ -91,7 +91,7 @@ export default function VendorBenefits() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Section */}
@@ -113,7 +113,7 @@ export default function VendorBenefits() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-green-700">
+                <Button size="lg" variant="outline" className="text-white border-white hover:bg-card hover:text-green-700">
                   Contact Sales
                 </Button>
               </div>
@@ -123,23 +123,23 @@ export default function VendorBenefits() {
               </div>
             </div>
             <div className="hidden lg:block">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
-                <div className="bg-white rounded-lg p-6 shadow-2xl">
+              <div className="bg-card/10 backdrop-blur-sm rounded-2xl p-8">
+                <div className="bg-card rounded-lg p-6 shadow-2xl">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-gray-800">Store Analytics</h3>
                     <Badge variant="secondary">Live</Badge>
                   </div>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Today's Visitors</span>
+                      <span className="text-muted-foreground">Today's Visitors</span>
                       <span className="font-bold text-green-600">+127</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Deal Claims</span>
+                      <span className="text-muted-foreground">Deal Claims</span>
                       <span className="font-bold text-blue-600">23</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Revenue</span>
+                      <span className="text-muted-foreground">Revenue</span>
                       <span className="font-bold text-purple-600">₹12,450</span>
                     </div>
                   </div>
@@ -151,15 +151,15 @@ export default function VendorBenefits() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+                <div className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
                   {stat.value}
                 </div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -170,8 +170,8 @@ export default function VendorBenefits() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Vendor Benefits</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Vendor Benefits</h2>
+            <p className="text-xl text-muted-foreground">
               Everything you need to grow your business and attract more customers
             </p>
           </div>
@@ -185,10 +185,10 @@ export default function VendorBenefits() {
                     <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-6">
                       <Icon className="h-6 w-6 text-green-600" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                    <h3 className="text-xl font-semibold text-foreground mb-3">
                       {benefit.title}
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       {benefit.description}
                     </p>
                     <p className="text-sm text-gray-500">
@@ -203,11 +203,11 @@ export default function VendorBenefits() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-foreground mb-4">How It Works</h2>
+            <p className="text-xl text-muted-foreground">
               Get started in 4 simple steps
             </p>
           </div>
@@ -218,10 +218,10 @@ export default function VendorBenefits() {
                 <div className="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6">
                   {step.step}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-foreground mb-3">
                   {step.title}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   {step.description}
                 </p>
               </div>
@@ -235,36 +235,36 @@ export default function VendorBenefits() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-foreground mb-6">
                 Why Choose InstoreDealz?
               </h2>
               <div className="space-y-4">
                 <div className="flex items-start">
                   <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">No Setup Fees</h4>
-                    <p className="text-gray-600">Get started completely free with no hidden charges</p>
+                    <h4 className="font-semibold text-foreground">No Setup Fees</h4>
+                    <p className="text-muted-foreground">Get started completely free with no hidden charges</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Real-time Analytics</h4>
-                    <p className="text-gray-600">Track performance and customer engagement instantly</p>
+                    <h4 className="font-semibold text-foreground">Real-time Analytics</h4>
+                    <p className="text-muted-foreground">Track performance and customer engagement instantly</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">24/7 Support</h4>
-                    <p className="text-gray-600">Get help whenever you need it from our dedicated team</p>
+                    <h4 className="font-semibold text-foreground">24/7 Support</h4>
+                    <p className="text-muted-foreground">Get help whenever you need it from our dedicated team</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-6 w-6 text-green-600 mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Easy Integration</h4>
-                    <p className="text-gray-600">Simple setup that works with your existing systems</p>
+                    <h4 className="font-semibold text-foreground">Easy Integration</h4>
+                    <p className="text-muted-foreground">Simple setup that works with your existing systems</p>
                   </div>
                 </div>
               </div>
@@ -272,10 +272,10 @@ export default function VendorBenefits() {
             <div className="bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl p-8">
               <div className="text-center">
                 <Star className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-foreground mb-2">
                   Trusted by 1000+ Vendors
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   Join successful businesses already growing with InstoreDealz
                 </p>
                 <div className="flex items-center justify-center space-x-1 mb-4">
@@ -306,7 +306,7 @@ export default function VendorBenefits() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-green-700">
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-card hover:text-green-700">
               Schedule Demo
             </Button>
           </div>

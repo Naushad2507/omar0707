@@ -114,7 +114,7 @@ export default function DealDistribution() {
 
   if (user?.role !== "admin" && user?.role !== "superadmin") {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <Alert>
@@ -130,14 +130,14 @@ export default function DealDistribution() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Deal Distribution by Category</h1>
-          <p className="text-gray-600">Manage and monitor deal distribution across different categories for testing purposes.</p>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Deal Distribution by Category</h1>
+          <p className="text-muted-foreground">Manage and monitor deal distribution across different categories for testing purposes.</p>
         </div>
 
         {/* Summary Cards */}
@@ -147,8 +147,8 @@ export default function DealDistribution() {
               <div className="flex items-center">
                 <Package className="h-8 w-8 text-primary mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Deals</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">Total Deals</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {isLoading ? "..." : getTotalDeals()}
                   </p>
                 </div>
@@ -161,8 +161,8 @@ export default function DealDistribution() {
               <div className="flex items-center">
                 <BarChart3 className="h-8 w-8 text-green-600 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Categories</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">Categories</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {isLoading ? "..." : Object.keys(dealDistribution || {}).length}
                   </p>
                 </div>
@@ -175,8 +175,8 @@ export default function DealDistribution() {
               <div className="flex items-center">
                 <TrendingUp className="h-8 w-8 text-blue-600 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg per Category</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-medium text-muted-foreground">Avg per Category</p>
+                  <p className="text-2xl font-bold text-foreground">
                     {isLoading ? "..." : Math.round(getTotalDeals() / Math.max(Object.keys(dealDistribution || {}).length, 1))}
                   </p>
                 </div>
@@ -214,7 +214,7 @@ export default function DealDistribution() {
                           ></div>
                         </div>
                       </div>
-                      <span className="text-lg font-semibold text-gray-900 w-16 text-right">
+                      <span className="text-lg font-semibold text-foreground w-16 text-right">
                         {count}
                       </span>
                     </div>

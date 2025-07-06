@@ -159,15 +159,15 @@ export default function VendorDealsEnhanced() {
   const selectedAvailability = form.watch("dealAvailability");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Manage Deals</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-foreground">Manage Deals</h1>
+            <p className="text-muted-foreground mt-1">
               Create and manage your business deals and offers
             </p>
           </div>
@@ -209,7 +209,7 @@ export default function VendorDealsEnhanced() {
                     
                     {/* Left Column - Deal Information */}
                     <div className="border rounded-lg p-3 sm:p-4">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                      <h3 className="text-sm font-semibold text-foreground mb-1 flex items-center">
                         <FileText className="h-4 w-4 mr-1" />
                         Deal Information
                       </h3>
@@ -334,7 +334,7 @@ export default function VendorDealsEnhanced() {
                     
                     {/* Right Column - Deal Availability */}
                     <div className="border rounded-lg p-3 sm:p-4">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                      <h3 className="text-sm font-semibold text-foreground mb-1 flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
                         Deal Availability
                       </h3>
@@ -437,7 +437,7 @@ export default function VendorDealsEnhanced() {
                     
                     {/* Right Column - Validity & Terms */}
                     <div className="border rounded-lg p-3 sm:p-4">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-1 flex items-center">
+                      <h3 className="text-sm font-semibold text-foreground mb-1 flex items-center">
                         <Clock className="h-4 w-4 mr-1" />
                         Validity & Terms
                       </h3>
@@ -516,7 +516,7 @@ export default function VendorDealsEnhanced() {
                     <FormMessage />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4 pt-4 border-t sticky bottom-0 bg-white">
+                  <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4 pt-4 border-t sticky bottom-0 bg-card">
                     <Button
                       type="button"
                       variant="outline"
@@ -552,8 +552,8 @@ export default function VendorDealsEnhanced() {
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-16">
                   <Target className="h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No deals yet</h3>
-                  <p className="text-gray-600 text-center max-w-md mb-6">
+                  <h3 className="text-lg font-medium text-foreground mb-2">No deals yet</h3>
+                  <p className="text-muted-foreground text-center max-w-md mb-6">
                     Start creating deals to attract customers and grow your business. Your deals will be reviewed before going live.
                   </p>
                   <Button onClick={() => setIsCreateOpen(true)}>
@@ -585,11 +585,11 @@ export default function VendorDealsEnhanced() {
                         </span>
                       </div>
                       
-                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
                         {deal.title}
                       </h3>
                       
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                         {deal.description}
                       </p>
                       

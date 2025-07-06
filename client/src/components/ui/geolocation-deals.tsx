@@ -221,8 +221,8 @@ export default function GeolocationDeals({
             <Crosshair className="h-8 w-8 text-blue-600" />
           </div>
           <div>
-            <h3 className="font-medium text-gray-900 mb-2">Find Deals Near You</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <h3 className="font-medium text-foreground mb-2">Find Deals Near You</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               Get personalized deals based on your location with distance and direction hints.
             </p>
           </div>
@@ -252,8 +252,8 @@ export default function GeolocationDeals({
             <AlertTriangle className="h-8 w-8 text-red-600" />
           </div>
           <div>
-            <h3 className="font-medium text-gray-900 mb-2">Location Error</h3>
-            <p className="text-sm text-gray-600 mb-4">{locationError}</p>
+            <h3 className="font-medium text-foreground mb-2">Location Error</h3>
+            <p className="text-sm text-muted-foreground mb-4">{locationError}</p>
           </div>
           <Button onClick={getCurrentLocation} variant="outline">
             <RefreshCw className="h-4 w-4 mr-2" />
@@ -309,8 +309,8 @@ export default function GeolocationDeals({
             <MapPin className="h-8 w-8 text-gray-400" />
           </div>
           <div>
-            <h3 className="font-medium text-gray-900 mb-2">No Deals Found Nearby</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <h3 className="font-medium text-foreground mb-2">No Deals Found Nearby</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               No deals found within {maxDistance}km of your location. Try increasing the search radius or check back later.
             </p>
           </div>
@@ -334,7 +334,7 @@ export default function GeolocationDeals({
               {nearbyDeals.length} found
             </Badge>
           </CardTitle>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Within {maxDistance}km • Accuracy: {userLocation?.accuracy ? `±${Math.round(userLocation.accuracy)}m` : 'Unknown'}
           </p>
         </div>
@@ -385,7 +385,7 @@ export default function GeolocationDeals({
               {/* Location hint */}
               {deal.locationHint && (
                 <div className="absolute bottom-2 left-2 right-2">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-md px-2 py-1 text-xs text-gray-700 border">
+                  <div className="bg-card/95 backdrop-blur-sm rounded-md px-2 py-1 text-xs text-gray-700 border">
                     <span className="font-medium">📍</span> {deal.locationHint}
                   </div>
                 </div>

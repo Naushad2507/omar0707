@@ -158,16 +158,16 @@ export default function VendorRegisterEnhanced() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
             Become a Vendor Partner
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Join our growing network of businesses and start offering exclusive deals to thousands of customers across India.
           </p>
         </div>
@@ -179,8 +179,8 @@ export default function VendorRegisterEnhanced() {
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Building className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Grow Your Business</h3>
-              <p className="text-sm text-gray-600">Reach new customers and increase your sales with our platform</p>
+              <h3 className="font-semibold text-foreground mb-2">Grow Your Business</h3>
+              <p className="text-sm text-muted-foreground">Reach new customers and increase your sales with our platform</p>
             </CardContent>
           </Card>
 
@@ -189,8 +189,8 @@ export default function VendorRegisterEnhanced() {
               <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="h-6 w-6 text-success" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Easy Setup</h3>
-              <p className="text-sm text-gray-600">Quick registration process with comprehensive business details</p>
+              <h3 className="font-semibold text-foreground mb-2">Easy Setup</h3>
+              <p className="text-sm text-muted-foreground">Quick registration process with comprehensive business details</p>
             </CardContent>
           </Card>
 
@@ -199,8 +199,8 @@ export default function VendorRegisterEnhanced() {
               <div className="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <CreditCard className="h-6 w-6 text-warning" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">No Hidden Fees</h3>
-              <p className="text-sm text-gray-600">Transparent pricing with no setup or monthly fees</p>
+              <h3 className="font-semibold text-foreground mb-2">No Hidden Fees</h3>
+              <p className="text-sm text-muted-foreground">Transparent pricing with no setup or monthly fees</p>
             </CardContent>
           </Card>
         </div>
@@ -219,7 +219,7 @@ export default function VendorRegisterEnhanced() {
                 
                 {/* Business Information Section */}
                 <div className="border rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <Building className="h-5 w-5 mr-2" />
                     Business Information
                   </h3>
@@ -343,7 +343,7 @@ export default function VendorRegisterEnhanced() {
 
                 {/* Contact Person Information Section */}
                 <div className="border rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <User className="h-5 w-5 mr-2" />
                     Contact Person Information
                   </h3>
@@ -425,7 +425,7 @@ export default function VendorRegisterEnhanced() {
 
                 {/* Tax Information Section */}
                 <div className="border rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <FileText className="h-5 w-5 mr-2" />
                     Tax Information
                   </h3>
@@ -517,7 +517,7 @@ export default function VendorRegisterEnhanced() {
                                 <div className="mt-4">
                                   <Label
                                     htmlFor="pan-upload"
-                                    className="cursor-pointer rounded-md bg-white font-medium text-primary hover:text-primary/80"
+                                    className="cursor-pointer rounded-md bg-card font-medium text-primary hover:text-primary/80"
                                   >
                                     <span>Upload PAN Card</span>
                                     <Input
@@ -554,7 +554,7 @@ export default function VendorRegisterEnhanced() {
 
                 {/* Account Setup Section */}
                 <div className="border rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <Lock className="h-5 w-5 mr-2" />
                     Account Setup
                   </h3>
@@ -598,7 +598,7 @@ export default function VendorRegisterEnhanced() {
 
                 {/* Business Logo Upload Section */}
                 <div className="border rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <Image className="h-5 w-5 mr-2" />
                     Business Logo (Optional)
                   </h3>
@@ -702,8 +702,8 @@ export default function VendorRegisterEnhanced() {
           <CardContent className="space-y-4">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Business Documents:</h4>
-                <ul className="space-y-1 text-sm text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">Business Documents:</h4>
+                <ul className="space-y-1 text-sm text-muted-foreground">
                   <li>• Valid PAN Card number</li>
                   <li>• GST Certificate (if applicable)</li>
                   <li>• Business registration proof</li>
@@ -711,8 +711,8 @@ export default function VendorRegisterEnhanced() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Contact Information:</h4>
-                <ul className="space-y-1 text-sm text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">Contact Information:</h4>
+                <ul className="space-y-1 text-sm text-muted-foreground">
                   <li>• Active business phone number</li>
                   <li>• Valid email address</li>
                   <li>• Complete business address</li>

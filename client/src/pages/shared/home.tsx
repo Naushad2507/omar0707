@@ -164,7 +164,7 @@ export default function Home() {
   const featuredDeals = deals?.slice(6, 14) || [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar selectedCity={selectedCity} onCityChange={setSelectedCity} />
       
       {/* Hero Section */}
@@ -177,10 +177,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-in">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                 Discover <span className="text-primary">Deals</span> Near You
               </h1>
-              <p className="text-xl text-gray-600 mb-8">
+              <p className="text-xl text-muted-foreground mb-8">
                 Join thousands of savvy shoppers and local businesses on India's fastest-growing deals platform.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -191,7 +191,7 @@ export default function Home() {
                   <Link to="/vendor/benefits">Join as Vendor</Link>
                 </Button>
               </div>
-              <div className="mt-8 flex items-center space-x-8 text-sm text-gray-600">
+              <div className="mt-8 flex items-center space-x-8 text-sm text-muted-foreground">
                 <div className="flex items-center">
                   <Users className="h-5 w-5 text-success mr-2" />
                   <span>10k+ Happy Customers</span>
@@ -220,11 +220,11 @@ export default function Home() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Shop by Category</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Discover amazing deals across all your favorite categories
             </p>
           </div>
@@ -282,8 +282,8 @@ export default function Home() {
                                   <IconComponent className="w-8 h-8 text-white" />
                                 </div>
                               </div>
-                              <h3 className="font-bold text-gray-900 mb-2 text-sm">{category.name}</h3>
-                              <p className="text-xs text-gray-600 mb-3">
+                              <h3 className="font-bold text-foreground mb-2 text-sm">{category.name}</h3>
+                              <p className="text-xs text-muted-foreground mb-3">
                                 {category.dealCount > 0 ? `${category.dealCount} deals available` : 'Coming soon'}
                               </p>
                               <Badge 
@@ -339,8 +339,8 @@ export default function Home() {
                                   <IconComponent className="w-8 h-8 text-white" />
                                 </div>
                               </div>
-                              <h3 className="font-bold text-gray-900 mb-2 text-sm">{category.name}</h3>
-                              <p className="text-xs text-gray-600 mb-3">
+                              <h3 className="font-bold text-foreground mb-2 text-sm">{category.name}</h3>
+                              <p className="text-xs text-muted-foreground mb-3">
                                 {category.dealCount > 0 ? `${category.dealCount} deals available` : 'Coming soon'}
                               </p>
                               <Badge 
@@ -367,7 +367,7 @@ export default function Home() {
                 >
                   <TrendingUp className="w-5 h-5 mr-2" />
                   Browse All Categories
-                  <Badge variant="secondary" className="ml-2 bg-white/20 text-white border-white/30">
+                  <Badge variant="secondary" className="ml-2 bg-card/20 text-white border-white/30">
                     {categories.reduce((total: number, cat: any) => total + (cat.dealCount || 0), 0)} deals
                   </Badge>
                 </Button>
@@ -393,8 +393,8 @@ export default function Home() {
       <section className="py-16 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Deals</h2>
-            <p className="text-gray-600">Handpicked premium offers just for you</p>
+            <h2 className="text-3xl font-bold text-foreground mb-4">Featured Deals</h2>
+            <p className="text-muted-foreground">Handpicked premium offers just for you</p>
           </div>
           
           <DealCarousel 
@@ -414,11 +414,11 @@ export default function Home() {
       </section>
 
       {/* Trending Deals Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Trending Deals</h2>
-            <p className="text-gray-600">Hot deals that everyone's talking about</p>
+            <h2 className="text-3xl font-bold text-foreground mb-4">Trending Deals</h2>
+            <p className="text-muted-foreground">Hot deals that everyone's talking about</p>
           </div>
           
           <DealCarousel 
@@ -442,8 +442,8 @@ export default function Home() {
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Most Claimed Deals</h2>
-              <p className="text-gray-600">Popular deals that everyone loves</p>
+              <h2 className="text-3xl font-bold text-foreground mb-4">Most Claimed Deals</h2>
+              <p className="text-muted-foreground">Popular deals that everyone loves</p>
             </div>
             
             <DealCarousel 
@@ -472,10 +472,10 @@ export default function Home() {
       )}
 
       {/* CTA Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Start Saving?</h2>
-          <p className="text-xl text-gray-600 mb-8">Join thousands of users who save money every day</p>
+          <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Start Saving?</h2>
+          <p className="text-xl text-muted-foreground mb-8">Join thousands of users who save money every day</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
               <Link to="/signup">Get Started Free</Link>

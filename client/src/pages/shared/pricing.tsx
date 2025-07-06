@@ -79,16 +79,16 @@ export default function Pricing() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Header */}
       <section className="bg-gradient-to-br from-primary/5 to-royal/5 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             Choose Your Perfect Plan
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Unlock exclusive deals and save more with our membership plans. 
             Start with our free plan and upgrade anytime.
           </p>
@@ -137,7 +137,7 @@ export default function Pricing() {
                             {plan.originalPrice}
                           </span>
                         )}
-                        <span className="text-4xl font-bold text-gray-900">
+                        <span className="text-4xl font-bold text-foreground">
                           {plan.price}
                         </span>
                         {plan.period && (
@@ -187,45 +187,45 @@ export default function Pricing() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl font-bold text-center text-foreground mb-12">
             Frequently Asked Questions
           </h2>
           
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 What's included in the free promotional plan?
               </h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 New users who sign up between August 15, 2025, and August 14, 2026, get a full year of Premium features absolutely free. This includes exclusive premium deals, early access to sales, digital membership card, and priority customer support.
               </p>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 Can I upgrade or downgrade my plan anytime?
               </h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Yes! You can upgrade your plan at any time. When you upgrade, you'll immediately get access to all the new features. Downgrades take effect at the end of your current billing cycle.
               </p>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 What happens after my promotional period ends?
               </h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 After your free Premium year ends on August 14, 2026, you'll be prompted to choose a paid plan. You can select any plan that fits your needs, or continue with our free Basic plan.
               </p>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 Are there any hidden fees?
               </h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 No hidden fees! The prices you see are exactly what you'll pay. All plans include access to our mobile app, customer support, and all standard features listed.
               </p>
             </div>
@@ -236,10 +236,10 @@ export default function Pricing() {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-br from-primary/5 to-royal/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             Ready to Start Saving?
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-xl text-muted-foreground mb-8">
             Join thousands of users who save money every day with Instoredealz
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

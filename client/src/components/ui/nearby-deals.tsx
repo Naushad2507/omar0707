@@ -124,7 +124,7 @@ export default function NearbyDealsSection({ dealId }: NearbyDealsSectionProps) 
               {/* Deal Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between">
-                  <h4 className="font-medium text-sm text-gray-900 line-clamp-1">
+                  <h4 className="font-medium text-sm text-foreground line-clamp-1">
                     {deal.title}
                   </h4>
                   <div className="flex items-center text-xs text-gray-500 ml-2">
@@ -133,7 +133,7 @@ export default function NearbyDealsSection({ dealId }: NearbyDealsSectionProps) 
                   </div>
                 </div>
                 
-                <p className="text-xs text-gray-600 line-clamp-1 mt-1">
+                <p className="text-xs text-muted-foreground line-clamp-1 mt-1">
                   {deal.description}
                 </p>
 

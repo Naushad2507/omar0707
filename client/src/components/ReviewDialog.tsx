@@ -59,7 +59,7 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, onRatingChange, label, 
             />
           </button>
         ))}
-        <span className="ml-2 text-sm text-gray-600">
+        <span className="ml-2 text-sm text-muted-foreground">
           {rating > 0 ? `${rating}/5` : 'No rating'}
         </span>
       </div>
@@ -199,7 +199,7 @@ export default function ReviewDialog({
                 ? 'bg-blue-600 text-white'
                 : step < currentStep
                 ? 'bg-green-600 text-white'
-                : 'bg-gray-200 text-gray-600'
+                : 'bg-gray-200 text-muted-foreground'
             }`}
           >
             {step < currentStep ? <CheckCircle className="w-4 h-4" /> : step}
@@ -223,7 +223,7 @@ export default function ReviewDialog({
           <Star className="h-5 w-5 mr-2 text-blue-600" />
           Rate the Deal Quality
         </CardTitle>
-        <p className="text-sm text-gray-600">How was your experience with "{dealTitle}"?</p>
+        <p className="text-sm text-muted-foreground">How was your experience with "{dealTitle}"?</p>
       </CardHeader>
       <CardContent className="space-y-6">
         <StarRating
@@ -252,7 +252,7 @@ export default function ReviewDialog({
           <Heart className="h-5 w-5 mr-2 text-red-600" />
           Rate the Vendor Service
         </CardTitle>
-        <p className="text-sm text-gray-600">How was your experience with {vendorName}?</p>
+        <p className="text-sm text-muted-foreground">How was your experience with {vendorName}?</p>
       </CardHeader>
       <CardContent className="space-y-6">
         <StarRating

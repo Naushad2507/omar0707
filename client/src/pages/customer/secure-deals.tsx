@@ -113,12 +113,12 @@ export default function SecureDeals() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading secure deals...</p>
+            <p className="text-muted-foreground">Loading secure deals...</p>
           </div>
         </div>
         <Footer />
@@ -127,7 +127,7 @@ export default function SecureDeals() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -135,10 +135,10 @@ export default function SecureDeals() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-foreground mb-2">
                 Secure Deals
               </h1>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Discover exclusive deals with tier-based discount code access
               </p>
             </div>
@@ -153,7 +153,7 @@ export default function SecureDeals() {
                     </div>
                     <div>
                       <p className="font-semibold">{membershipInfo.name} Member</p>
-                      <p className="text-sm text-gray-600">@{user.name}</p>
+                      <p className="text-sm text-muted-foreground">@{user.name}</p>
                     </div>
                   </div>
                 </CardHeader>
@@ -162,7 +162,7 @@ export default function SecureDeals() {
                     {membershipInfo.perks.map((perk, index) => (
                       <div key={index} className="flex items-center gap-2 text-sm">
                         <Shield className="w-3 h-3 text-green-500" />
-                        <span className="text-gray-600">{perk}</span>
+                        <span className="text-muted-foreground">{perk}</span>
                       </div>
                     ))}
                   </div>
@@ -207,7 +207,7 @@ export default function SecureDeals() {
               </Button>
             </div>
 
-            <div className="ml-auto flex items-center gap-2 text-sm text-gray-600">
+            <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
               <TrendingUp className="w-4 h-4" />
               <span>{filteredDeals.length} deals available</span>
             </div>
@@ -239,7 +239,7 @@ export default function SecureDeals() {
           <Card className="text-center py-12">
             <CardContent>
               <ShoppingBag className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              <h3 className="text-xl font-semibold text-muted-foreground mb-2">
                 No Deals Found
               </h3>
               <p className="text-gray-500">

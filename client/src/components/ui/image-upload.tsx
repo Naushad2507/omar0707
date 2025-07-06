@@ -212,7 +212,7 @@ export default function ImageUpload({
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-sm text-muted-foreground text-center">
                   Image uploaded successfully
                 </p>
               </div>

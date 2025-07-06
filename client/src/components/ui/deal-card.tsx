@@ -198,7 +198,7 @@ export default function DealCard({
         <div className={`absolute top-2 right-2 rounded-full px-2 py-1 text-xs font-semibold transition-all duration-300 ${
           isFlashing 
             ? 'bg-red-500 text-white shadow-lg scale-110' 
-            : 'bg-white/90 backdrop-blur-sm text-gray-900'
+            : 'bg-card/90 backdrop-blur-sm text-foreground'
         }`}>
           {discountPercentage}% OFF
         </div>
@@ -209,11 +209,11 @@ export default function DealCard({
             e.stopPropagation();
             onToggleFavorite?.();
           }}
-          className="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-200"
+          className="absolute top-2 left-2 p-1.5 rounded-full bg-card/80 backdrop-blur-sm hover:bg-card transition-all duration-200"
         >
           <Heart 
             className={`h-4 w-4 transition-colors duration-200 ${
-              isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'
+              isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground hover:text-red-500'
             }`} 
           />
         </button>
@@ -230,7 +230,7 @@ export default function DealCard({
           {/* Title and Description */}
           <div>
             <div className="flex items-start justify-between gap-2">
-              <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">{title}</h3>
+              <h3 className="font-semibold text-foreground line-clamp-2 flex-1">{title}</h3>
               {requiredMembership !== 'basic' && (
                 <Badge 
                   className={`text-xs ${
@@ -244,7 +244,7 @@ export default function DealCard({
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-gray-600 line-clamp-2 mt-1">{description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{description}</p>
           </div>
 
           {/* Vendor Info */}
@@ -346,13 +346,13 @@ export default function DealCard({
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Deal Details</h3>
+                    <h3 className="font-semibold text-foreground mb-2">Deal Details</h3>
                     <p className="text-gray-700">{description}</p>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Category:</span>
+                      <span className="text-muted-foreground">Category:</span>
                       <Badge className={`${categoryColors[category as keyof typeof categoryColors]} border-0`}>
                         {category}
                       </Badge>
@@ -360,7 +360,7 @@ export default function DealCard({
                     
                     {subcategory && formatSubcategory(subcategory) && (
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Service Type:</span>
+                        <span className="text-muted-foreground">Service Type:</span>
                         <Badge className="bg-green-100 text-green-800 border-0">
                           {formatSubcategory(subcategory)}
                         </Badge>
@@ -368,19 +368,19 @@ export default function DealCard({
                     )}
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Discount:</span>
+                      <span className="text-muted-foreground">Discount:</span>
                       <span className="font-semibold text-red-600">{discountPercentage}% OFF on total bill</span>
                     </div>
 
 
 
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Valid Until:</span>
+                      <span className="text-muted-foreground">Valid Until:</span>
                       <span className="font-medium">{formatDate(validUntil)}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Membership:</span>
+                      <span className="text-muted-foreground">Membership:</span>
                       <Badge className={`${membershipColors[requiredMembership as keyof typeof membershipColors]} text-xs`}>
                         {requiredMembership ? 
                           requiredMembership.charAt(0).toUpperCase() + requiredMembership.slice(1) : 
@@ -395,13 +395,13 @@ export default function DealCard({
                   {/* Vendor Information */}
                   {vendor && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">Vendor Details</h3>
+                      <h3 className="font-semibold text-foreground mb-2">Vendor Details</h3>
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
                           <MapPin className="h-4 w-4 text-gray-500" />
                           <span className="font-medium">{vendor.businessName}</span>
                         </div>
-                        <div className="text-sm text-gray-600">{vendor.city}, {vendor.state}</div>
+                        <div className="text-sm text-muted-foreground">{vendor.city}, {vendor.state}</div>
                         {vendor.rating && (
                           <div className="flex items-center space-x-1">
                             <Star className="h-4 w-4 text-yellow-400 fill-current" />
@@ -409,7 +409,7 @@ export default function DealCard({
                           </div>
                         )}
                         {vendor.description && (
-                          <p className="text-sm text-gray-600 mt-2">{vendor.description}</p>
+                          <p className="text-sm text-muted-foreground mt-2">{vendor.description}</p>
                         )}
                       </div>
                     </div>
@@ -426,7 +426,7 @@ export default function DealCard({
               {/* Terms and Conditions */}
               {terms && (
                 <div className="space-y-2">
-                  <h3 className="font-semibold text-gray-900 flex items-center">
+                  <h3 className="font-semibold text-foreground flex items-center">
                     <Info className="h-5 w-5 mr-2" />
                     Terms & Conditions
                   </h3>
@@ -438,7 +438,7 @@ export default function DealCard({
 
               {/* Nearby Deals Section */}
               <div className="space-y-4">
-                <h3 className="font-semibold text-gray-900 flex items-center">
+                <h3 className="font-semibold text-foreground flex items-center">
                   <MapPin className="h-5 w-5 mr-2" />
                   Nearby Similar Deals
                 </h3>
@@ -475,7 +475,7 @@ export default function DealCard({
                     onToggleFavorite?.();
                   }}
                 >
-                  <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                  <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
                 </Button>
               </div>
             </div>

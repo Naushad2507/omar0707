@@ -91,7 +91,7 @@ export default function VendorAnalytics() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">Loading analytics...</div>
@@ -101,7 +101,7 @@ export default function VendorAnalytics() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -116,8 +116,8 @@ export default function VendorAnalytics() {
                 </Link>
               </Button>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-                <p className="text-gray-600">Track your deal performance and business metrics</p>
+                <h1 className="text-3xl font-bold text-foreground">Analytics Dashboard</h1>
+                <p className="text-muted-foreground">Track your deal performance and business metrics</p>
               </div>
             </div>
             <Badge variant="secondary" className="flex items-center">
@@ -133,8 +133,8 @@ export default function VendorAnalytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Deals</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalDeals}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Deals</p>
+                  <p className="text-2xl font-bold text-foreground">{totalDeals}</p>
                 </div>
                 <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Target className="h-6 w-6 text-blue-600" />
@@ -150,8 +150,8 @@ export default function VendorAnalytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Views</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalViews.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Views</p>
+                  <p className="text-2xl font-bold text-foreground">{totalViews.toLocaleString()}</p>
                 </div>
                 <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <Eye className="h-6 w-6 text-green-600" />
@@ -165,8 +165,8 @@ export default function VendorAnalytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Claims</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalClaims}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Claims</p>
+                  <p className="text-2xl font-bold text-foreground">{totalClaims}</p>
                 </div>
                 <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <TrendingUp className="h-6 w-6 text-purple-600" />
@@ -180,8 +180,8 @@ export default function VendorAnalytics() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Est. Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">₹{totalRevenue.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Est. Revenue</p>
+                  <p className="text-2xl font-bold text-foreground">₹{totalRevenue.toLocaleString()}</p>
                 </div>
                 <div className="h-12 w-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                   <DollarSign className="h-6 w-6 text-yellow-600" />

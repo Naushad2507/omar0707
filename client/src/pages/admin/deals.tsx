@@ -165,14 +165,14 @@ export default function AdminDeals() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Deal Management</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Deal Management</h1>
+          <p className="text-muted-foreground mt-1">
             Review and approve deals submitted by vendors
           </p>
         </div>
@@ -187,7 +187,7 @@ export default function AdminDeals() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-500 text-sm">{stat.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
                     <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
@@ -252,7 +252,7 @@ export default function AdminDeals() {
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="text-gray-600 mt-2">Loading deals...</p>
+                <p className="text-muted-foreground mt-2">Loading deals...</p>
               </div>
             ) : filteredDeals.length > 0 ? (
               <div className="overflow-x-auto">
@@ -286,7 +286,7 @@ export default function AdminDeals() {
                               </div>
                             )}
                             <div>
-                              <p className="font-medium text-gray-900 line-clamp-1">{deal.title}</p>
+                              <p className="font-medium text-foreground line-clamp-1">{deal.title}</p>
                               <p className="text-xs text-gray-500 line-clamp-2">{deal.description}</p>
                             </div>
                           </div>
@@ -295,7 +295,7 @@ export default function AdminDeals() {
                           <div className="flex items-center space-x-2">
                             <Store className="h-4 w-4 text-gray-400" />
                             <div>
-                              <p className="font-medium text-gray-900">{deal.vendor?.businessName}</p>
+                              <p className="font-medium text-foreground">{deal.vendor?.businessName}</p>
                               <p className="text-xs text-gray-500">{deal.vendor?.city}</p>
                             </div>
                           </div>
@@ -316,7 +316,7 @@ export default function AdminDeals() {
                         </TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <div className="flex items-center space-x-1 text-gray-600">
+                            <div className="flex items-center space-x-1 text-muted-foreground">
                               <Calendar className="h-3 w-3" />
                               <span>{formatDate(deal.validUntil)}</span>
                             </div>
@@ -368,49 +368,49 @@ export default function AdminDeals() {
                                     {/* Deal Info */}
                                     <div className="grid md:grid-cols-2 gap-6">
                                       <div>
-                                        <h4 className="font-medium text-gray-900 mb-3">Deal Information</h4>
+                                        <h4 className="font-medium text-foreground mb-3">Deal Information</h4>
                                         <div className="space-y-2 text-sm">
                                           <div>
                                             <span className="text-gray-500">Title:</span>
-                                            <p className="text-gray-900 font-medium">{selectedDeal.title}</p>
+                                            <p className="text-foreground font-medium">{selectedDeal.title}</p>
                                           </div>
                                           <div>
                                             <span className="text-gray-500">Description:</span>
-                                            <p className="text-gray-900">{selectedDeal.description}</p>
+                                            <p className="text-foreground">{selectedDeal.description}</p>
                                           </div>
                                           <div>
                                             <span className="text-gray-500">Category:</span>
-                                            <p className="text-gray-900 capitalize">{selectedDeal.category}</p>
+                                            <p className="text-foreground capitalize">{selectedDeal.category}</p>
                                           </div>
                                           <div>
                                             <span className="text-gray-500">Discount:</span>
-                                            <p className="text-gray-900 font-bold">{selectedDeal.discountPercentage}%</p>
+                                            <p className="text-foreground font-bold">{selectedDeal.discountPercentage}%</p>
                                           </div>
                                           {selectedDeal.discountCode && (
                                             <div>
                                               <span className="text-gray-500">Promo Code:</span>
-                                              <p className="text-gray-900 font-mono">{selectedDeal.discountCode}</p>
+                                              <p className="text-foreground font-mono">{selectedDeal.discountCode}</p>
                                             </div>
                                           )}
                                         </div>
                                       </div>
                                       
                                       <div>
-                                        <h4 className="font-medium text-gray-900 mb-3">Vendor Information</h4>
+                                        <h4 className="font-medium text-foreground mb-3">Vendor Information</h4>
                                         <div className="space-y-2 text-sm">
                                           <div>
                                             <span className="text-gray-500">Business:</span>
-                                            <p className="text-gray-900 font-medium">{selectedDeal.vendor?.businessName}</p>
+                                            <p className="text-foreground font-medium">{selectedDeal.vendor?.businessName}</p>
                                           </div>
                                           <div>
                                             <span className="text-gray-500">Location:</span>
-                                            <p className="text-gray-900">{selectedDeal.vendor?.city}, {selectedDeal.vendor?.state}</p>
+                                            <p className="text-foreground">{selectedDeal.vendor?.city}, {selectedDeal.vendor?.state}</p>
                                           </div>
                                           <div>
                                             <span className="text-gray-500">Rating:</span>
                                             <div className="flex items-center">
                                               <TrendingUp className="h-4 w-4 text-yellow-400 mr-1" />
-                                              <span className="text-gray-900">{selectedDeal.vendor?.rating || "0.0"}</span>
+                                              <span className="text-foreground">{selectedDeal.vendor?.rating || "0.0"}</span>
                                             </div>
                                           </div>
                                         </div>
@@ -419,7 +419,7 @@ export default function AdminDeals() {
                                     
                                     {/* Membership Tier Management */}
                                     <div className="border-t pt-4">
-                                      <h4 className="font-medium text-gray-900 mb-3">Membership Requirements</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Membership Requirements</h4>
                                       <div className="space-y-3">
                                         <div>
                                           <label className="text-sm font-medium text-gray-700">Required Membership Tier</label>
@@ -452,7 +452,7 @@ export default function AdminDeals() {
                                     {/* Pricing */}
                                     {selectedDeal.originalPrice && selectedDeal.discountedPrice && (
                                       <div>
-                                        <h4 className="font-medium text-gray-900 mb-3">Pricing</h4>
+                                        <h4 className="font-medium text-foreground mb-3">Pricing</h4>
                                         <div className="grid grid-cols-3 gap-4 text-center">
                                           <div>
                                             <p className="text-lg font-bold text-gray-400 line-through">
@@ -478,26 +478,26 @@ export default function AdminDeals() {
                                     
                                     {/* Terms */}
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Terms & Conditions</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Terms & Conditions</h4>
                                       <div className="grid md:grid-cols-2 gap-4 text-sm">
                                         <div className="space-y-2">
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Valid Until:</span>
-                                            <span className="text-gray-900">{formatDate(selectedDeal.validUntil)}</span>
+                                            <span className="text-foreground">{formatDate(selectedDeal.validUntil)}</span>
                                           </div>
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Max Redemptions:</span>
-                                            <span className="text-gray-900">{selectedDeal.maxRedemptions || "Unlimited"}</span>
+                                            <span className="text-foreground">{selectedDeal.maxRedemptions || "Unlimited"}</span>
                                           </div>
                                         </div>
                                         <div className="space-y-2">
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Required Membership:</span>
-                                            <span className="text-gray-900 capitalize">{selectedDeal.requiredMembership}</span>
+                                            <span className="text-foreground capitalize">{selectedDeal.requiredMembership}</span>
                                           </div>
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Current Claims:</span>
-                                            <span className="text-gray-900">{selectedDeal.currentRedemptions || 0}</span>
+                                            <span className="text-foreground">{selectedDeal.currentRedemptions || 0}</span>
                                           </div>
                                         </div>
                                       </div>
@@ -526,10 +526,10 @@ export default function AdminDeals() {
             ) : (
               <div className="text-center py-12">
                 <CheckCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="text-lg font-medium text-foreground mb-2">
                   {searchQuery || categoryFilter !== "all" ? "No deals found" : "No pending deals"}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   {searchQuery || categoryFilter !== "all"
                     ? "Try adjusting your search or filters"
                     : "All deals have been reviewed"
@@ -551,8 +551,8 @@ export default function AdminDeals() {
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6 text-sm">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">✅ Approve deals that:</h4>
-                <ul className="space-y-1 text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">✅ Approve deals that:</h4>
+                <ul className="space-y-1 text-muted-foreground">
                   <li>• Have clear, accurate descriptions</li>
                   <li>• Offer genuine value to customers</li>
                   <li>• Include proper terms and conditions</li>
@@ -561,8 +561,8 @@ export default function AdminDeals() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">❌ Reject deals that:</h4>
-                <ul className="space-y-1 text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">❌ Reject deals that:</h4>
+                <ul className="space-y-1 text-muted-foreground">
                   <li>• Have misleading or false information</li>
                   <li>• Offer unrealistic discounts</li>
                   <li>• Lack proper business verification</li>

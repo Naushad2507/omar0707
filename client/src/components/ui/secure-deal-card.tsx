@@ -160,7 +160,7 @@ export default function SecureDealCard({ deal, className = "", onClaim }: Secure
             {deal.title}
           </h3>
           
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="text-sm text-muted-foreground line-clamp-2">
             {deal.description}
           </p>
 

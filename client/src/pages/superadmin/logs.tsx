@@ -134,15 +134,15 @@ export default function SystemLogs() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">System Logs</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-foreground">System Logs</h1>
+            <p className="text-muted-foreground mt-1">
               Monitor system activity and audit trails
             </p>
           </div>
@@ -169,7 +169,7 @@ export default function SystemLogs() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-500 text-sm">{stat.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
                     <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
@@ -245,7 +245,7 @@ export default function SystemLogs() {
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="text-gray-600 mt-2">Loading system logs...</p>
+                <p className="text-muted-foreground mt-2">Loading system logs...</p>
               </div>
             ) : filteredLogs.length > 0 ? (
               <div className="overflow-x-auto">
@@ -267,7 +267,7 @@ export default function SystemLogs() {
                           <div className="flex items-center space-x-3">
                             {getActionIcon(log.action)}
                             <div>
-                              <p className="font-medium text-gray-900">{log.action.replace(/_/g, ' ')}</p>
+                              <p className="font-medium text-foreground">{log.action.replace(/_/g, ' ')}</p>
                               {getActionBadge(log.action)}
                             </div>
                           </div>
@@ -275,14 +275,14 @@ export default function SystemLogs() {
                         <TableCell>
                           <div className="flex items-center space-x-2">
                             <User className="h-4 w-4 text-gray-400" />
-                            <span className="text-gray-900">
+                            <span className="text-foreground">
                               {log.userId ? `User #${log.userId}` : "System"}
                             </span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="max-w-xs">
-                            <p className="text-sm text-gray-900 line-clamp-2">
+                            <p className="text-sm text-foreground line-clamp-2">
                               {log.details ? (
                                 typeof log.details === 'object' 
                                   ? Object.entries(log.details).map(([key, value]) => 
@@ -295,14 +295,14 @@ export default function SystemLogs() {
                         <TableCell>
                           <div className="flex items-center space-x-1 text-sm">
                             <Globe className="h-3 w-3 text-gray-400" />
-                            <span className="font-mono text-gray-600">
+                            <span className="font-mono text-muted-foreground">
                               {log.ipAddress || "Unknown"}
                             </span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <p className="text-gray-900">{getTimeAgo(log.createdAt)}</p>
+                            <p className="text-foreground">{getTimeAgo(log.createdAt)}</p>
                             <p className="text-xs text-gray-500">{formatDate(log.createdAt)}</p>
                           </div>
                         </TableCell>
@@ -327,19 +327,19 @@ export default function SystemLogs() {
                                   {/* Basic Info */}
                                   <div className="grid md:grid-cols-2 gap-6">
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Event Information</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Event Information</h4>
                                       <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Action:</span>
-                                          <span className="text-gray-900 font-medium">{selectedLog.action.replace(/_/g, ' ')}</span>
+                                          <span className="text-foreground font-medium">{selectedLog.action.replace(/_/g, ' ')}</span>
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Timestamp:</span>
-                                          <span className="text-gray-900">{formatDate(selectedLog.createdAt)}</span>
+                                          <span className="text-foreground">{formatDate(selectedLog.createdAt)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">User ID:</span>
-                                          <span className="text-gray-900">{selectedLog.userId || "System"}</span>
+                                          <span className="text-foreground">{selectedLog.userId || "System"}</span>
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Type:</span>
@@ -349,16 +349,16 @@ export default function SystemLogs() {
                                     </div>
                                     
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Request Information</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Request Information</h4>
                                       <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">IP Address:</span>
-                                          <span className="text-gray-900 font-mono">{selectedLog.ipAddress || "Unknown"}</span>
+                                          <span className="text-foreground font-mono">{selectedLog.ipAddress || "Unknown"}</span>
                                         </div>
                                         {selectedLog.userAgent && (
                                           <div>
                                             <span className="text-gray-500">User Agent:</span>
-                                            <p className="text-gray-900 text-xs mt-1 break-all">
+                                            <p className="text-foreground text-xs mt-1 break-all">
                                               {selectedLog.userAgent}
                                             </p>
                                           </div>
@@ -370,7 +370,7 @@ export default function SystemLogs() {
                                   {/* Event Details */}
                                   {selectedLog.details && (
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Event Details</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Event Details</h4>
                                       <div className="bg-gray-50 rounded-lg p-4">
                                         <pre className="text-xs text-gray-800 whitespace-pre-wrap overflow-x-auto">
                                           {formatDetails(selectedLog.details)}
@@ -382,17 +382,17 @@ export default function SystemLogs() {
                                   {/* Device Info */}
                                   {selectedLog.userAgent && (
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Device Information</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Device Information</h4>
                                       <div className="flex items-center space-x-4 text-sm">
                                         <div className="flex items-center space-x-2">
                                           <Smartphone className="h-4 w-4 text-gray-400" />
-                                          <span className="text-gray-600">
+                                          <span className="text-muted-foreground">
                                             {selectedLog.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}
                                           </span>
                                         </div>
                                         <div className="flex items-center space-x-2">
                                           <Globe className="h-4 w-4 text-gray-400" />
-                                          <span className="text-gray-600">
+                                          <span className="text-muted-foreground">
                                             {selectedLog.userAgent.includes('Chrome') ? 'Chrome' :
                                              selectedLog.userAgent.includes('Firefox') ? 'Firefox' :
                                              selectedLog.userAgent.includes('Safari') ? 'Safari' : 'Unknown Browser'}
@@ -414,8 +414,8 @@ export default function SystemLogs() {
             ) : (
               <div className="text-center py-12">
                 <Server className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No logs found</h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-medium text-foreground mb-2">No logs found</h3>
+                <p className="text-muted-foreground">
                   {searchQuery || actionFilter !== "all"
                     ? "Try adjusting your search or filters"
                     : "No system activity in the selected time period"
@@ -437,8 +437,8 @@ export default function SystemLogs() {
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6 text-sm">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Retention Periods:</h4>
-                <ul className="space-y-1 text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">Retention Periods:</h4>
+                <ul className="space-y-1 text-muted-foreground">
                   <li>• Authentication logs: 90 days</li>
                   <li>• System events: 180 days</li>
                   <li>• Error logs: 365 days</li>
@@ -447,8 +447,8 @@ export default function SystemLogs() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Data Processing:</h4>
-                <ul className="space-y-1 text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">Data Processing:</h4>
+                <ul className="space-y-1 text-muted-foreground">
                   <li>• Logs are encrypted at rest</li>
                   <li>• Personal data is anonymized</li>
                   <li>• Regular automated backups</li>

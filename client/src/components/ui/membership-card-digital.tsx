@@ -162,10 +162,10 @@ export default function MembershipCardDigital({
         
         {/* Decorative Elements */}
         <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-          <div className="absolute inset-0 bg-white rounded-full transform translate-x-16 -translate-y-16"></div>
+          <div className="absolute inset-0 bg-card rounded-full transform translate-x-16 -translate-y-16"></div>
         </div>
         <div className="absolute bottom-0 left-0 w-24 h-24 opacity-5">
-          <div className="absolute inset-0 bg-white rounded-full transform -translate-x-12 translate-y-12"></div>
+          <div className="absolute inset-0 bg-card rounded-full transform -translate-x-12 translate-y-12"></div>
         </div>
 
         {/* Header */}
@@ -219,7 +219,7 @@ export default function MembershipCardDigital({
           <div className="flex flex-col items-center space-y-4">
             
             {/* Profile Image */}
-            <div className="w-20 h-20 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm border-2 border-white/30">
+            <div className="w-20 h-20 rounded-full overflow-hidden bg-card/20 backdrop-blur-sm border-2 border-white/30">
               {profileImage ? (
                 <img 
                   src={profileImage} 
@@ -234,7 +234,7 @@ export default function MembershipCardDigital({
             </div>
 
             {/* QR Code */}
-            <div className="bg-white p-3 rounded-lg shadow-lg">
+            <div className="bg-card p-3 rounded-lg shadow-lg">
               <div 
                 className="w-24 h-24 bg-center bg-no-repeat bg-contain"
                 style={{ backgroundImage: `url("${qrCode}")` }}
@@ -288,7 +288,7 @@ export default function MembershipCardDigital({
               <Button
                 size="sm"
                 variant="ghost"
-                className="text-white hover:bg-white/10 text-xs py-2"
+                className="text-white hover:bg-card/10 text-xs py-2"
                 onClick={() => copyToClipboard(membershipId, "Membership ID")}
               >
                 <Copy className="h-3 w-3 mb-1" />
@@ -300,7 +300,7 @@ export default function MembershipCardDigital({
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="text-white hover:bg-white/10 text-xs py-2"
+                    className="text-white hover:bg-card/10 text-xs py-2"
                   >
                     <Eye className="h-3 w-3 mb-1" />
                     <div>View QR</div>
@@ -314,7 +314,7 @@ export default function MembershipCardDigital({
                     </DialogTitle>
                   </DialogHeader>
                   <div className="text-center p-6">
-                    <div className="bg-white p-4 rounded-lg inline-block mb-4 shadow-lg">
+                    <div className="bg-card p-4 rounded-lg inline-block mb-4 shadow-lg">
                       {qrCode ? (
                         <img 
                           src={qrCode} 
@@ -327,7 +327,7 @@ export default function MembershipCardDigital({
                         </div>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-muted-foreground mb-4">
                       Show this QR code to vendors for instant verification
                     </p>
                     <div className="space-y-2">
@@ -354,7 +354,7 @@ export default function MembershipCardDigital({
               <Button
                 size="sm"
                 variant="ghost"
-                className="text-white hover:bg-white/10 text-xs py-2"
+                className="text-white hover:bg-card/10 text-xs py-2"
                 onClick={downloadCard}
               >
                 <Download className="h-3 w-3 mb-1" />
@@ -368,7 +368,7 @@ export default function MembershipCardDigital({
         <div className="relative z-10 mt-6 pt-4 border-t border-white/20">
           <div className="flex items-start space-x-3 text-sm">
             <div className="flex-shrink-0">
-              <div className="bg-white/10 p-2 rounded-full">
+              <div className="bg-card/10 p-2 rounded-full">
                 <Sparkles className="h-4 w-4" />
               </div>
             </div>

@@ -132,7 +132,7 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
               className="flex-shrink-0"
               style={{ width: `${100 / cardsPerView}%` }}
             >
-              <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border" onClick={(e) => {
+              <div className="bg-card rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border" onClick={(e) => {
                 e.stopPropagation();
                 navigate(`/deals/${deal.id}`);
               }}>
@@ -165,8 +165,8 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
                   )}
                 </div>
                 <div className="p-6">
-                  <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{deal.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3">
+                  <h3 className="font-semibold text-foreground mb-2 line-clamp-2">{deal.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
                     {typeof deal.vendor === 'string' ? deal.vendor : deal.vendor?.businessName || 'Vendor'}
                   </p>
                   
@@ -218,7 +218,7 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-2 sm:left-0 sm:-translate-x-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white h-10 w-10 sm:h-12 sm:w-12 z-10 border"
+            className="absolute left-2 sm:left-0 sm:-translate-x-4 top-1/2 -translate-y-1/2 bg-card/90 backdrop-blur-sm shadow-lg hover:bg-card h-10 w-10 sm:h-12 sm:w-12 z-10 border"
             onClick={goToPrevious}
             disabled={currentIndex === 0}
           >
@@ -227,7 +227,7 @@ export default function DealCarousel({ deals, onDealClick, showClaims = false, c
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 sm:right-0 sm:translate-x-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white h-10 w-10 sm:h-12 sm:w-12 z-10 border"
+            className="absolute right-2 sm:right-0 sm:translate-x-4 top-1/2 -translate-y-1/2 bg-card/90 backdrop-blur-sm shadow-lg hover:bg-card h-10 w-10 sm:h-12 sm:w-12 z-10 border"
             onClick={goToNext}
             disabled={currentIndex >= maxIndex}
           >

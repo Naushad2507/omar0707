@@ -193,14 +193,14 @@ export default function Help() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Help Center</h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-4">Help Center</h1>
+          <p className="text-xl text-muted-foreground mb-8">
             Get answers to your questions and learn how to make the most of Instoredealz
           </p>
           
@@ -218,7 +218,7 @@ export default function Help() {
 
         {/* Tutorials Section */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Interactive Tutorials</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Interactive Tutorials</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
@@ -228,7 +228,7 @@ export default function Help() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Learn how to browse deals, claim discounts, manage your wishlist, and get the most savings.
                 </p>
                 <Tutorial type="customer" />
@@ -243,7 +243,7 @@ export default function Help() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Discover how to create deals, manage your business profile, track analytics, and grow your customer base.
                 </p>
                 <Tutorial type="vendor" />
@@ -256,7 +256,7 @@ export default function Help() {
 
         {/* FAQ Section */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Frequently Asked Questions</h2>
           
           {/* Category Filters */}
           <div className="flex flex-wrap gap-2 mb-8">
@@ -283,7 +283,7 @@ export default function Help() {
               <Card key={faq.id} className="hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
-                    <CardTitle className="text-lg font-medium text-gray-900 flex-1">
+                    <CardTitle className="text-lg font-medium text-foreground flex-1">
                       {faq.question}
                     </CardTitle>
                     <Badge variant="outline" className="ml-4 text-xs">
@@ -301,8 +301,8 @@ export default function Help() {
           {filteredFaqs.length === 0 && (
             <div className="text-center py-12">
               <HelpCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-medium text-foreground mb-2">No results found</h3>
+              <p className="text-muted-foreground">
                 Try adjusting your search terms or browse different categories.
               </p>
             </div>
@@ -313,8 +313,8 @@ export default function Help() {
 
         {/* Contact Support Section */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Support</h2>
-          <p className="text-gray-600 mb-8">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Contact Support</h2>
+          <p className="text-muted-foreground mb-8">
             Can't find what you're looking for? Our support team is here to help.
           </p>
           
@@ -327,9 +327,9 @@ export default function Help() {
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">{method.title}</h3>
-                    <p className="text-sm text-gray-600 mb-3">{method.description}</p>
-                    <p className="font-medium text-gray-900 mb-2">{method.contact}</p>
+                    <h3 className="font-semibold text-foreground mb-2">{method.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{method.description}</p>
+                    <p className="font-medium text-foreground mb-2">{method.contact}</p>
                     <div className="flex items-center justify-center text-xs text-gray-500">
                       <Clock className="h-3 w-3 mr-1" />
                       {method.responseTime}
@@ -343,7 +343,7 @@ export default function Help() {
 
         {/* Quick Links */}
         <div className="bg-gradient-to-br from-primary/5 to-royal/5 rounded-2xl p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Help Topics</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Popular Help Topics</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {[
               { title: "How to claim your first deal", anchor: "claiming-deals" },
@@ -355,7 +355,7 @@ export default function Help() {
             ].map((topic, index) => (
               <div 
                 key={index} 
-                className="flex items-center space-x-3 p-3 bg-white rounded-lg hover:shadow-md hover:bg-gray-50 transition-all cursor-pointer"
+                className="flex items-center space-x-3 p-3 bg-card rounded-lg hover:shadow-md hover:bg-gray-50 transition-all cursor-pointer"
                 onClick={() => {
                   const element = document.getElementById(topic.anchor);
                   if (element) {
@@ -374,13 +374,13 @@ export default function Help() {
         {/* Detailed Help Sections */}
         <div className="space-y-12 mt-16">
           {/* Claiming Deals */}
-          <div id="claiming-deals" className="bg-white rounded-xl p-8 shadow-sm">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+          <div id="claiming-deals" className="bg-card rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center">
               <Store className="h-8 w-8 mr-3 text-primary" />
               How to Claim Your First Deal
             </h2>
             <div className="prose prose-lg max-w-none">
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Getting started with Instoredealz is easy! Follow these simple steps to claim your first deal:
               </p>
               <ol className="space-y-3">
@@ -405,8 +405,8 @@ export default function Help() {
           </div>
 
           {/* Membership Benefits */}
-          <div id="membership" className="bg-white rounded-xl p-8 shadow-sm">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+          <div id="membership" className="bg-card rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center">
               <Users className="h-8 w-8 mr-3 text-primary" />
               Understanding Membership Benefits
             </h2>
@@ -414,31 +414,31 @@ export default function Help() {
               <div className="text-center">
                 <div className="bg-gray-100 rounded-lg p-6">
                   <h3 className="font-bold text-lg mb-2">Basic</h3>
-                  <p className="text-gray-600">Free access to standard deals</p>
+                  <p className="text-muted-foreground">Free access to standard deals</p>
                 </div>
               </div>
               <div className="text-center">
                 <div className="bg-purple-50 rounded-lg p-6">
                   <h3 className="font-bold text-lg mb-2">Premium</h3>
-                  <p className="text-gray-600">Access to exclusive premium deals and early access</p>
+                  <p className="text-muted-foreground">Access to exclusive premium deals and early access</p>
                 </div>
               </div>
               <div className="text-center">
                 <div className="bg-amber-50 rounded-lg p-6">
                   <h3 className="font-bold text-lg mb-2">Ultimate</h3>
-                  <p className="text-gray-600">All premium features plus VIP support and special offers</p>
+                  <p className="text-muted-foreground">All premium features plus VIP support and special offers</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Vendor Registration */}
-          <div id="vendor-registration" className="bg-white rounded-xl p-8 shadow-sm">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+          <div id="vendor-registration" className="bg-card rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center">
               <Store className="h-8 w-8 mr-3 text-primary" />
               Vendor Registration Process
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Join our vendor network and start promoting your business to thousands of customers:
             </p>
             <div className="grid md:grid-cols-2 gap-8">
@@ -464,67 +464,67 @@ export default function Help() {
           </div>
 
           {/* Payment & Billing */}
-          <div id="payment" className="bg-white rounded-xl p-8 shadow-sm">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+          <div id="payment" className="bg-card rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center">
               <CreditCard className="h-8 w-8 mr-3 text-primary" />
               Payment and Billing Questions
             </h2>
             <div className="space-y-4">
               <div>
                 <h4 className="font-semibold">How do I upgrade my membership?</h4>
-                <p className="text-gray-600">Visit your profile page and click on "Upgrade Membership" to choose from Premium or Ultimate plans.</p>
+                <p className="text-muted-foreground">Visit your profile page and click on "Upgrade Membership" to choose from Premium or Ultimate plans.</p>
               </div>
               <div>
                 <h4 className="font-semibold">What payment methods are accepted?</h4>
-                <p className="text-gray-600">We accept all major credit cards, debit cards, UPI, and digital wallets through our secure payment gateway.</p>
+                <p className="text-muted-foreground">We accept all major credit cards, debit cards, UPI, and digital wallets through our secure payment gateway.</p>
               </div>
               <div>
                 <h4 className="font-semibold">Can I cancel my subscription?</h4>
-                <p className="text-gray-600">Yes, you can cancel anytime from your account settings. Your membership will remain active until the billing period ends.</p>
+                <p className="text-muted-foreground">Yes, you can cancel anytime from your account settings. Your membership will remain active until the billing period ends.</p>
               </div>
             </div>
           </div>
 
           {/* Security */}
-          <div id="security" className="bg-white rounded-xl p-8 shadow-sm">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+          <div id="security" className="bg-card rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center">
               <Shield className="h-8 w-8 mr-3 text-primary" />
               Account Security Settings
             </h2>
             <div className="space-y-4">
               <div>
                 <h4 className="font-semibold">Password Security</h4>
-                <p className="text-gray-600">Use a strong password with at least 8 characters, including numbers and special characters.</p>
+                <p className="text-muted-foreground">Use a strong password with at least 8 characters, including numbers and special characters.</p>
               </div>
               <div>
                 <h4 className="font-semibold">Account Protection</h4>
-                <p className="text-gray-600">Never share your login credentials. Log out from shared devices and monitor your account activity regularly.</p>
+                <p className="text-muted-foreground">Never share your login credentials. Log out from shared devices and monitor your account activity regularly.</p>
               </div>
               <div>
                 <h4 className="font-semibold">Data Privacy</h4>
-                <p className="text-gray-600">We protect your personal information with industry-standard encryption and never share it with unauthorized parties.</p>
+                <p className="text-muted-foreground">We protect your personal information with industry-standard encryption and never share it with unauthorized parties.</p>
               </div>
             </div>
           </div>
 
           {/* Wishlist Management */}
-          <div id="wishlist" className="bg-white rounded-xl p-8 shadow-sm">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+          <div id="wishlist" className="bg-card rounded-xl p-8 shadow-sm">
+            <h2 className="text-3xl font-bold text-foreground mb-6 flex items-center">
               <BookOpen className="h-8 w-8 mr-3 text-primary" />
               Managing Your Wishlist
             </h2>
             <div className="space-y-4">
               <div>
                 <h4 className="font-semibold">Adding to Wishlist</h4>
-                <p className="text-gray-600">Click the heart icon on any deal card to add it to your wishlist for easy access later.</p>
+                <p className="text-muted-foreground">Click the heart icon on any deal card to add it to your wishlist for easy access later.</p>
               </div>
               <div>
                 <h4 className="font-semibold">Viewing Your Wishlist</h4>
-                <p className="text-gray-600">Access your saved deals anytime from the "My Wishlist" section in your account dashboard.</p>
+                <p className="text-muted-foreground">Access your saved deals anytime from the "My Wishlist" section in your account dashboard.</p>
               </div>
               <div>
                 <h4 className="font-semibold">Wishlist Notifications</h4>
-                <p className="text-gray-600">Get notified when deals on your wishlist are about to expire or when similar deals become available.</p>
+                <p className="text-muted-foreground">Get notified when deals on your wishlist are about to expire or when similar deals become available.</p>
               </div>
             </div>
           </div>

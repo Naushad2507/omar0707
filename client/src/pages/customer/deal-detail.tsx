@@ -258,7 +258,7 @@ export default function DealDetail({ params }: DealDetailProps) {
 
   if (currentLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card>
           <CardContent className="p-6 flex items-center space-x-4">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -271,11 +271,11 @@ export default function DealDetail({ params }: DealDetailProps) {
 
   if (!currentDeal) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card>
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-semibold mb-2">Deal Not Found</h2>
-            <p className="text-gray-600 mb-4">The deal you're looking for doesn't exist.</p>
+            <p className="text-muted-foreground mb-4">The deal you're looking for doesn't exist.</p>
             <Link to="/customer/deals">
               <Button>Back to Deals</Button>
             </Link>
@@ -297,7 +297,7 @@ export default function DealDetail({ params }: DealDetailProps) {
   // Show login prompt for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           {/* Back button */}
           <div className="mb-6">
@@ -377,7 +377,7 @@ export default function DealDetail({ params }: DealDetailProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Back button */}
         <div className="mb-6">
@@ -417,11 +417,11 @@ export default function DealDetail({ params }: DealDetailProps) {
               {/* Favorite button */}
               <button
                 onClick={handleToggleFavorite}
-                className="absolute top-4 right-4 p-2 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-all duration-200"
+                className="absolute top-4 right-4 p-2 rounded-full bg-card/90 backdrop-blur-sm hover:bg-card transition-all duration-200"
               >
                 <Heart 
                   className={`h-5 w-5 transition-colors duration-200 ${
-                    isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600 hover:text-red-500'
+                    isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground hover:text-red-500'
                   }`} 
                 />
               </button>
@@ -435,7 +435,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <CardTitle className="text-2xl mb-2">{currentDeal.title}</CardTitle>
-                    <p className="text-gray-600 mb-4">{currentDeal.description}</p>
+                    <p className="text-muted-foreground mb-4">{currentDeal.description}</p>
                     
                     <div className="flex flex-wrap gap-2 mb-4">
                       <Badge className={categoryColors[currentDeal.category as keyof typeof categoryColors] || "bg-gray-100 text-gray-800"}>
@@ -454,7 +454,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <span className="text-2xl font-bold text-green-600">{currentDeal.discountPercentage}% OFF</span>
-                    <span className="text-sm text-gray-600">on total bill</span>
+                    <span className="text-sm text-muted-foreground">on total bill</span>
                   </div>
                   <Badge variant="secondary" className="text-sm">
                     Subscription Discount
@@ -569,7 +569,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                       <Store className="h-5 w-5 text-gray-500" />
                       <div>
                         <p className="font-medium">{currentDeal.vendor.businessName}</p>
-                        <p className="text-sm text-gray-600 flex items-center">
+                        <p className="text-sm text-muted-foreground flex items-center">
                           <MapPin className="h-3 w-3 mr-1" />
                           {currentDeal.vendor.city}
                         </p>

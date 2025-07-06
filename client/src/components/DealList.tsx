@@ -424,7 +424,7 @@ const DealList = () => {
             <div className="space-y-4 py-4">
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-semibold text-lg mb-1">{billingDeal.title}</h3>
-                <p className="text-sm text-gray-600">Discount: {billingDeal.discountPercentage}% OFF</p>
+                <p className="text-sm text-muted-foreground">Discount: {billingDeal.discountPercentage}% OFF</p>
               </div>
               
               <div className="space-y-2">

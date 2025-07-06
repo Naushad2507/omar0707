@@ -276,7 +276,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
           <div className="space-y-6">
             {/* Progress Bar */}
             <div className="space-y-2">
-              <div className="flex justify-between text-sm text-gray-600">
+              <div className="flex justify-between text-sm text-muted-foreground">
                 <span>Progress</span>
                 <span>{Math.round(((currentStep + 1) / steps.length) * 100)}%</span>
               </div>
@@ -297,7 +297,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
                   </div>
                   <div>
                     <CardTitle className="text-lg">{currentStepData.title}</CardTitle>
-                    <p className="text-sm text-gray-600">{currentStepData.description}</p>
+                    <p className="text-sm text-muted-foreground">{currentStepData.description}</p>
                   </div>
                 </div>
               </CardHeader>
@@ -386,7 +386,7 @@ export default function Tutorial({ type, onComplete }: TutorialProps) {
                           ? 'bg-primary/10 text-primary'
                           : completedSteps.includes(step.id)
                           ? 'bg-green-50 text-green-700'
-                          : 'text-gray-600'
+                          : 'text-muted-foreground'
                       }`}
                     >
                       {completedSteps.includes(step.id) ? (

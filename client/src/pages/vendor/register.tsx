@@ -127,16 +127,16 @@ export default function VendorRegister() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
             Become a Vendor Partner
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Join our growing network of businesses and start offering exclusive deals to thousands of customers across India.
           </p>
         </div>
@@ -148,8 +148,8 @@ export default function VendorRegister() {
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Building className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Grow Your Business</h3>
-              <p className="text-sm text-gray-600">Reach new customers and increase your sales with our platform</p>
+              <h3 className="font-semibold text-foreground mb-2">Grow Your Business</h3>
+              <p className="text-sm text-muted-foreground">Reach new customers and increase your sales with our platform</p>
             </CardContent>
           </Card>
 
@@ -158,8 +158,8 @@ export default function VendorRegister() {
               <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="h-6 w-6 text-success" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Easy Setup</h3>
-              <p className="text-sm text-gray-600">Quick registration process with minimal documentation required</p>
+              <h3 className="font-semibold text-foreground mb-2">Easy Setup</h3>
+              <p className="text-sm text-muted-foreground">Quick registration process with minimal documentation required</p>
             </CardContent>
           </Card>
 
@@ -168,8 +168,8 @@ export default function VendorRegister() {
               <div className="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <CreditCard className="h-6 w-6 text-warning" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">No Hidden Fees</h3>
-              <p className="text-sm text-gray-600">Transparent pricing with no setup or monthly fees</p>
+              <h3 className="font-semibold text-foreground mb-2">No Hidden Fees</h3>
+              <p className="text-sm text-muted-foreground">Transparent pricing with no setup or monthly fees</p>
             </CardContent>
           </Card>
         </div>
@@ -412,24 +412,24 @@ export default function VendorRegister() {
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">PAN Card</p>
-                    <p className="text-sm text-gray-600">Valid PAN number for tax purposes</p>
+                    <p className="font-medium text-foreground">PAN Card</p>
+                    <p className="text-sm text-muted-foreground">Valid PAN number for tax purposes</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-5 w-5 text-success mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">Business Address</p>
-                    <p className="text-sm text-gray-600">Valid business address for verification</p>
+                    <p className="font-medium text-foreground">Business Address</p>
+                    <p className="text-sm text-muted-foreground">Valid business address for verification</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-5 w-5 text-gray-300 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">GST Certificate</p>
-                    <p className="text-sm text-gray-600">Optional but recommended for better visibility</p>
+                    <p className="font-medium text-foreground">GST Certificate</p>
+                    <p className="text-sm text-muted-foreground">Optional but recommended for better visibility</p>
                   </div>
                 </div>
               </CardContent>
@@ -454,7 +454,7 @@ export default function VendorRegister() {
                     />
                   ))}
                 </div>
-                <p className="text-sm text-gray-600 mt-3">
+                <p className="text-sm text-muted-foreground mt-3">
                   Join these successful businesses already partnering with us
                 </p>
               </CardContent>

@@ -105,7 +105,7 @@ export default function CustomerProfile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="flex items-center space-x-2">
@@ -118,16 +118,16 @@ export default function CustomerProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <User className="h-8 w-8 text-primary" />
             My Profile
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted-foreground mt-2">
             Update your personal information and preferences
           </p>
         </div>
@@ -148,7 +148,7 @@ export default function CustomerProfile() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {/* Basic Info Section */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                  <h3 className="text-lg font-semibold text-foreground border-b pb-2">
                     Basic Information
                   </h3>
                   
@@ -231,7 +231,7 @@ export default function CustomerProfile() {
 
                 {/* Location Section */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold text-foreground border-b pb-2 flex items-center gap-2">
                     <MapPin className="h-5 w-5" />
                     Location
                   </h3>
@@ -303,7 +303,7 @@ export default function CustomerProfile() {
 
                 {/* Membership Info */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                  <h3 className="text-lg font-semibold text-foreground border-b pb-2">
                     Membership Information
                   </h3>
                   

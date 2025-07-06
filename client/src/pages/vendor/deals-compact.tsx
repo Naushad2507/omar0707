@@ -179,7 +179,7 @@ export default function CompactDealsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -194,8 +194,8 @@ export default function CompactDealsPage() {
               Back
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Manage Deals</h1>
-              <p className="text-gray-600">Create and manage your business deals</p>
+              <h1 className="text-2xl font-bold text-foreground">Manage Deals</h1>
+              <p className="text-muted-foreground">Create and manage your business deals</p>
             </div>
           </div>
           
@@ -574,8 +574,8 @@ export default function CompactDealsPage() {
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-16">
                   <Target className="h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No deals yet</h3>
-                  <p className="text-gray-600 text-center max-w-md mb-6">
+                  <h3 className="text-lg font-medium text-foreground mb-2">No deals yet</h3>
+                  <p className="text-muted-foreground text-center max-w-md mb-6">
                     Create your first deal to start attracting customers to your business.
                   </p>
                   <Button onClick={() => setIsCreateOpen(true)}>
@@ -597,7 +597,7 @@ export default function CompactDealsPage() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-600 mb-3">{deal.description}</p>
+                      <p className="text-muted-foreground mb-3">{deal.description}</p>
                       <div className="flex justify-between items-center">
                         <span className="text-2xl font-bold text-green-600">
                           {deal.discountPercentage}% OFF

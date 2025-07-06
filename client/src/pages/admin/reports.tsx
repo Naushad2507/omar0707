@@ -411,7 +411,7 @@ export default function AdminReports() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -422,8 +422,8 @@ export default function AdminReports() {
               <Database className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Data Reports & Analytics</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="text-3xl font-bold text-foreground">Data Reports & Analytics</h1>
+              <p className="text-muted-foreground mt-1">
                 Download comprehensive CSV reports for analysis and record-keeping
               </p>
             </div>
@@ -431,35 +431,35 @@ export default function AdminReports() {
           
           {/* Summary Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="bg-card rounded-lg p-4 border border-gray-200">
               <div className="flex items-center">
                 <Activity className="h-5 w-5 text-blue-600 mr-2" />
-                <span className="text-sm font-medium text-gray-600">Last Updated</span>
+                <span className="text-sm font-medium text-muted-foreground">Last Updated</span>
               </div>
-              <p className="text-lg font-bold text-gray-900 mt-1">Just Now</p>
+              <p className="text-lg font-bold text-foreground mt-1">Just Now</p>
             </div>
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="bg-card rounded-lg p-4 border border-gray-200">
               <div className="flex items-center">
                 <TrendingUp className="h-5 w-5 text-green-600 mr-2" />
-                <span className="text-sm font-medium text-gray-600">Total Records</span>
+                <span className="text-sm font-medium text-muted-foreground">Total Records</span>
               </div>
-              <p className="text-lg font-bold text-gray-900 mt-1">
+              <p className="text-lg font-bold text-foreground mt-1">
                 {((analyticsData?.totalUsers || 0) + (analyticsData?.totalVendors || 0) + (analyticsData?.totalDeals || 0) + (analyticsData?.totalClaims || 0)).toLocaleString()}
               </p>
             </div>
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="bg-card rounded-lg p-4 border border-gray-200">
               <div className="flex items-center">
                 <FileText className="h-5 w-5 text-purple-600 mr-2" />
-                <span className="text-sm font-medium text-gray-600">Report Types</span>
+                <span className="text-sm font-medium text-muted-foreground">Report Types</span>
               </div>
-              <p className="text-lg font-bold text-gray-900 mt-1">5</p>
+              <p className="text-lg font-bold text-foreground mt-1">5</p>
             </div>
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <div className="bg-card rounded-lg p-4 border border-gray-200">
               <div className="flex items-center">
                 <Clock className="h-5 w-5 text-orange-600 mr-2" />
-                <span className="text-sm font-medium text-gray-600">Format</span>
+                <span className="text-sm font-medium text-muted-foreground">Format</span>
               </div>
-              <p className="text-lg font-bold text-gray-900 mt-1">CSV</p>
+              <p className="text-lg font-bold text-foreground mt-1">CSV</p>
             </div>
           </div>
         </div>
@@ -471,7 +471,7 @@ export default function AdminReports() {
               <Calendar className="h-5 w-5 mr-2 text-blue-600" />
               Date Filter
             </CardTitle>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Filter reports by date range for more targeted analysis
             </p>
           </CardHeader>
@@ -571,7 +571,7 @@ export default function AdminReports() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-muted-foreground mb-4">
                     {report.description}
                   </p>
                   
@@ -696,15 +696,15 @@ export default function AdminReports() {
         <Card className="mt-8">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <FileText className="h-5 w-5 mr-2 text-gray-600" />
+              <FileText className="h-5 w-5 mr-2 text-muted-foreground" />
               Usage Instructions
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Download Process</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+                <h4 className="font-semibold text-foreground mb-2">Download Process</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Click any download button to generate a fresh CSV report</li>
                   <li>• Reports include the most current data from the database</li>
                   <li>• Downloads start automatically when ready</li>
@@ -712,8 +712,8 @@ export default function AdminReports() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Data Analysis Tips</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+                <h4 className="font-semibold text-foreground mb-2">Data Analysis Tips</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Open CSV files in Excel, Google Sheets, or any spreadsheet app</li>
                   <li>• Use filters and pivot tables for detailed analysis</li>
                   <li>• Combine multiple reports for comprehensive insights</li>

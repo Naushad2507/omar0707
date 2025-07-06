@@ -161,33 +161,33 @@ export default function TestFlows() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold text-foreground mb-4">
               Instoredealz Test Experience
             </h1>
-            <p className="text-xl text-gray-600 mb-6">
+            <p className="text-xl text-muted-foreground mb-6">
               Complete testing flows for all user roles with secure digital membership features
             </p>
             
             {/* Key Features */}
             <div className="grid md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="bg-card p-4 rounded-lg shadow-sm">
                 <QrCode className="w-8 h-8 text-blue-500 mx-auto mb-2" />
                 <p className="text-sm font-medium">Secure QR Codes</p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="bg-card p-4 rounded-lg shadow-sm">
                 <CreditCard className="w-8 h-8 text-green-500 mx-auto mb-2" />
                 <p className="text-sm font-medium">Digital Membership</p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="bg-card p-4 rounded-lg shadow-sm">
                 <Shield className="w-8 h-8 text-purple-500 mx-auto mb-2" />
                 <p className="text-sm font-medium">OTP Access</p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="bg-card p-4 rounded-lg shadow-sm">
                 <BarChart3 className="w-8 h-8 text-orange-500 mx-auto mb-2" />
                 <p className="text-sm font-medium">Real-time Analytics</p>
               </div>
@@ -196,7 +196,7 @@ export default function TestFlows() {
 
           {/* Test Accounts */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Test Accounts</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-6">Test Accounts</h2>
             <div className="grid lg:grid-cols-2 gap-6">
               {testAccounts.map((account, index) => {
                 const Icon = getAccountIcon(account.type);
@@ -232,7 +232,7 @@ export default function TestFlows() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-600 mb-4">{account.description}</p>
+                      <p className="text-sm text-muted-foreground mb-4">{account.description}</p>
                       
                       <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                         <div>
@@ -267,7 +267,7 @@ export default function TestFlows() {
 
           {/* Test Flows */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Complete Test Flows</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-6">Complete Test Flows</h2>
             <div className="grid lg:grid-cols-3 gap-6">
               {testFlows.map((flow, index) => {
                 const Icon = flow.icon;
@@ -300,28 +300,28 @@ export default function TestFlows() {
           </div>
 
           {/* Sample Data Info */}
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Sample Data Overview</h2>
+          <div className="bg-card rounded-lg border border-gray-200 p-8">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Sample Data Overview</h2>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-blue-600 mb-2">10</div>
-                <p className="text-sm text-gray-600">Test Vendors</p>
+                <p className="text-sm text-muted-foreground">Test Vendors</p>
                 <p className="text-xs text-gray-500">Across all categories</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-green-600 mb-2">80+</div>
-                <p className="text-sm text-gray-600">Sample Deals</p>
+                <p className="text-sm text-muted-foreground">Sample Deals</p>
                 <p className="text-xs text-gray-500">5-10 per category</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-purple-600 mb-2">20+</div>
-                <p className="text-sm text-gray-600">Test Users</p>
+                <p className="text-sm text-muted-foreground">Test Users</p>
                 <p className="text-xs text-gray-500">All membership tiers</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-orange-600 mb-2">50+</div>
-                <p className="text-sm text-gray-600">Deal Claims</p>
+                <p className="text-sm text-muted-foreground">Deal Claims</p>
                 <p className="text-xs text-gray-500">Various statuses</p>
               </div>
             </div>

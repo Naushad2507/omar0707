@@ -19,8 +19,8 @@ export default function AccessDenied() {
         <CardContent className="pt-6">
           <div className="text-center mb-6">
             <ShieldX className="h-16 w-16 text-red-500 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-            <p className="text-gray-600">
+            <h1 className="text-2xl font-bold text-foreground mb-2">Access Denied</h1>
+            <p className="text-muted-foreground">
               {user 
                 ? "You don't have permission to access this page. Your current role doesn't allow access to this section."
                 : "You need to be logged in to access this page."

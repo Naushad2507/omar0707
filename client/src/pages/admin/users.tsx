@@ -135,14 +135,14 @@ export default function AdminUsers() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">User Management</h1>
+          <p className="text-muted-foreground mt-1">
             Manage and monitor all platform users
           </p>
         </div>
@@ -157,7 +157,7 @@ export default function AdminUsers() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-500 text-sm">{stat.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
                     <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
@@ -239,7 +239,7 @@ export default function AdminUsers() {
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="text-gray-600 mt-2">Loading users...</p>
+                <p className="text-muted-foreground mt-2">Loading users...</p>
               </div>
             ) : filteredUsers.length > 0 ? (
               <div className="overflow-x-auto">
@@ -267,7 +267,7 @@ export default function AdminUsers() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-medium text-gray-900">{user.name}</p>
+                              <p className="font-medium text-foreground">{user.name}</p>
                               <div className="flex items-center space-x-2 text-xs text-gray-500">
                                 <Mail className="h-3 w-3" />
                                 <span>{user.email}</span>
@@ -309,7 +309,7 @@ export default function AdminUsers() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center space-x-1 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             <span>{formatDate(user.createdAt)}</span>
                           </div>
@@ -377,8 +377,8 @@ export default function AdminUsers() {
             ) : (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No users found</h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-medium text-foreground mb-2">No users found</h3>
+                <p className="text-muted-foreground">
                   {searchQuery || roleFilter !== "all" || membershipFilter !== "all"
                     ? "Try adjusting your search or filters"
                     : "No users registered yet"
@@ -401,8 +401,8 @@ export default function AdminUsers() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-900 font-medium">{promotionalUsers} users are on the promotional plan</p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-foreground font-medium">{promotionalUsers} users are on the promotional plan</p>
+                  <p className="text-muted-foreground text-sm">
                     Free Premium membership until August 14, 2026
                   </p>
                 </div>

@@ -52,14 +52,14 @@ export default function CustomerWishlist() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <Card>
             <CardContent className="p-12 text-center">
               <Heart className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Login Required</h2>
-              <p className="text-gray-600 mb-6">Please login to view your favorites.</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Login Required</h2>
+              <p className="text-muted-foreground mb-6">Please login to view your favorites.</p>
               <Button asChild>
                 <Link to="/login">Login</Link>
               </Button>
@@ -72,14 +72,14 @@ export default function CustomerWishlist() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Favorites</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">My Favorites</h1>
+          <p className="text-muted-foreground mt-1">
             Keep track of deals you love for easy access later
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function CustomerWishlist() {
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-gray-600">Loading your favorites...</span>
+            <span className="ml-2 text-muted-foreground">Loading your favorites...</span>
           </div>
         ) : wishlist && wishlist.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -113,8 +113,8 @@ export default function CustomerWishlist() {
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No favorites yet</h3>
-              <p className="text-gray-600 mb-6">
+              <h3 className="text-lg font-medium text-foreground mb-2">No favorites yet</h3>
+              <p className="text-muted-foreground mb-6">
                 Start browsing deals and save your favorites for easy access later
               </p>
               <Button asChild>

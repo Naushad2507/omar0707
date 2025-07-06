@@ -420,7 +420,7 @@ export default function VendorDeals() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -428,8 +428,8 @@ export default function VendorDeals() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Deals</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="text-3xl font-bold text-foreground">My Deals</h1>
+              <p className="text-muted-foreground mt-1">
                 Create and manage your deals
               </p>
             </div>
@@ -448,7 +448,7 @@ export default function VendorDeals() {
                   <DialogTitle className="text-lg sm:text-xl">
                     {editingDeal ? "Edit Deal" : "Create New Deal"}
                   </DialogTitle>
-                  <DialogDescription className="text-sm text-gray-600">
+                  <DialogDescription className="text-sm text-muted-foreground">
                     {editingDeal 
                       ? "Update your deal information. Changes will need admin approval before going live."
                       : "Create a new deal for your customers. Fill in all required fields marked with *."
@@ -815,7 +815,7 @@ export default function VendorDeals() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-500 text-sm">{stat.title}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
@@ -834,7 +834,7 @@ export default function VendorDeals() {
             {isLoading ? (
               <div className="text-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                <p className="text-gray-600">Loading deals...</p>
+                <p className="text-muted-foreground">Loading deals...</p>
               </div>
             ) : deals.length > 0 ? (
               <div className="space-y-4">
@@ -843,12 +843,12 @@ export default function VendorDeals() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900">
+                          <h3 className="text-lg font-semibold text-foreground">
                             {deal.title}
                           </h3>
                           {getDealStatusBadge(deal)}
                         </div>
-                        <p className="text-gray-600 mb-3">{deal.description}</p>
+                        <p className="text-muted-foreground mb-3">{deal.description}</p>
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                           <div className="flex items-center space-x-1">
                             <Target className="h-4 w-4 text-gray-400" />
@@ -891,8 +891,8 @@ export default function VendorDeals() {
             ) : (
               <div className="text-center py-12">
                 <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No deals yet</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-medium text-foreground mb-2">No deals yet</h3>
+                <p className="text-muted-foreground mb-4">
                   Create your first deal to start attracting customers
                 </p>
                 <Button onClick={() => setIsCreateOpen(true)}>

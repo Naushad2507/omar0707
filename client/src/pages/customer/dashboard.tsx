@@ -86,7 +86,7 @@ export default function CustomerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -94,10 +94,10 @@ export default function CustomerDashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-foreground">
                 Welcome back, {currentUser.name}!
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-muted-foreground mt-1">
                 Your savings dashboard is ready. Discover new deals and track your progress.
               </p>
             </div>
@@ -169,7 +169,7 @@ export default function CustomerDashboard() {
                         <p className="text-white/90 text-sm font-medium">{stat.title}</p>
                         <p className="text-3xl font-bold text-white mt-2">{stat.value}</p>
                       </div>
-                      <div className="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                      <div className="bg-card/20 p-3 rounded-full backdrop-blur-sm">
                         <Icon className="h-6 w-6 text-white" />
                       </div>
                     </div>
@@ -203,7 +203,7 @@ export default function CustomerDashboard() {
                           />
                         )}
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-foreground">
                             {claim.deal?.title || "Deal not available"}
                           </p>
                           <div className="flex items-center text-sm text-gray-500 space-x-4">
@@ -237,8 +237,8 @@ export default function CustomerDashboard() {
               ) : (
                 <div className="text-center py-8">
                   <Ticket className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No claims yet</h3>
-                  <p className="text-gray-600 mb-4">Start claiming deals to see your history here</p>
+                  <h3 className="text-lg font-medium text-foreground mb-2">No claims yet</h3>
+                  <p className="text-muted-foreground mb-4">Start claiming deals to see your history here</p>
                   <Button asChild>
                     <Link to="/customer/deals">Browse Deals</Link>
                   </Button>
@@ -252,7 +252,7 @@ export default function CustomerDashboard() {
         {topDeals.length > 0 && (
           <div className="mt-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+              <h2 className="text-2xl font-bold text-foreground flex items-center">
                 <TrendingUp className="h-6 w-6 mr-2 text-saffron" />
                 Trending Deals
               </h2>
@@ -276,15 +276,15 @@ export default function CustomerDashboard() {
 
         {/* Quick Actions */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Quick Actions</h2>
           <div className="grid md:grid-cols-4 gap-6">
             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/customer/deals")}>
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Ticket className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Browse Deals</h3>
-                <p className="text-sm text-gray-600">Discover new deals in your city</p>
+                <h3 className="font-semibold text-foreground mb-2">Browse Deals</h3>
+                <p className="text-sm text-muted-foreground">Discover new deals in your city</p>
               </CardContent>
             </Card>
 
@@ -293,8 +293,8 @@ export default function CustomerDashboard() {
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Navigation className="h-6 w-6 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Nearby Deals</h3>
-                <p className="text-sm text-gray-600">Find deals close to your location</p>
+                <h3 className="font-semibold text-foreground mb-2">Nearby Deals</h3>
+                <p className="text-sm text-muted-foreground">Find deals close to your location</p>
               </CardContent>
             </Card>
 
@@ -303,8 +303,8 @@ export default function CustomerDashboard() {
                 <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <PiggyBank className="h-6 w-6 text-success" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">My Savings</h3>
-                <p className="text-sm text-gray-600">Track your savings history</p>
+                <h3 className="font-semibold text-foreground mb-2">My Savings</h3>
+                <p className="text-sm text-muted-foreground">Track your savings history</p>
               </CardContent>
             </Card>
 
@@ -313,8 +313,8 @@ export default function CustomerDashboard() {
                 <div className="w-12 h-12 bg-royal/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Trophy className="h-6 w-6 text-royal" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Upgrade Plan</h3>
-                <p className="text-sm text-gray-600">Get more exclusive deals</p>
+                <h3 className="font-semibold text-foreground mb-2">Upgrade Plan</h3>
+                <p className="text-sm text-muted-foreground">Get more exclusive deals</p>
               </CardContent>
             </Card>
           </div>

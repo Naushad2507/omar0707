@@ -26,7 +26,7 @@ export default function CategoryCard({ name, icon: Icon, dealCount, color, onCli
       <div className={`bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses]} rounded-2xl p-6 mb-3 group-hover:shadow-lg transition-all transform group-hover:-translate-y-1`}>
         <Icon className={`h-8 w-8 mx-auto ${color === 'saffron' ? 'text-saffron' : color === 'primary' ? 'text-primary' : color === 'success' ? 'text-success' : color === 'warning' ? 'text-warning' : color === 'royal' ? 'text-royal' : 'text-secondary'}`} />
       </div>
-      <h3 className="font-semibold text-gray-900">{name}</h3>
+      <h3 className="font-semibold text-foreground">{name}</h3>
       <p className="text-sm text-gray-500">{dealCount}+ deals</p>
     </div>
   );

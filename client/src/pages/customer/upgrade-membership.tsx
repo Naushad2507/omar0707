@@ -161,7 +161,7 @@ export default function UpgradeMembership() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -176,10 +176,10 @@ export default function UpgradeMembership() {
             </Button>
             <div className="flex items-center">
               <Crown className="h-8 w-8 text-purple-600 mr-3" />
-              <h1 className="text-4xl font-bold text-gray-900">Upgrade Your Membership</h1>
+              <h1 className="text-4xl font-bold text-foreground">Upgrade Your Membership</h1>
             </div>
           </div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Unlock exclusive deals, discount codes, and premium features with our membership plans
           </p>
           {user?.membershipPlan && (
@@ -223,17 +223,17 @@ export default function UpgradeMembership() {
                     </div>
                   </div>
                   <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                  <div className="text-3xl font-bold text-gray-900">
+                  <div className="text-3xl font-bold text-foreground">
                     ₹{plan.price}
-                    {plan.price > 0 && <span className="text-sm font-normal text-gray-600">/{plan.period}</span>}
+                    {plan.price > 0 && <span className="text-sm font-normal text-muted-foreground">/{plan.period}</span>}
                   </div>
-                  <p className="text-gray-600">{plan.description}</p>
+                  <p className="text-muted-foreground">{plan.description}</p>
                 </CardHeader>
 
                 <CardContent className="space-y-6">
                   {/* Features */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">What's included:</h4>
+                    <h4 className="font-semibold text-foreground mb-3">What's included:</h4>
                     <ul className="space-y-2">
                       {plan.features.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-center">
@@ -247,7 +247,7 @@ export default function UpgradeMembership() {
                   {/* Limitations */}
                   {plan.limitations.length > 0 && (
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Limitations:</h4>
+                      <h4 className="font-semibold text-foreground mb-3">Limitations:</h4>
                       <ul className="space-y-2">
                         {plan.limitations.map((limitation, limitIndex) => (
                           <li key={limitIndex} className="flex items-center">
@@ -310,17 +310,17 @@ export default function UpgradeMembership() {
               <div>
                 <Shield className="h-12 w-12 text-blue-500 mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">Exclusive Access</h3>
-                <p className="text-gray-600 text-sm">Get access to discount codes and premium deals that save you money</p>
+                <p className="text-muted-foreground text-sm">Get access to discount codes and premium deals that save you money</p>
               </div>
               <div>
                 <Target className="h-12 w-12 text-green-500 mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">Personalized Experience</h3>
-                <p className="text-gray-600 text-sm">Receive tailored deal recommendations based on your preferences</p>
+                <p className="text-muted-foreground text-sm">Receive tailored deal recommendations based on your preferences</p>
               </div>
               <div>
                 <Crown className="h-12 w-12 text-purple-500 mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">VIP Treatment</h3>
-                <p className="text-gray-600 text-sm">Priority support and early access to the best deals before anyone else</p>
+                <p className="text-muted-foreground text-sm">Priority support and early access to the best deals before anyone else</p>
               </div>
             </div>
           </CardContent>
@@ -334,15 +334,15 @@ export default function UpgradeMembership() {
           <CardContent className="space-y-4">
             <div>
               <h4 className="font-semibold">Can I cancel my membership anytime?</h4>
-              <p className="text-gray-600 text-sm">Yes, you can cancel your membership at any time. You'll continue to have access until the end of your billing period.</p>
+              <p className="text-muted-foreground text-sm">Yes, you can cancel your membership at any time. You'll continue to have access until the end of your billing period.</p>
             </div>
             <div>
               <h4 className="font-semibold">What happens to my discount codes if I downgrade?</h4>
-              <p className="text-gray-600 text-sm">Any discount codes you've already accessed will remain valid, but you won't be able to access new ones without the required membership level.</p>
+              <p className="text-muted-foreground text-sm">Any discount codes you've already accessed will remain valid, but you won't be able to access new ones without the required membership level.</p>
             </div>
             <div>
               <h4 className="font-semibold">Are there any setup fees?</h4>
-              <p className="text-gray-600 text-sm">No, there are no setup fees. You only pay the monthly subscription price for your chosen plan.</p>
+              <p className="text-muted-foreground text-sm">No, there are no setup fees. You only pay the monthly subscription price for your chosen plan.</p>
             </div>
           </CardContent>
         </Card>

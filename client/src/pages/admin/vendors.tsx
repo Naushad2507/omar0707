@@ -111,14 +111,14 @@ export default function AdminVendors() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Vendor Management</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Vendor Management</h1>
+          <p className="text-muted-foreground mt-1">
             Review and manage vendor applications and accounts
           </p>
         </div>
@@ -133,7 +133,7 @@ export default function AdminVendors() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-500 text-sm">{stat.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
                     <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
@@ -199,7 +199,7 @@ export default function AdminVendors() {
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="text-gray-600 mt-2">Loading vendors...</p>
+                <p className="text-muted-foreground mt-2">Loading vendors...</p>
               </div>
             ) : filteredVendors.length > 0 ? (
               <div className="overflow-x-auto">
@@ -231,7 +231,7 @@ export default function AdminVendors() {
                               </div>
                             )}
                             <div>
-                              <p className="font-medium text-gray-900">{vendor.businessName}</p>
+                              <p className="font-medium text-foreground">{vendor.businessName}</p>
                               {vendor.description && (
                                 <p className="text-xs text-gray-500 line-clamp-1">{vendor.description}</p>
                               )}
@@ -256,7 +256,7 @@ export default function AdminVendors() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center space-x-1 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             <span>{formatDate(vendor.createdAt)}</span>
                           </div>
@@ -286,42 +286,42 @@ export default function AdminVendors() {
                                     {/* Business Info */}
                                     <div className="grid md:grid-cols-2 gap-6">
                                       <div>
-                                        <h4 className="font-medium text-gray-900 mb-3">Business Information</h4>
+                                        <h4 className="font-medium text-foreground mb-3">Business Information</h4>
                                         <div className="space-y-2 text-sm">
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Name:</span>
-                                            <span className="text-gray-900 font-medium">{selectedVendor.businessName}</span>
+                                            <span className="text-foreground font-medium">{selectedVendor.businessName}</span>
                                           </div>
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Location:</span>
-                                            <span className="text-gray-900">{selectedVendor.city}, {selectedVendor.state}</span>
+                                            <span className="text-foreground">{selectedVendor.city}, {selectedVendor.state}</span>
                                           </div>
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Rating:</span>
                                             <div className="flex items-center">
                                               <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                                              <span className="text-gray-900">{selectedVendor.rating || "0.0"}</span>
+                                              <span className="text-foreground">{selectedVendor.rating || "0.0"}</span>
                                             </div>
                                           </div>
                                         </div>
                                       </div>
                                       
                                       <div>
-                                        <h4 className="font-medium text-gray-900 mb-3">Registration Details</h4>
+                                        <h4 className="font-medium text-foreground mb-3">Registration Details</h4>
                                         <div className="space-y-2 text-sm">
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">PAN:</span>
-                                            <span className="text-gray-900 font-mono">{selectedVendor.panNumber}</span>
+                                            <span className="text-foreground font-mono">{selectedVendor.panNumber}</span>
                                           </div>
                                           {selectedVendor.gstNumber && (
                                             <div className="flex justify-between">
                                               <span className="text-gray-500">GST:</span>
-                                              <span className="text-gray-900 font-mono text-xs">{selectedVendor.gstNumber}</span>
+                                              <span className="text-foreground font-mono text-xs">{selectedVendor.gstNumber}</span>
                                             </div>
                                           )}
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Registered:</span>
-                                            <span className="text-gray-900">{formatDate(selectedVendor.createdAt)}</span>
+                                            <span className="text-foreground">{formatDate(selectedVendor.createdAt)}</span>
                                           </div>
                                         </div>
                                       </div>
@@ -330,22 +330,22 @@ export default function AdminVendors() {
                                     {/* Address */}
                                     {selectedVendor.address && (
                                       <div>
-                                        <h4 className="font-medium text-gray-900 mb-2">Business Address</h4>
-                                        <p className="text-gray-600 text-sm">{selectedVendor.address}</p>
+                                        <h4 className="font-medium text-foreground mb-2">Business Address</h4>
+                                        <p className="text-muted-foreground text-sm">{selectedVendor.address}</p>
                                       </div>
                                     )}
                                     
                                     {/* Description */}
                                     {selectedVendor.description && (
                                       <div>
-                                        <h4 className="font-medium text-gray-900 mb-2">Description</h4>
-                                        <p className="text-gray-600 text-sm">{selectedVendor.description}</p>
+                                        <h4 className="font-medium text-foreground mb-2">Description</h4>
+                                        <p className="text-muted-foreground text-sm">{selectedVendor.description}</p>
                                       </div>
                                     )}
                                     
                                     {/* Performance */}
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Performance</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Performance</h4>
                                       <div className="grid grid-cols-3 gap-4 text-center">
                                         <div>
                                           <p className="text-2xl font-bold text-primary">{selectedVendor.totalDeals || 0}</p>
@@ -385,8 +385,8 @@ export default function AdminVendors() {
             ) : (
               <div className="text-center py-12">
                 <Store className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No vendors found</h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-medium text-foreground mb-2">No vendors found</h3>
+                <p className="text-muted-foreground">
                   {searchQuery || statusFilter !== "all"
                     ? "Try adjusting your search or filters"
                     : "No vendors registered yet"
@@ -409,8 +409,8 @@ export default function AdminVendors() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-900 font-medium">{pendingApprovals} vendors awaiting approval</p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-foreground font-medium">{pendingApprovals} vendors awaiting approval</p>
+                  <p className="text-muted-foreground text-sm">
                     Review applications to help businesses start offering deals
                   </p>
                 </div>

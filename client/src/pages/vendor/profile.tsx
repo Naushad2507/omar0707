@@ -116,7 +116,7 @@ export default function VendorProfile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="flex items-center space-x-2">
@@ -130,16 +130,16 @@ export default function VendorProfile() {
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card>
             <CardContent className="p-8 text-center">
               <Store className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 No Vendor Profile Found
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 You need to complete your vendor registration first.
               </p>
               <Button asChild>
@@ -153,16 +153,16 @@ export default function VendorProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
             <Store className="h-8 w-8 text-primary" />
             Business Profile
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted-foreground mt-2">
             Manage your business information and settings
           </p>
         </div>
@@ -221,7 +221,7 @@ export default function VendorProfile() {
                 <div className="pt-2 border-t">
                   <div className="text-xs text-gray-500 mb-2">Account Details:</div>
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                       <Mail className="h-3 w-3" />
                       {user?.email}
                     </div>
@@ -252,7 +252,7 @@ export default function VendorProfile() {
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     {/* Business Details */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                      <h3 className="text-lg font-semibold text-foreground border-b pb-2">
                         Business Details
                       </h3>
                       
@@ -322,7 +322,7 @@ export default function VendorProfile() {
 
                     {/* Legal Information */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                      <h3 className="text-lg font-semibold text-foreground border-b pb-2">
                         Legal Information
                       </h3>
                       
@@ -367,7 +367,7 @@ export default function VendorProfile() {
 
                     {/* Location */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center gap-2">
+                      <h3 className="text-lg font-semibold text-foreground border-b pb-2 flex items-center gap-2">
                         <MapPin className="h-5 w-5" />
                         Location
                       </h3>

@@ -31,8 +31,8 @@ export default function GeolocationTutorial() {
               <span className="text-blue-600 font-semibold text-sm">1</span>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Browser Permission</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Browser Permission</h4>
+              <p className="text-sm text-muted-foreground">
                 When prompted, click "Allow" to enable location access. This helps us find deals near you.
               </p>
             </div>
@@ -43,8 +43,8 @@ export default function GeolocationTutorial() {
               <span className="text-blue-600 font-semibold text-sm">2</span>
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Automatic Detection</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Automatic Detection</h4>
+              <p className="text-sm text-muted-foreground">
                 Your location is detected automatically and cached for 5 minutes for quick access.
               </p>
             </div>
@@ -70,8 +70,8 @@ export default function GeolocationTutorial() {
               <Target className="h-4 w-4 text-green-600" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Adjustable Radius</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Adjustable Radius</h4>
+              <p className="text-sm text-muted-foreground">
                 Use the slider to set your search radius from 1km to 25km based on how far you're willing to travel.
               </p>
             </div>
@@ -82,8 +82,8 @@ export default function GeolocationTutorial() {
               <MapPin className="h-4 w-4 text-green-600" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Distance Display</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Distance Display</h4>
+              <p className="text-sm text-muted-foreground">
                 Each deal shows exact distance (e.g., "1.2km", "500m") so you know how close it is.
               </p>
             </div>
@@ -93,7 +93,7 @@ export default function GeolocationTutorial() {
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="secondary">Pro Tip</Badge>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Start with a 5km radius and expand if needed. Most users find great deals within 3km of their location.
             </p>
           </div>
@@ -111,8 +111,8 @@ export default function GeolocationTutorial() {
               <Navigation className="h-4 w-4 text-purple-600" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Direction Hints</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Direction Hints</h4>
+              <p className="text-sm text-muted-foreground">
                 See clear directions like "2.1km North" or "500m Southwest in Mall Road" for easy navigation.
               </p>
             </div>
@@ -123,8 +123,8 @@ export default function GeolocationTutorial() {
               <Compass className="h-4 w-4 text-purple-600" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Smart Relevance</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Smart Relevance</h4>
+              <p className="text-sm text-muted-foreground">
                 Deals are ranked by relevance considering distance, discount percentage, popularity, and expiry.
               </p>
             </div>
@@ -154,8 +154,8 @@ export default function GeolocationTutorial() {
               <Clock className="h-4 w-4 text-orange-600" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Auto Refresh</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Auto Refresh</h4>
+              <p className="text-sm text-muted-foreground">
                 Location and deals refresh automatically to ensure you see the most current offers.
               </p>
             </div>
@@ -166,8 +166,8 @@ export default function GeolocationTutorial() {
               <CheckCircle className="h-4 w-4 text-orange-600" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-900 mb-1">Accuracy Indicator</h4>
-              <p className="text-sm text-gray-600">
+              <h4 className="font-medium text-foreground mb-1">Accuracy Indicator</h4>
+              <p className="text-sm text-muted-foreground">
                 See your location accuracy (e.g., "±15m") to understand how precise the distance calculations are.
               </p>
             </div>
@@ -215,7 +215,7 @@ export default function GeolocationTutorial() {
         <CardTitle className="text-xl">
           {currentStepData.title}
         </CardTitle>
-        <p className="text-gray-600 text-sm">
+        <p className="text-muted-foreground text-sm">
           {currentStepData.description}
         </p>
         

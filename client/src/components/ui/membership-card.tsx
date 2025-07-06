@@ -55,10 +55,10 @@ export default function MembershipCard({
     <div className={`${getPlanColor(membershipPlan)} rounded-2xl text-white p-6 relative overflow-hidden`}>
       {/* Background Pattern */}
       <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-        <div className="w-full h-full bg-white rounded-full transform translate-x-16 -translate-y-16" />
+        <div className="w-full h-full bg-card rounded-full transform translate-x-16 -translate-y-16" />
       </div>
       <div className="absolute bottom-0 left-0 w-24 h-24 opacity-10">
-        <div className="w-full h-full bg-white rounded-full transform -translate-x-12 translate-y-12" />
+        <div className="w-full h-full bg-card rounded-full transform -translate-x-12 translate-y-12" />
       </div>
 
       {/* Card Header */}
@@ -75,7 +75,7 @@ export default function MembershipCard({
           <p className="text-blue-100 mt-2">{userName}</p>
           <p className="text-blue-100 text-sm">ID: {membershipId}</p>
         </div>
-        <div className="bg-white p-2 rounded">
+        <div className="bg-card p-2 rounded">
           {qrCodeUrl ? (
             <img src={qrCodeUrl} alt="QR Code" className="w-16 h-16" />
           ) : (

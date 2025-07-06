@@ -163,14 +163,14 @@ export default function DealRecommendationWizard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <Card>
             <CardContent className="p-12 text-center">
               <Wand2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Login Required</h3>
-              <p className="text-gray-600 mb-4">Please log in to use the deal recommendation wizard</p>
+              <h3 className="text-lg font-medium text-foreground mb-2">Login Required</h3>
+              <p className="text-muted-foreground mb-4">Please log in to use the deal recommendation wizard</p>
               <Button asChild>
                 <Link to="/login">Login Now</Link>
               </Button>
@@ -187,8 +187,8 @@ export default function DealRecommendationWizard() {
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">What interests you?</h2>
-              <p className="text-gray-600">Select all categories that interest you</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">What interests you?</h2>
+              <p className="text-muted-foreground">Select all categories that interest you</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {Array.isArray(categories) ? categories.map((category: any, index: number) => {
@@ -232,8 +232,8 @@ export default function DealRecommendationWizard() {
         return (
           <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">What's your budget?</h2>
-              <p className="text-gray-600">Set your typical spending range for deals</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">What's your budget?</h2>
+              <p className="text-muted-foreground">Set your typical spending range for deals</p>
             </div>
             
             <div className="space-y-6">
@@ -282,8 +282,8 @@ export default function DealRecommendationWizard() {
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Where are you located?</h2>
-              <p className="text-gray-600">Help us find deals near you</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Where are you located?</h2>
+              <p className="text-muted-foreground">Help us find deals near you</p>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -336,8 +336,8 @@ export default function DealRecommendationWizard() {
         return (
           <div className="space-y-8">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Tell us your preferences</h2>
-              <p className="text-gray-600">Help us personalize your experience</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Tell us your preferences</h2>
+              <p className="text-muted-foreground">Help us personalize your experience</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -412,8 +412,8 @@ export default function DealRecommendationWizard() {
           <div className="space-y-6">
             <div className="text-center">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">All set!</h2>
-              <p className="text-gray-600">We're generating personalized recommendations for you</p>
+              <h2 className="text-2xl font-bold text-foreground mb-2">All set!</h2>
+              <p className="text-muted-foreground">We're generating personalized recommendations for you</p>
             </div>
 
             <Card className="bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/20">
@@ -460,7 +460,7 @@ export default function DealRecommendationWizard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -468,9 +468,9 @@ export default function DealRecommendationWizard() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Wand2 className="h-8 w-8 text-primary mr-2" />
-            <h1 className="text-3xl font-bold text-gray-900">Deal Recommendation Wizard</h1>
+            <h1 className="text-3xl font-bold text-foreground">Deal Recommendation Wizard</h1>
           </div>
-          <p className="text-gray-600">Let us help you find the perfect deals tailored just for you</p>
+          <p className="text-muted-foreground">Let us help you find the perfect deals tailored just for you</p>
         </div>
 
         {/* Progress Bar */}

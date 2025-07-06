@@ -349,7 +349,7 @@ export default function NearbyDealsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -364,14 +364,14 @@ export default function NearbyDealsPage() {
             </Link>
             <div className="flex items-center gap-2">
               <Compass className="h-6 w-6 text-blue-600" />
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-foreground">
                 Nearby Deals
               </h1>
             </div>
           </div>
           
           {userLocation ? (
-            <div className="flex items-center gap-4 text-gray-600">
+            <div className="flex items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Target className="h-4 w-4" />
                 <span>Location accuracy: ±{Math.round(userLocation.accuracy)}m</span>
@@ -387,7 +387,7 @@ export default function NearbyDealsPage() {
               )}
             </div>
           ) : (
-            <p className="text-gray-600">Enable location services to discover deals near you</p>
+            <p className="text-muted-foreground">Enable location services to discover deals near you</p>
           )}
         </div>
 
@@ -405,8 +405,8 @@ export default function NearbyDealsPage() {
                 <Navigation className="h-8 w-8 text-blue-600" />
               </div>
               <div>
-                <h3 className="font-medium text-gray-900 mb-2">Discover Local Deals</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <h3 className="font-medium text-foreground mb-2">Discover Local Deals</h3>
+                <p className="text-sm text-muted-foreground mb-4">
                   Get personalized deals based on your location with distance and direction hints.
                 </p>
               </div>
@@ -441,8 +441,8 @@ export default function NearbyDealsPage() {
           <Card className="mb-8">
             <CardContent className="text-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-              <h3 className="font-medium text-gray-900 mb-2">Finding Your Location...</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-medium text-foreground mb-2">Finding Your Location...</h3>
+              <p className="text-sm text-muted-foreground">
                 Please allow location access to discover nearby deals.
               </p>
             </CardContent>
@@ -527,7 +527,7 @@ export default function NearbyDealsPage() {
         {isLoadingDeals ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-gray-600">Loading nearby deals...</span>
+            <span className="ml-2 text-muted-foreground">Loading nearby deals...</span>
           </div>
         ) : sortedDeals.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -554,7 +554,7 @@ export default function NearbyDealsPage() {
                   {/* Location hint */}
                   {deal.locationHint && (
                     <div className="absolute bottom-2 left-2 right-2">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-md px-2 py-1 text-xs text-gray-700 border">
+                      <div className="bg-card/95 backdrop-blur-sm rounded-md px-2 py-1 text-xs text-gray-700 border">
                         <span className="font-medium">📍</span> {deal.locationHint}
                       </div>
                     </div>
@@ -584,8 +584,8 @@ export default function NearbyDealsPage() {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MapPin className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Deals Found Nearby</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-lg font-medium text-foreground mb-2">No Deals Found Nearby</h3>
+              <p className="text-muted-foreground mb-4">
                 No deals found within {maxDistance[0]}km of your location. 
                 Try increasing the search radius or check back later.
               </p>

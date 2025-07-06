@@ -121,12 +121,12 @@ export default function MembershipCard() {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card>
           <CardContent className="p-6 text-center">
             <Shield className="w-12 h-12 mx-auto mb-4 text-gray-400" />
             <h2 className="text-xl font-semibold mb-2">Login Required</h2>
-            <p className="text-gray-600 mb-4">Please log in to view your membership card.</p>
+            <p className="text-muted-foreground mb-4">Please log in to view your membership card.</p>
           </CardContent>
         </Card>
       </div>
@@ -135,7 +135,7 @@ export default function MembershipCard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card>
           <CardContent className="p-6 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
@@ -150,13 +150,13 @@ export default function MembershipCard() {
   const TierIcon = tierInfo.icon;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Digital Membership Card</h1>
-            <p className="text-gray-600">Your secure access to exclusive deals</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Digital Membership Card</h1>
+            <p className="text-muted-foreground">Your secure access to exclusive deals</p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
@@ -175,7 +175,7 @@ export default function MembershipCard() {
                       </CardTitle>
                       <p className="text-white/80">Instoredealz</p>
                     </div>
-                    <Badge className="bg-white/20 text-white border-white/30">
+                    <Badge className="bg-card/20 text-white border-white/30">
                       Active
                     </Badge>
                   </div>
@@ -206,7 +206,7 @@ export default function MembershipCard() {
                     </div>
                   </div>
 
-                  <Separator className="bg-white/20" />
+                  <Separator className="bg-card/20" />
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -255,14 +255,14 @@ export default function MembershipCard() {
                 <CardContent className="text-center space-y-4">
                   {showQR ? (
                     <div className="space-y-4">
-                      <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 inline-block">
+                      <div className="bg-card p-4 rounded-lg border-2 border-dashed border-gray-300 inline-block">
                         <img
                           src={cardData?.qrCode}
                           alt="Membership QR Code"
                           className="w-48 h-48 mx-auto"
                         />
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         Show this QR code to vendors for instant deal verification
                       </p>
                       <Button 
@@ -278,7 +278,7 @@ export default function MembershipCard() {
                     <div className="space-y-4">
                       <div className="bg-gray-100 p-8 rounded-lg">
                         <QrCode className="w-16 h-16 mx-auto text-gray-400 mb-2" />
-                        <p className="text-gray-600">QR Code Hidden for Security</p>
+                        <p className="text-muted-foreground">QR Code Hidden for Security</p>
                       </div>
                       <Button 
                         onClick={() => setShowQR(true)} 
@@ -301,7 +301,7 @@ export default function MembershipCard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Generate a secure 6-digit code for temporary deal access
                   </p>
                   

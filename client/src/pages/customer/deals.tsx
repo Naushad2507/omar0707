@@ -209,16 +209,16 @@ export default function CustomerDeals() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar selectedCity={selectedCity} onCityChange={setSelectedCity} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
             Discover Amazing Deals
           </h1>
-          <div className="flex items-center text-gray-600">
+          <div className="flex items-center text-muted-foreground">
             <MapPin className="h-4 w-4 mr-1" />
             <span>Showing deals in {selectedCity}</span>
             {selectedCategory && (
@@ -281,7 +281,7 @@ export default function CustomerDeals() {
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-gray-600">Loading deals...</span>
+            <span className="ml-2 text-muted-foreground">Loading deals...</span>
           </div>
         ) : sortedDeals.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -308,8 +308,8 @@ export default function CustomerDeals() {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No deals found</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-lg font-medium text-foreground mb-2">No deals found</h3>
+              <p className="text-muted-foreground mb-4">
                 {searchQuery || selectedCategory 
                   ? "Try adjusting your search or filters"
                   : `No deals available in ${selectedCity} right now`

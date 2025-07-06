@@ -242,14 +242,14 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
+          <p className="text-muted-foreground mt-1">
             Monitor platform performance and manage operations
           </p>
         </div>
@@ -272,7 +272,7 @@ export default function AdminDashboard() {
                       <span className="text-white/90 text-sm">{stat.change} from last month</span>
                     </div>
                   </div>
-                  <div className="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                  <div className="bg-card/20 p-4 rounded-full backdrop-blur-sm">
                     <Icon className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -396,7 +396,7 @@ export default function AdminDashboard() {
                         <Icon className={`h-4 w-4 ${activity.iconColor}`} />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{activity.title}</p>
+                        <p className="text-sm font-medium text-foreground">{activity.title}</p>
                         <p className="text-xs text-gray-500">{activity.description}</p>
                         <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
                       </div>
@@ -424,7 +424,7 @@ export default function AdminDashboard() {
                   {pendingVendorsData.slice(0, 3).map((vendor: any) => (
                     <div key={vendor.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                       <div>
-                        <p className="font-medium text-gray-900">{vendor.businessName}</p>
+                        <p className="font-medium text-foreground">{vendor.businessName}</p>
                         <p className="text-sm text-gray-500">{vendor.city}, {vendor.state}</p>
                       </div>
                       <Badge variant="secondary">Pending</Badge>
@@ -439,7 +439,7 @@ export default function AdminDashboard() {
               ) : (
                 <div className="text-center py-8">
                   <CheckCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-600">No pending vendor approvals</p>
+                  <p className="text-muted-foreground">No pending vendor approvals</p>
                 </div>
               )}
             </CardContent>
@@ -459,7 +459,7 @@ export default function AdminDashboard() {
                   {pendingDealsData.slice(0, 3).map((deal: any) => (
                     <div key={deal.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                       <div>
-                        <p className="font-medium text-gray-900">{deal.title}</p>
+                        <p className="font-medium text-foreground">{deal.title}</p>
                         <p className="text-sm text-gray-500">
                           By {deal.vendor?.businessName} - {deal.discountPercentage}% off
                         </p>
@@ -476,7 +476,7 @@ export default function AdminDashboard() {
               ) : (
                 <div className="text-center py-8">
                   <CheckCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-600">No pending deal approvals</p>
+                  <p className="text-muted-foreground">No pending deal approvals</p>
                 </div>
               )}
             </CardContent>
@@ -492,7 +492,7 @@ export default function AdminDashboard() {
                   <Database className="h-5 w-5 mr-2 text-blue-600" />
                   Data Reports & Analytics
                 </CardTitle>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Download comprehensive CSV reports for analysis and record-keeping. All reports include the latest data.
                 </p>
               </div>

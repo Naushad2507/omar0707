@@ -114,15 +114,15 @@ export default function AdminManagement() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Management</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-foreground">Admin Management</h1>
+            <p className="text-muted-foreground mt-1">
               Manage administrative users and their permissions
             </p>
           </div>
@@ -182,8 +182,8 @@ export default function AdminManagement() {
                       <div key={permission.id} className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg">
                         <input type="checkbox" className="mt-1" />
                         <div>
-                          <p className="font-medium text-gray-900">{permission.name}</p>
-                          <p className="text-sm text-gray-600">{permission.description}</p>
+                          <p className="font-medium text-foreground">{permission.name}</p>
+                          <p className="text-sm text-muted-foreground">{permission.description}</p>
                         </div>
                       </div>
                     ))}
@@ -209,7 +209,7 @@ export default function AdminManagement() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-500 text-sm">{stat.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
                     <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
@@ -282,7 +282,7 @@ export default function AdminManagement() {
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="text-gray-600 mt-2">Loading admin users...</p>
+                <p className="text-muted-foreground mt-2">Loading admin users...</p>
               </div>
             ) : filteredUsers.length > 0 ? (
               <div className="overflow-x-auto">
@@ -308,7 +308,7 @@ export default function AdminManagement() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-medium text-gray-900">{user.name}</p>
+                              <p className="font-medium text-foreground">{user.name}</p>
                               <div className="flex items-center space-x-2 text-xs text-gray-500">
                                 <Mail className="h-3 w-3" />
                                 <span>{user.email}</span>
@@ -336,7 +336,7 @@ export default function AdminManagement() {
                           )}
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center space-x-1 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                             <Calendar className="h-3 w-3" />
                             <span>{formatDate(user.createdAt)}</span>
                           </div>
@@ -361,31 +361,31 @@ export default function AdminManagement() {
                                   {/* User Info */}
                                   <div className="grid md:grid-cols-2 gap-6">
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Personal Information</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Personal Information</h4>
                                       <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Name:</span>
-                                          <span className="text-gray-900 font-medium">{user.name}</span>
+                                          <span className="text-foreground font-medium">{user.name}</span>
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Email:</span>
-                                          <span className="text-gray-900">{user.email}</span>
+                                          <span className="text-foreground">{user.email}</span>
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Username:</span>
-                                          <span className="text-gray-900">{user.username}</span>
+                                          <span className="text-foreground">{user.username}</span>
                                         </div>
                                         {user.phone && (
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Phone:</span>
-                                            <span className="text-gray-900">{user.phone}</span>
+                                            <span className="text-foreground">{user.phone}</span>
                                           </div>
                                         )}
                                       </div>
                                     </div>
                                     
                                     <div>
-                                      <h4 className="font-medium text-gray-900 mb-3">Account Details</h4>
+                                      <h4 className="font-medium text-foreground mb-3">Account Details</h4>
                                       <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Role:</span>
@@ -397,12 +397,12 @@ export default function AdminManagement() {
                                         </div>
                                         <div className="flex justify-between">
                                           <span className="text-gray-500">Created:</span>
-                                          <span className="text-gray-900">{formatDate(user.createdAt)}</span>
+                                          <span className="text-foreground">{formatDate(user.createdAt)}</span>
                                         </div>
                                         {user.city && user.state && (
                                           <div className="flex justify-between">
                                             <span className="text-gray-500">Location:</span>
-                                            <span className="text-gray-900">{user.city}, {user.state}</span>
+                                            <span className="text-foreground">{user.city}, {user.state}</span>
                                           </div>
                                         )}
                                       </div>
@@ -411,7 +411,7 @@ export default function AdminManagement() {
                                   
                                   {/* Permissions */}
                                   <div>
-                                    <h4 className="font-medium text-gray-900 mb-3">Permissions</h4>
+                                    <h4 className="font-medium text-foreground mb-3">Permissions</h4>
                                     <div className="grid md:grid-cols-2 gap-3">
                                       {permissions.map((permission) => {
                                         const hasPermission = user.role === "superadmin" || 
@@ -424,7 +424,7 @@ export default function AdminManagement() {
                                             ) : (
                                               <Lock className="h-4 w-4 text-gray-400" />
                                             )}
-                                            <span className={`text-sm ${hasPermission ? 'text-gray-900' : 'text-gray-500'}`}>
+                                            <span className={`text-sm ${hasPermission ? 'text-foreground' : 'text-gray-500'}`}>
                                               {permission.name}
                                             </span>
                                           </div>
@@ -453,8 +453,8 @@ export default function AdminManagement() {
             ) : (
               <div className="text-center py-12">
                 <UserCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No admin users found</h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-medium text-foreground mb-2">No admin users found</h3>
+                <p className="text-muted-foreground">
                   {searchQuery || roleFilter !== "all" || statusFilter !== "all"
                     ? "Try adjusting your search or filters"
                     : "No admin users created yet"
@@ -476,8 +476,8 @@ export default function AdminManagement() {
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6 text-sm">
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Admin Account Security:</h4>
-                <ul className="space-y-1 text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">Admin Account Security:</h4>
+                <ul className="space-y-1 text-muted-foreground">
                   <li>• Use strong, unique passwords</li>
                   <li>• Enable two-factor authentication</li>
                   <li>• Regular password updates required</li>
@@ -486,8 +486,8 @@ export default function AdminManagement() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-gray-900 mb-2">Permission Management:</h4>
-                <ul className="space-y-1 text-gray-600">
+                <h4 className="font-medium text-foreground mb-2">Permission Management:</h4>
+                <ul className="space-y-1 text-muted-foreground">
                   <li>• Grant minimum required permissions</li>
                   <li>• Review permissions quarterly</li>
                   <li>• Super Admin access requires approval</li>

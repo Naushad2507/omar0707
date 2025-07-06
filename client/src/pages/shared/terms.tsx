@@ -10,13 +10,13 @@ export default function Terms() {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Terms & Conditions</h1>
-          <p className="text-gray-600">Last updated: December 2024</p>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Terms & Conditions</h1>
+          <p className="text-muted-foreground">Last updated: December 2024</p>
         </div>
 
         <Card>
