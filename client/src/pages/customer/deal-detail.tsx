@@ -313,17 +313,17 @@ export default function DealDetail({ params }: DealDetailProps) {
 
           {/* Login Required Message */}
           <div className="max-w-2xl mx-auto">
-            <Card className="border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 shadow-xl">
+            <Card className="border-teal-200 dark:border-teal-800 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 shadow-xl">
               <CardContent className="p-12 text-center">
                 <div className="mb-6">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full blur-sm opacity-20"></div>
                     <Lock className="h-16 w-16 text-gradient bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent mx-auto mb-4 relative z-10" style={{color: '#d97706'}} />
                   </div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-700 to-cyan-800 bg-clip-text text-transparent mb-2">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-700 to-cyan-800 dark:from-teal-300 dark:to-cyan-300 bg-clip-text text-transparent mb-2">
                     Login Required to View Deal
                   </h2>
-                  <p className="text-teal-700 text-lg">
+                  <p className="text-teal-700 dark:text-teal-300 text-lg">
                     Please log in or sign up to access deal details and exclusive offers
                   </p>
                 </div>
@@ -336,7 +336,7 @@ export default function DealDetail({ params }: DealDetailProps) {
                         Login
                       </Link>
                     </Button>
-                    <Button asChild variant="outline" size="lg" className="border-2 border-amber-400 text-amber-600 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-amber-50 shadow-md">
+                    <Button asChild variant="outline" size="lg" className="border-2 border-amber-400 dark:border-amber-600 text-amber-600 dark:text-amber-400 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-amber-50 dark:hover:from-amber-900/30 dark:hover:to-yellow-900/30 shadow-md">
                       <Link to="/signup">
                         <Users className="w-4 h-4 mr-2" />
                         Sign Up
@@ -344,11 +344,11 @@ export default function DealDetail({ params }: DealDetailProps) {
                     </Button>
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t border-teal-200">
-                    <p className="text-amber-700 font-semibold text-sm bg-gradient-to-r from-yellow-600 to-amber-700 bg-clip-text text-transparent">
+                  <div className="mt-6 pt-6 border-t border-teal-200 dark:border-teal-800">
+                    <p className="text-amber-700 dark:text-amber-300 font-semibold text-sm bg-gradient-to-r from-yellow-600 to-amber-700 dark:from-yellow-400 dark:to-amber-400 bg-clip-text text-transparent">
                       <strong>Why create an account?</strong>
                     </p>
-                    <ul className="text-teal-700 text-sm mt-2 space-y-2">
+                    <ul className="text-teal-700 dark:text-teal-300 text-sm mt-2 space-y-2">
                       <li className="flex items-center">
                         <span className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full mr-2"></span>
                         Access exclusive deals and discounts
