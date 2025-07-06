@@ -217,6 +217,42 @@
     transition: background-color 0.3s ease;
   }
 
+  /* Force light background application */
+  :root {
+    color-scheme: light;
+  }
+
+  /* Light theme overrides */
+  body {
+    background-color: hsl(210, 20%, 98%) !important;
+    color: hsl(20, 14.3%, 4.1%) !important;
+  }
+
+  html {
+    background-color: hsl(210, 20%, 98%) !important;
+  }
+
+  /* Ensure all root elements have light background */
+  #root {
+    background-color: hsl(210, 20%, 98%) !important;
+    color: hsl(20, 14.3%, 4.1%) !important;
+    min-height: 100vh;
+  }
+
+  /* Force light background on main containers */
+  .min-h-screen {
+    background-color: hsl(210, 20%, 98%) !important;
+  }
+
+  /* Light mode card backgrounds */
+  [class*="bg-card"] {
+    background-color: hsl(210, 30%, 99%) !important;
+  }
+
+  [class*="bg-background"] {
+    background-color: hsl(210, 20%, 98%) !important;
+  }
+
   /* Force dark background application */
   .dark {
     color-scheme: dark;
