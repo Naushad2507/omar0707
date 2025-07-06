@@ -231,7 +231,7 @@ export default function VendorBenefits() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -269,7 +269,7 @@ export default function VendorBenefits() {
                 </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl p-8">
+            <div className="bg-card border rounded-2xl p-8 shadow-sm">
               <div className="text-center">
                 <Star className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -283,7 +283,7 @@ export default function VendorBenefits() {
                     <Star key={i} className="h-5 w-5 text-yellow-500 fill-current" />
                   ))}
                 </div>
-                <p className="text-sm text-gray-500">4.8/5 average rating</p>
+                <p className="text-sm text-muted-foreground">4.8/5 average rating</p>
               </div>
             </div>
           </div>

@@ -412,20 +412,20 @@ export default function Help() {
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="bg-gray-100 rounded-lg p-6">
-                  <h3 className="font-bold text-lg mb-2">Basic</h3>
+                <div className="bg-muted rounded-lg p-6 border">
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Basic</h3>
                   <p className="text-muted-foreground">Free access to standard deals</p>
                 </div>
               </div>
               <div className="text-center">
-                <div className="bg-purple-50 rounded-lg p-6">
-                  <h3 className="font-bold text-lg mb-2">Premium</h3>
+                <div className="bg-muted rounded-lg p-6 border border-purple-200 dark:border-purple-700">
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Premium</h3>
                   <p className="text-muted-foreground">Access to exclusive premium deals and early access</p>
                 </div>
               </div>
               <div className="text-center">
-                <div className="bg-amber-50 rounded-lg p-6">
-                  <h3 className="font-bold text-lg mb-2">Ultimate</h3>
+                <div className="bg-muted rounded-lg p-6 border border-amber-200 dark:border-amber-700">
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Ultimate</h3>
                   <p className="text-muted-foreground">All premium features plus VIP support and special offers</p>
                 </div>
               </div>
