@@ -164,6 +164,44 @@
   box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
 }
 
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(213, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  --success: hsl(160, 84%, 39%);
+  --warning: hsl(32, 95%, 44%);
+  --saffron: hsl(16, 100%, 60%);
+  --royal: hsl(238, 69%, 60%);
+  --peacock: hsl(180, 100%, 35%);
+  --chart-1: hsl(217, 91%, 60%);
+  --chart-2: hsl(160, 84%, 39%);
+  --chart-3: hsl(32, 95%, 44%);
+  --chart-4: hsl(238, 69%, 60%);
+  --chart-5: hsl(345, 82%, 60%);
+  --chart-6: hsl(180, 62%, 55%);
+  --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(238, 69%, 60%) 100%);
+  --gradient-success: linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(180, 84%, 39%) 100%);
+  --gradient-warning: linear-gradient(135deg, hsl(32, 95%, 44%) 0%, hsl(16, 100%, 60%) 100%);
+  --gradient-danger: linear-gradient(135deg, hsl(0, 62.8%, 30.6%) 0%, hsl(345, 82%, 60%) 100%);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -171,10 +209,12 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   html {
     @apply bg-background;
+    transition: background-color 0.3s ease;
   }
 
   /* Force dark background application */
@@ -183,29 +223,48 @@
   }
 
   .dark body {
-    @apply bg-background text-foreground;
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    background-color: hsl(240, 10%, 3.9%) !important;
+    color: hsl(0, 0%, 98%) !important;
   }
 
   .dark html {
-    @apply bg-background;
-    background-color: hsl(var(--background));
+    background-color: hsl(240, 10%, 3.9%) !important;
   }
 
   /* Ensure all root elements have dark background */
   .dark #root {
-    background-color: hsl(var(--background)) !important;
-    color: hsl(var(--foreground));
+    background-color: hsl(240, 10%, 3.9%) !important;
+    color: hsl(0, 0%, 98%) !important;
     min-height: 100vh;
   }
 
   /* Force dark background on main containers */
   .dark .min-h-screen {
-    background-color: hsl(var(--background)) !important;
+    background-color: hsl(240, 10%, 3.9%) !important;
   }
 
   .dark div[class*="max-w"] {
+    background-color: transparent;
+  }
+
+  /* Additional dark mode overrides */
+  .dark * {
+    border-color: hsl(240, 3.7%, 15.9%);
+  }
+
+  /* Override any remaining white backgrounds in dark mode */
+  .dark [class*="bg-card"] {
+    background-color: hsl(240, 10%, 3.9%) !important;
+  }
+
+  .dark [class*="bg-background"] {
+    background-color: hsl(240, 10%, 3.9%) !important;
+  }
+
+  /* Force main content areas to be dark */
+  .dark main,
+  .dark section,
+  .dark article {
     background-color: transparent;
   }
 }
