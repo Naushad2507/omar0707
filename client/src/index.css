@@ -357,6 +357,97 @@
   .dark .category-carousel Card:hover {
     background-color: hsl(0, 0%, 25%) !important;
   }
+
+  /* Fix all hardcoded text colors for dark mode */
+  .dark .text-gray-700,
+  .dark .text-gray-600,
+  .dark .text-gray-800,
+  .dark .text-gray-900 {
+    color: hsl(0, 0%, 85%) !important;
+  }
+
+  .dark .text-gray-500,
+  .dark .text-gray-400 {
+    color: hsl(0, 0%, 65%) !important;
+  }
+
+  .dark .text-gray-300,
+  .dark .text-gray-200 {
+    color: hsl(0, 0%, 90%) !important;
+  }
+
+  /* Ensure all text is visible in dark mode */
+  .dark p,
+  .dark span,
+  .dark div {
+    color: hsl(0, 0%, 85%);
+  }
+
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  /* Fix badges and colored backgrounds in dark mode */
+  .dark .bg-blue-100 {
+    background-color: hsl(220, 30%, 25%) !important;
+  }
+  .dark .text-blue-800 {
+    color: hsl(220, 70%, 80%) !important;
+  }
+
+  .dark .bg-pink-100 {
+    background-color: hsl(330, 30%, 25%) !important;
+  }
+  .dark .text-pink-800 {
+    color: hsl(330, 70%, 80%) !important;
+  }
+
+  .dark .bg-green-100 {
+    background-color: hsl(140, 30%, 25%) !important;
+  }
+  .dark .text-green-800 {
+    color: hsl(140, 70%, 80%) !important;
+  }
+
+  .dark .bg-orange-100 {
+    background-color: hsl(25, 30%, 25%) !important;
+  }
+  .dark .text-orange-800 {
+    color: hsl(25, 70%, 80%) !important;
+  }
+
+  .dark .bg-purple-100 {
+    background-color: hsl(270, 30%, 25%) !important;
+  }
+  .dark .text-purple-800 {
+    color: hsl(270, 70%, 80%) !important;
+  }
+
+  .dark .bg-yellow-100 {
+    background-color: hsl(45, 30%, 25%) !important;
+  }
+  .dark .text-yellow-800 {
+    color: hsl(45, 70%, 80%) !important;
+  }
+
+  .dark .bg-red-100 {
+    background-color: hsl(0, 30%, 25%) !important;
+  }
+  .dark .text-red-800 {
+    color: hsl(0, 70%, 80%) !important;
+  }
+
+  .dark .bg-indigo-100 {
+    background-color: hsl(240, 30%, 25%) !important;
+  }
+  .dark .text-indigo-800 {
+    color: hsl(240, 70%, 80%) !important;
+  }
 }
 
 @layer utilities {

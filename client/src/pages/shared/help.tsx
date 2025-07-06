@@ -292,7 +292,7 @@ export default function Help() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-700">{faq.answer}</p>
+                  <p className="text-foreground/80">{faq.answer}</p>
                 </CardContent>
               </Card>
             ))}
@@ -364,7 +364,7 @@ export default function Help() {
                 }}
               >
                 <CheckCircle className="h-5 w-5 text-primary" />
-                <span className="text-gray-700">{topic.title}</span>
+                <span className="text-foreground">{topic.title}</span>
                 <ChevronRight className="h-4 w-4 text-gray-400 ml-auto" />
               </div>
             ))}
