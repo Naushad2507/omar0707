@@ -303,6 +303,60 @@
   .dark article {
     background-color: transparent;
   }
+
+  /* Dark mode category carousel cards */
+  .dark .category-card {
+    background-color: hsl(0, 0%, 22%) !important;
+    border: 1px solid hsl(0, 0%, 30%) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark .category-card:hover {
+    background-color: hsl(0, 0%, 25%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Dark mode category card text */
+  .dark .category-card h3 {
+    color: hsl(0, 0%, 98%) !important;
+  }
+
+  .dark .category-card p {
+    color: hsl(0, 0%, 75%) !important;
+  }
+
+  /* Dark mode category cards - broader selectors */
+  .dark [class*="category"] {
+    background-color: hsl(0, 0%, 22%) !important;
+    border: 1px solid hsl(0, 0%, 30%) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .dark [class*="category"]:hover {
+    background-color: hsl(0, 0%, 25%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Dark mode for any bg-gray classes in category sections */
+  .dark [class*="bg-gray"] {
+    background-color: hsl(0, 0%, 22%) !important;
+  }
+
+  /* Dark mode for category carousel specific styles */
+  .dark .category-carousel [class*="bg-gradient-to-br"] {
+    background: linear-gradient(135deg, hsl(0, 0%, 22%) 0%, hsl(0, 0%, 28%) 100%) !important;
+  }
+
+  .dark .category-carousel Card {
+    background-color: hsl(0, 0%, 20%) !important;
+    border: 1px solid hsl(0, 0%, 30%) !important;
+  }
+
+  .dark .category-carousel Card:hover {
+    background-color: hsl(0, 0%, 25%) !important;
+  }
 }
 
 @layer utilities {
